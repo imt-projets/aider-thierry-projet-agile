@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+      "baseUrl": ".",
+      "resolveJsonModule": true,
+      "target": "ESNext",
+      "strict": true,
+      "outDir": "dist",
+      "module": "CommonJS",
+      "declaration": true,
+      "experimentalDecorators": true,
+      "moduleResolution": "Node",
+      "esModuleInterop": true,
+      "emitDecoratorMetadata": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/", "tests/", "dist/"]
+}
