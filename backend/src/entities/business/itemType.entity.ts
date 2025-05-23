@@ -1,7 +1,6 @@
 import { Entity, Column, OneToMany } from "typeorm";
 import { Item } from "./item.entity";
-import { EntityBase } from "./entity.base";
-
+import { EntityBase } from "../core";
 
 @Entity()
 export class ItemType extends EntityBase {

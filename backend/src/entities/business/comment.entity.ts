@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne} from "typeorm";
 import { Item } from "./item.entity";
 import { User } from "./user.entity";
-import { EntityBase } from "./entity.base";
+import { EntityBase } from "../core";
 @Entity()
 export class Comment extends EntityBase {
 
@@ -11,10 +11,10 @@ export class Comment extends EntityBase {
     @Column()
     date!: Date
 
-    @ManyToOne(() => Item, (item) => item.id)
+    @ManyToOne(() => Item, (item) => item.comments)
     item!: Item
 
-    @ManyToOne(() => User, (user) => user.id)
+    @ManyToOne(() => User, (user) => user.comments)
     user!: User
 
 }

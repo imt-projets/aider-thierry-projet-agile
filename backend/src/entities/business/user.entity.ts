@@ -1,6 +1,6 @@
 import { Entity, Column, OneToMany} from "typeorm";
 import { Comment } from "./comment.entity";
-import { EntityBase } from "./entity.base";
+import { EntityBase } from "../core";
 import { IsEmail } from "class-validator";
 
 @Entity()
