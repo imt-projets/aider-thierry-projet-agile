@@ -1,6 +1,5 @@
 import "reflect-metadata"
-import { environment } from "./config/environment";
-import { DatabaseConfiguration } from "./config";
+import { environment, DatabaseConfiguration } from "@/config";
 import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
 import AutoLoad from '@fastify/autoload';
