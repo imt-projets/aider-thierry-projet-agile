@@ -10,6 +10,15 @@ export class Item extends EntityBase {
     name!: string;
 
     @Column()
+    serialNumber!: string;
+
+    @Column()
+    inventoryNumber!: string;
+
+    @Column()
+    orderNumber!: string;
+
+    @Column()
     price!: number;
 
     @Column()
@@ -19,7 +28,13 @@ export class Item extends EntityBase {
     lifetime!: number;
 
     @Column()
+    warrantyEndDate!: Date;
+
+    @Column()
     brand!: string;
+
+    @Column()
+    model!: string; 
 
     @OneToMany(() => Comment, (comment) => comment.item)
     comments!: Comment[];
