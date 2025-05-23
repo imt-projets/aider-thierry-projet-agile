@@ -1,5 +1,9 @@
-import { Entity } from "typeorm";
+import { Column, Entity } from "typeorm";
 import { EntityBase } from "./entity.base";
 
 @Entity()
-export abstract class OrganizationalEntityBase extends EntityBase {}
+export abstract class OrganizationalEntityBase extends EntityBase {
+
+    @Column()
+    name! : string;
+}

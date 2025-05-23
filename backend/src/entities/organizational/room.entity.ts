@@ -5,6 +5,6 @@ import { Building } from "./building.entity";
 @Entity()
 export class Room extends OrganizationalEntityBase {
     
-    @ManyToOne(() => Building, (b) => b.children)
+    @ManyToOne(() => Building, (b) => b.rooms)
     parent!: Building;
 }

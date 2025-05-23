@@ -10,5 +10,5 @@ export class Building extends OrganizationalEntityBase {
     parent!: School;
 
     @OneToMany(() => Room, (room) => room.parent)
-    children!: Room[]
+    rooms!: Room[]
 }

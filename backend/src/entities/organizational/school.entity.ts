@@ -1,4 +1,4 @@
-import { Entity, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import { OrganizationalEntityBase } from "../core/organizational-entity.base";
 import { Building } from "./building.entity";
 
