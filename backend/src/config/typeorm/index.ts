@@ -1,6 +1,9 @@
 import { Interfaces } from "../../interfaces";
 import { DataSource } from "typeorm";
-
+import { User } from "../../entities/user";
+import { Item } from "src/entities/Item";
+import { ItemType } from "src/entities/ItemType";
+import { Comment } from "src/entities/Comment";
 export class DatabaseConfiguration {
     public static async initializeDatabaseFromEnvironmentVariables(
         environment: Interfaces.Environment,
@@ -15,7 +18,7 @@ export class DatabaseConfiguration {
                 database: environment.dbName,
                 synchronize: true,
                 logging: true,
-                entities: [],
+                entities: [User, Item, ItemType, Comment],
                 subscribers: [],
                 migrations: [],
             }).initialize();
