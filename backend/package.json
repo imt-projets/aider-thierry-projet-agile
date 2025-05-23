@@ -10,15 +10,17 @@
     "clean": "rimraf dist",
     "watch": "tsc -w",
     "dev": "nodemon",
-    "seed:run": "ts-node ./src/seeders/seed.ts"
+    "seed:run": "ts-node -r tsconfig-paths/register ./src/seeders/seed.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/module-alias": "^2.0.4",
+    "@types/module-alias": "2.0.4",
     "@types/node": "^22.15.21",
+    "@types/yargs": "^17.0.33",
     "nodemon": "^3.1.10",
+    "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3"
   },

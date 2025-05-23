@@ -12,7 +12,7 @@
       "esModuleInterop": true,
       "emitDecoratorMetadata": true,
       "typeRoots": ["./src/interfaces/modules"],
-      "types": ["node","fastify"],
+      "types": ["fastify"],
       "paths": {
         "@/*": ["./src/*"]
       }
