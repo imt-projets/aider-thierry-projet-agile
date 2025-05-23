@@ -10,15 +10,9 @@ export const getHierarchy = async (
     repository : Repository<entities.School>
 ) => {
 
-    try {
-        const hierarchy = await repository.find({
-            relations : ["buildings", "buildings.rooms"]
-        })
+    const hierarchy = await repository.find({
+        relations : ["buildings", "buildings.rooms"]
+    })
 
-        ReplyHelper.send(reply, enums.StatusCode.OK, hierarchy);
-
-    } catch (error) {
-        ReplyHelper.error(reply, enums.StatusCode.INTERNAL_SERVER_ERROR, "Internal Server Error");
-        throw error;
-    }
+    ReplyHelper.send(reply, enums.StatusCode.OK, hierarchy);
 }

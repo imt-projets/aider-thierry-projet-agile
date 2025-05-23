@@ -8,7 +8,10 @@ export class DatabaseConfiguration {
     ) {
         try {
             const orm = await new DataSource(
-                getDatabaseOptions(environment)
+                {
+                    ...getDatabaseOptions(environment), 
+                    logging: ['error']
+                }
             ).initialize();
 
             console.log('Database initialized successfully');
