@@ -1,6 +1,7 @@
-import { Entity, Column, ManyToOne, OneToMany} from "typeorm";
+import { Entity, Column, ManyToOne, OneToMany, ManyToMany} from "typeorm";
 import { ItemType } from "./itemType.entity";
 import { Comment } from "./comment.entity";
+import { Supplier } from "./supplier.entity";
 import { EntityBase } from "../core";
 
 @Entity()
@@ -25,4 +26,7 @@ export class Item extends EntityBase {
 
     @ManyToOne(() => ItemType, (itemType) => itemType.items)
     itemType!: ItemType;
+
+    @ManyToMany(() => Supplier, (supplier) => supplier.items)
+    suppliers!: Supplier[];
 }
