@@ -11,7 +11,7 @@ export const getHierarchy = async (
 ) => {
 
     const hierarchy = await repository.find({
-        relations : ["buildings", "buildings.rooms"]
+        relations : ["buildings", "buildings.rooms", "buildings.rooms.items"]
     })
 
     ReplyHelper.send(reply, enums.StatusCode.OK, hierarchy);
