@@ -12,10 +12,9 @@ const hierarchy : FastifyPluginAsync = async (fastify : FastifyInstance) => {
 
     const orm = fastify.orm;
 
-    const schoolRepository : Repository<entities.School>  = orm.getRepository(entities.School)
+    const structureRepository : Repository<entities.Structure>  = orm.getRepository(entities.Structure)
 
-
-    fastify.get('', routeHandler((req, res) => services.Hierarchy.getHierarchy(req,res, schoolRepository)))
+    fastify.get('', routeHandler((req, res) => services.Hierarchy.getHierarchy(req,res, structureRepository)))
 }
 
 export default hierarchy;

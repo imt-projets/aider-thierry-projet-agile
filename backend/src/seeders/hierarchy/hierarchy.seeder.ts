@@ -4,40 +4,56 @@ import { entities } from "@/entities";
 
 export class HierarchySeeder extends Seeder {
     async run(dataSource: DataSource) {
-
-        const schoolRepository = dataSource.getRepository(entities.School);
-        const buildingRepository = dataSource.getRepository(entities.Building);
-        const roomRepository = dataSource.getRepository(entities.Room);
+        const structureRepository = dataSource.getRepository(entities.Structure);
         const itemTypeRepository = dataSource.getRepository(entities.ItemType);
         const itemRepository = dataSource.getRepository(entities.Item);
 
-
-        const school = schoolRepository.create({
-            name : "IMT Atlantique"
-        })
+        // SCHOOL
+        const school = structureRepository.create({
+            name: "IMT Atlantique",
+            type: entities.StructureTypeEnum.SCHOOL,
+        });
+        const school2 = structureRepository.create({
+            name: "IMT Nord Europe",
+            type: entities.StructureTypeEnum.SCHOOL,
+        });
+        await structureRepository.save([school, school2]);
         
-        await schoolRepository.save(school);
-
-        const buildingA = buildingRepository.create({
+        // BUILDING
+        const buildingA = structureRepository.create({
             name: "Bâtiment A",
+            type: entities.StructureTypeEnum.BUILDING,
             parent: school,
         });
-
-        const buildingB = buildingRepository.create({
+        const buildingB = structureRepository.create({
             name: "Bâtiment B",
+            type: entities.StructureTypeEnum.BUILDING,
             parent: school,
         });
+        await structureRepository.save([buildingA, buildingB]);
 
-        await buildingRepository.save([buildingA, buildingB]);
-
-        const roomA1 = roomRepository.create({ name: "Salle A101", parent: buildingA });
-        const roomA2 = roomRepository.create({ name: "Salle A102", parent: buildingA });
-
-        const roomB1 = roomRepository.create({ name: "Salle B201", parent: buildingB });
-        const roomB2 = roomRepository.create({ name: "Salle B202", parent: buildingB });
-
-        await roomRepository.save([roomA1, roomA2, roomB1, roomB2]);
-
+        // ROOM
+        const roomA1 = structureRepository.create({
+            name: "Salle A101",
+            type: entities.StructureTypeEnum.ROOM,
+            parent: buildingA,
+        });
+        const roomA2 = structureRepository.create({
+            name: "Salle A102",
+            type: entities.StructureTypeEnum.ROOM,
+            parent: buildingA,
+        });
+        const roomB1 = structureRepository.create({
+            name: "Salle B201",
+            type: entities.StructureTypeEnum.ROOM,
+            parent: buildingB,
+        });
+        const roomB2 = structureRepository.create({
+            name: "Salle B202",
+            type: entities.StructureTypeEnum.ROOM,
+            parent: buildingB,
+        });
+        await structureRepository.save([roomA1, roomA2, roomB1, roomB2]);
 
         const chairType = itemTypeRepository.create({ name: "Chaise", description: "Objet pour s’asseoir" });
         const tableType = itemTypeRepository.create({ name: "Table", description: "Surface pour poser des choses" });
