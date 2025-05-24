@@ -49,11 +49,16 @@ li {
 
 
 body {
-    // TODO : Add a background color
     overflow-x: hidden;
     min-height: 100vh;
+    background: colors.$gray;
 }
 
 p {
     font-family: fonts.$inter-font;
+}
+
+#root {
+    height: 100vh;
+    width: 100%;
 }

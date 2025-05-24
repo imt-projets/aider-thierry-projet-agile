@@ -1,0 +1,24 @@
+@use '../theme/colors';
+@use '../theme/fonts';
+
+#treeView--container {
+    max-width: 320px;
+    height: 100%;
+
+    background-color: colors.$white;
+
+    ul {
+
+
+
+        li {
+            font-size: 12px;
+            p {
+                font-family: fonts.$roboto-font;
+                font-weight: 600;
+            }
+        }
+    }
+
+
+}
