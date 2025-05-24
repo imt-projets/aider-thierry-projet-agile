@@ -10,9 +10,32 @@ export const getHierarchy = async (
     repository : Repository<entities.School>
 ) => {
 
+    // TODO SPRINT 2: Add icon in relationnal entity, and then update this model:
     const hierarchy = await repository.find({
-        relations : ["buildings", "buildings.rooms", "buildings.rooms.items"]
-    })
+        select: {
+            id: true,
+            name: true,
+            buildings: {
+                id: true,
+                name: true,
+                rooms: {
+                    id: true,
+                    name: true,
+                    items: {
+                        id: true,
+                        name: true
+                    }
+                }
+            }
+        },
+        relations: {
+            buildings: {
+                rooms: {
+                    items: true
+                }
+            }
+        }
+    });
 
     ReplyHelper.send(reply, enums.StatusCode.OK, hierarchy);
 }
