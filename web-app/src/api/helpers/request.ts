@@ -63,8 +63,8 @@ export class RequestHelper {
 
     }
 
-    static get = async (url : URL | string, options : RequestInit = defaultOptions) => {
-        return await this.make(url, "GET", null, options)
+    static get = async (url : URL | string) => {
+        return await this.make(url, "GET")
     }
 
     static post = async (url : URL | string, data?: unknown, options : RequestInit = defaultOptions) => {
