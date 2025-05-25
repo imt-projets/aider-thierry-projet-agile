@@ -79,7 +79,7 @@ export class HierarchySeeder extends Seeder {
                 room: roomA1,
                 itemType: chairType,
                 suppliers: [],
-                serialNumber: "123456",
+                serialNumber: "456123",
                 inventoryNumber: "24324",
                 orderNumber: "349843",
                 model: "ADDE"
@@ -109,7 +109,7 @@ export class HierarchySeeder extends Seeder {
                 room: roomB2,
                 itemType: projectorType,
                 suppliers: [],
-                serialNumber: "123456",
+                serialNumber: "123465",
                 inventoryNumber: "24326",
                 orderNumber: "349811",
                 model: "EB-X41"
