@@ -10,7 +10,12 @@
       "experimentalDecorators": true,
       "moduleResolution": "Node",
       "esModuleInterop": true,
-      "emitDecoratorMetadata": true
+      "emitDecoratorMetadata": true,
+      "typeRoots": ["./src/interfaces/modules"],
+      "types": ["fastify"],
+      "paths": {
+        "@/*": ["./src/*"]
+      }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules/", "tests/", "dist/"]

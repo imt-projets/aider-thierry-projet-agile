@@ -6,29 +6,37 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run clean && npm run build && node dist/index.js",
-    "build": "tsc",
+    "build": "tsc && tsc-alias -p tsconfig.json",
     "clean": "rimraf dist",
     "watch": "tsc -w",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "seed:run": "ts-node -r tsconfig-paths/register ./src/seeders/seed.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/module-alias": "2.0.4",
     "@types/node": "^22.15.21",
+    "@types/yargs": "^17.0.33",
     "nodemon": "^3.1.10",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "@fastify/autoload": "^6.3.0",
     "@fastify/cors": "^11.0.1",
+    "@jorgebodega/typeorm-seeding": "^7.1.0",
     "class-validator": "^0.14.2",
     "dotenv": "^16.5.0",
     "fastify": "^5.3.3",
+    "module-alias": "^2.2.3",
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
-    "typeorm": "^0.3.24"
+    "typeorm": "^0.3.24",
+    "typeorm-extension": "^3.7.1"
   }
 }
