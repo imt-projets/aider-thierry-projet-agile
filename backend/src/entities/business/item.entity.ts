@@ -32,9 +32,6 @@ export class Item extends EntityBase {
     endOfLifeDate!: Date;
 
     @Column()
-    warrantyEndDate!: Date;
-
-    @Column()
     brand!: string;
 
     @Column()

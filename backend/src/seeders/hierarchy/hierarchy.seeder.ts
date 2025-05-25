@@ -79,6 +79,10 @@ export class HierarchySeeder extends Seeder {
                 room: roomA1,
                 itemType: chairType,
                 suppliers: [],
+                serialNumber: "123456",
+                inventoryNumber: "24324",
+                orderNumber: "349843",
+                model: "ADDE"
             }),
             itemRepository.create({
                 name: "Table",
@@ -90,6 +94,10 @@ export class HierarchySeeder extends Seeder {
                 room: roomA1,
                 itemType: tableType,
                 suppliers: [],
+                serialNumber: "123456",
+                inventoryNumber: "24325",
+                orderNumber: "349822",
+                model: "LACK"
             }),
             itemRepository.create({
                 name: "Projecteur",
@@ -101,6 +109,11 @@ export class HierarchySeeder extends Seeder {
                 room: roomB2,
                 itemType: projectorType,
                 suppliers: [],
+                serialNumber: "123456",
+                inventoryNumber: "24326",
+                orderNumber: "349811",
+                model: "EB-X41"
+                
             }),
         ];
 
