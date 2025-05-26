@@ -15,7 +15,7 @@ type ServiceMethods<T extends ObjectLiteral> = {
 	[key: string]: (req: FastifyRequest, res: FastifyReply, repository: Repository<T>) => Promise<any>;
 };
 
-interface CrudPluginOptions<Entity extends ObjectLiteral, Service extends  ServiceMethods<Entity>> {
+interface RouterOptions<Entity extends ObjectLiteral, Service extends  ServiceMethods<Entity>> {
   entity: EntityTarget<Entity>;
   service: Service;
   routes: RoutesConfig[];
@@ -51,7 +51,7 @@ export const createRouterConfig = <
 	entity,
 	service,
 	routes,
-}: CrudPluginOptions<T,S> 
+}: RouterOptions<T,S> 
 ): FastifyPluginAsync => {
 
   return async (fastify: FastifyInstance) => {
