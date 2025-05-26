@@ -1,1 +1,1 @@
-export * from './structure.service';
+export * as Structure from './structure.service';
