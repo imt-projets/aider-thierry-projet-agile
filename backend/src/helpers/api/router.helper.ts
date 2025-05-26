@@ -1,5 +1,5 @@
 import { entities } from "@/entities";
-import { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
+import { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest, preHandlerHookHandler } from "fastify";
 import { EntityTarget, ObjectLiteral, Repository } from "typeorm";
 import { routeHandler } from "./routes.helper";
 
@@ -9,6 +9,7 @@ interface RoutesConfig {
     method: MethodType;
     url : URL | string;
     handlerName : string;
+  	preHandler? : preHandlerHookHandler | preHandlerHookHandler[]
 }
 
 type ServiceMethods<T extends ObjectLiteral> = {
@@ -68,6 +69,7 @@ export const createRouterConfig = <
       	fastify.route({
 			method: route.method,
 			url: route.url.toString(),
+			...(route.preHandler && { preHandler: route.preHandler }),
 			handler: routeHandler((req, res) => handlerFn(req, res, repository)),
 		});
     }
