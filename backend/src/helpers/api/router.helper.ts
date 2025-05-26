@@ -12,8 +12,13 @@ interface RoutesConfig {
   	preHandler? : preHandlerHookHandler | preHandlerHookHandler[]
 }
 
+
 type ServiceMethods<T extends ObjectLiteral> = {
-	[key: string]: (req: FastifyRequest, res: FastifyReply, repository: Repository<T>) => Promise<any>;
+	[key: string]: (
+		req: FastifyRequest<any>,
+		res: FastifyReply,
+		repository: Repository<T>
+	) => Promise<any>;
 };
 
 interface RouterOptions<Entity extends ObjectLiteral, Service extends  ServiceMethods<Entity>> {

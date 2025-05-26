@@ -15,17 +15,26 @@ export const getItems = async (
     ReplyHelper.send(reply, enums.StatusCode.OK, items);
 }
 
+
+interface ItemByIdParams {
+    id : string;
+}
+
 export const getItemById = async (
-    request: FastifyRequest,
+    request: FastifyRequest<{ Params : ItemByIdParams}>,
     reply: FastifyReply,
     repository: Repository<entities.Item>
 ) => {
-    const id = (request.params as any).id;
+
+    const { id } = request.params;
+
+    if (!id) 
+        return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Id is required to find an item")
+
     const item = await repository.findOne({ where: { id } });
 
-    if (!item) {
-        return ReplyHelper.send(reply, enums.StatusCode.NOT_FOUND, { message: "Item not found" });
-    }
-
+    if (!item) 
+        return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "Item not found" );
+    
     ReplyHelper.send(reply, enums.StatusCode.OK, item);
 }
