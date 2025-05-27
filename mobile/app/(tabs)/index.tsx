@@ -1,29 +1,25 @@
-import { StyleSheet } from 'react-native';
-import { Text, View } from '../../components/Themed';
+// pages/index.tsx
+import React from 'react';
+import { View } from 'react-native';
+import { useRouter } from 'expo-router';
+import Header from '@/components/Header';
+import Button from '@/components/Button';
+import { layout } from '@/styles/common';
 
-export default function TabOneScreen() {
+export default function HomeScreen() {
+  const router = useRouter();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Accueil</Text>
-      <View style={styles.separator} />
-      <Text>Bienvenue sur votre application</Text>
+    <View style={[layout.container, { justifyContent: 'space-between', alignItems: 'center', paddingBottom : 60}]}>
+      <Header title="IMT'ventaire" />
+      <View style={{ marginTop: 40 }}>
+        <Button
+          title="Scanner un code barre"
+          onPress={() => router.push('/scan-room')}
+          type="primary"
+          style={{ paddingHorizontal: 30 }}
+        />
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
