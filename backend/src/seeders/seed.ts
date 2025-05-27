@@ -2,13 +2,15 @@ import { environment, getDatabaseOptions } from "@/config";
 import { DataSource, DataSourceOptions } from "typeorm";
 import { runSeeders, SeederOptions } from 'typeorm-extension'
 import { HierarchySeeder } from "./hierarchy";
+import { UserSeeder } from "./user"; 
+import { User } from "@/services/user";
 
 
 const initializeSeeder = async () => {
 
     const options : DataSourceOptions & SeederOptions = {
         ...getDatabaseOptions(environment),
-        seeds: [HierarchySeeder]
+        seeds: [HierarchySeeder, UserSeeder],
     }
 
     const dataSource = await new DataSource(
