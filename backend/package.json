@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run clean && npm run build && node dist/index.js",
     "build": "tsc && tsc-alias -p tsconfig.json",
     "clean": "rimraf dist",
     "watch": "tsc -w",
     "dev": "nodemon",
-    "seed:run": "ts-node -r tsconfig-paths/register ./src/seeders/seed.ts"
+    "seed:run": "ts-node -r tsconfig-paths/register ./src/seeders/seed.ts",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "test:ui" : "vitest --ui"
   },
   "keywords": [],
   "author": "",
@@ -19,10 +21,13 @@
     "@types/module-alias": "2.0.4",
     "@types/node": "^22.15.21",
     "@types/yargs": "^17.0.33",
+    "@vitest/coverage-v8": "^3.1.4",
+    "@vitest/ui": "^3.1.4",
     "nodemon": "^3.1.10",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
   },
   "dependencies": {
     "@fastify/autoload": "^6.3.0",
@@ -37,6 +42,7 @@
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typeorm": "^0.3.24",
-    "typeorm-extension": "^3.7.1"
+    "typeorm-extension": "^3.7.1",
+    "unplugin-swc": "^1.5.3"
   }
 }
