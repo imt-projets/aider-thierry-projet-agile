@@ -31,10 +31,13 @@ const [permission, requestPermission] = useCameraPermissions();
 
   useEffect(() => {
     setScanned(false);
-    if (!permission?.granted) {
-        requestPermission();
-      }
   }, [resetTrigger]);
+
+    useEffect(() => {
+        if(!permission?.granted) {
+            requestPermission();
+        }
+    }, [])
 
   const handleBarCodeScanned = ({ data }: { data: string }) => {
     if (!scanned) {
