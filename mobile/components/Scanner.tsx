@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Vibration } from 'react-native';
-import { CameraView } from 'expo-camera';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Haptics from 'expo-haptics';
 
 interface ScannerProps {
@@ -26,10 +26,14 @@ const Scanner: React.FC<ScannerProps> = ({
   isActive,
   step,
 }) => {
+const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
 
   useEffect(() => {
     setScanned(false);
+    if (!permission?.granted) {
+        requestPermission();
+      }
   }, [resetTrigger]);
 
   const handleBarCodeScanned = ({ data }: { data: string }) => {
