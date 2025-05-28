@@ -33,4 +33,4 @@ const validateEnv = (): Interfaces.Environment => {
 };
 
 const environment = validateEnv();
-export { environment };
+export { environment, validateEnv };
