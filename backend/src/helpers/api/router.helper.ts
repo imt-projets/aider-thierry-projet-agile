@@ -9,7 +9,16 @@ interface RoutesConfig {
     method: MethodType;
     url : URL | string;
     handlerName : string;
-  	preHandler? : preHandlerHookHandler | preHandlerHookHandler[]
+  	preHandler? : preHandlerHookHandler | preHandlerHookHandler[],
+	schema?: {
+        body?: object;
+        querystring?: object;
+        params?: object;
+        headers?: object;
+        response?: {
+            [statusCode: number]: object;
+        };
+    };
 }
 
 
@@ -75,6 +84,7 @@ export const createRouterConfig = <
 			method: route.method,
 			url: route.url.toString(),
 			...(route.preHandler && { preHandler: route.preHandler }),
+			...(route.schema && { schema: route.schema }),
 			handler: routeHandler((req, res) => handlerFn(req, res, repository)),
 		});
     }
