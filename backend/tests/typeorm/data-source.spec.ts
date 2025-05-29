@@ -3,32 +3,32 @@ import { DataSource } from "typeorm";
 import { Interfaces } from "../../src/interfaces";
 
 jest.mock('typeorm', () => {
-  return {
-    DataSource: jest.fn().mockImplementation(() => ({
-      initialize: jest.fn().mockResolvedValue("mockDataSourceInstance"),
-    })),
-  };
+	return {
+		DataSource: jest.fn().mockImplementation(() => ({
+			initialize: jest.fn().mockResolvedValue("mockDataSourceInstance"),
+		})),
+	};
 });
 
 jest.mock("../../src/config/typeorm/options", () => ({
-  getDatabaseOptions: jest.fn(() => ({
-    type: "postgres",
-    host: "localhost",
-    port: 5432,
-    username: "user",
-    password: "pass",
-    database: "testdb",
-    synchronize: true,
-    logging: true,
-    entities: [],
-    subscribers: [],
-    migrations: [],
-  })),
+	getDatabaseOptions: jest.fn(() => ({
+		type: "postgres",
+		host: "localhost",
+		port: 5432,
+		username: "user",
+		password: "pass",
+		database: "testdb",
+		synchronize: true,
+		logging: true,
+		entities: [],
+		subscribers: [],
+		migrations: [],
+	})),
 }));
 
 describe("DatabaseConfiguration", () => {
-  let consoleLogSpy: ReturnType<typeof jest.spyOn>;
-  let consoleErrorSpy: ReturnType<typeof jest.spyOn>;
+	let consoleLogSpy: ReturnType<typeof jest.spyOn>;
+	let consoleErrorSpy: ReturnType<typeof jest.spyOn>;
 
     beforeEach(() => {
         consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});

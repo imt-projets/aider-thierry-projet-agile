@@ -16,7 +16,7 @@ export const getItems = async (
 }
 
 
-interface ItemByIdParams {
+export interface ItemByIdParams {
     id : string;
 }
 
