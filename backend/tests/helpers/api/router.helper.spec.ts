@@ -1,13 +1,12 @@
-import { createRouterConfig } from "@/helpers";
+import { createRouterConfig } from "../../../src/helpers";
 import { FastifyInstance } from "fastify";
-import { describe, it, expect, vi } from "vitest";
 
 describe("createRouterConfig", () => {
     
     it("should register routes with correct handler and repository", async () => {
         const fakeRepository = {};
 
-        const dummyHandler = vi.fn(async (req, res, repo) => {
+        const dummyHandler = jest.fn(async (req, res, repo) => {
             expect(repo).toBe(fakeRepository);
             return "handler result";
         });
@@ -25,9 +24,9 @@ describe("createRouterConfig", () => {
         });
 
         const fastifyMock = {
-            hasDecorator: vi.fn(() => true),
-            orm: { getRepository: vi.fn(() => fakeRepository) },
-            route: vi.fn(),
+            hasDecorator: jest.fn(() => true),
+            orm: { getRepository: jest.fn(() => fakeRepository) },
+            route: jest.fn(),
         };
 
         await plugin(fastifyMock as unknown as FastifyInstance, {});
@@ -58,7 +57,7 @@ describe("createRouterConfig", () => {
         });
 
         const fastifyMock = {
-            hasDecorator: vi.fn(() => false),
+            hasDecorator: jest.fn(() => false),
         };
 
         await expect(

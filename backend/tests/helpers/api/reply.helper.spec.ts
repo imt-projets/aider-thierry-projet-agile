@@ -1,11 +1,10 @@
-import { describe, it, expect, vi } from "vitest";
-import { ReplyHelper } from "./reply.helper";
-import { enums } from "@/enums";
+import { ReplyHelper } from "../../../src/helpers/api/reply.helper";
+import { enums } from "../../../src/enums";
 import { FastifyReply } from "fastify";
 
 const reply = {
-    send: vi.fn().mockReturnThis(),
-    status: vi.fn()
+    send: jest.fn().mockReturnThis(),
+    status: jest.fn()
 } as unknown as FastifyReply
 
 describe("ReplyHelper", () => {
