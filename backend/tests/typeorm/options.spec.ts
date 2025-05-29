@@ -1,10 +1,9 @@
-import { getDatabaseOptions } from "./options";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { Interfaces } from "@/interfaces";
+import { getDatabaseOptions } from "../../src/config/typeorm/options";
+import { Interfaces } from "../../src/interfaces";
 
-vi.mock('./data-options', () => {
+jest.mock('../../src/config/typeorm/data-options', () => {
     return {
-        getDataOptionsPath: vi.fn(() => ({
+        getDataOptionsPath: jest.fn(() => ({
             entitiesPath: 'mock/entities',
             migrationsPath: 'mock/migrations',
         }))

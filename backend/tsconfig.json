@@ -11,13 +11,12 @@
       "moduleResolution": "Node",
       "esModuleInterop": true,
       "emitDecoratorMetadata": true,
-      "typeRoots": ["./src/interfaces/modules"],
-      "types": ["fastify"],
+      "types": ["jest", "node", "fastify"],
+      "typeRoots": ["./src/interfaces/modules", "node_modules/@types"],
       "paths": {
-        "@/*": ["./src/*"]
+        "@/*": ["src/*"]
       }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules/", "tests/", "dist/"]
-  // "src/**/*.spec.ts"
+  "exclude": ["node_modules/", "dist/"]
 }

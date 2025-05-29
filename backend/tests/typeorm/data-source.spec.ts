@@ -1,18 +1,17 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { DatabaseConfiguration } from "./data-source";
+import { DatabaseConfiguration } from "../../src/config/typeorm/data-source";
 import { DataSource } from "typeorm";
-import { Interfaces } from "@/interfaces";
+import { Interfaces } from "../../src/interfaces";
 
-vi.mock('typeorm', () => {
+jest.mock('typeorm', () => {
   return {
-    DataSource: vi.fn().mockImplementation(() => ({
-      initialize: vi.fn().mockResolvedValue("mockDataSourceInstance"),
+    DataSource: jest.fn().mockImplementation(() => ({
+      initialize: jest.fn().mockResolvedValue("mockDataSourceInstance"),
     })),
   };
 });
 
-vi.mock("./options", () => ({
-  getDatabaseOptions: vi.fn(() => ({
+jest.mock("../../src/config/typeorm/options", () => ({
+  getDatabaseOptions: jest.fn(() => ({
     type: "postgres",
     host: "localhost",
     port: 5432,
@@ -28,16 +27,16 @@ vi.mock("./options", () => ({
 }));
 
 describe("DatabaseConfiguration", () => {
-  let consoleLogSpy: ReturnType<typeof vi.spyOn>;
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+  let consoleLogSpy: ReturnType<typeof jest.spyOn>;
+  let consoleErrorSpy: ReturnType<typeof jest.spyOn>;
 
     beforeEach(() => {
-        consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-        consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+        consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     });
 
     afterEach(() => {
-        vi.restoreAllMocks();
+        jest.restoreAllMocks();
     });
 
     const mockEnv: Interfaces.Environment = {

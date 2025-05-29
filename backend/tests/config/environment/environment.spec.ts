@@ -1,6 +1,5 @@
-import { Interfaces } from "@/interfaces";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { validateEnv } from ".";
+import { Interfaces } from "../../../src/interfaces";
+import { validateEnv } from "../../../src/config";
 
 describe("validateEnv", () => {
 
