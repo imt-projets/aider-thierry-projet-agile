@@ -32,6 +32,21 @@ export const getSchools = async (
     ReplyHelper.send(reply, enums.StatusCode.OK, schools);
 }
 
+export const getRooms = async (
+    _ : FastifyRequest, 
+    reply : FastifyReply, 
+    repositories: { primary: Repository<entities.Structure> }
+) => {
+    const structureRepository = repositories.primary
+
+    const rooms = await getStructureFromType(
+        structureRepository,
+        entities.StructureTypeEnum.ROOM
+    );
+
+    ReplyHelper.send(reply, enums.StatusCode.OK, rooms);
+}
+
 export interface RoomFromInventoryIdParams {
     id : string;
 }
@@ -104,7 +119,7 @@ export const editItemsInRoomFromInventoryId = async (
     const { ids: itemIds } = request.body;
 
     const items = await itemRepository.find({
-        where: { id: In(itemIds) }
+        where: { inventoryNumber: In(itemIds) }
     });
 
     if (items.length !== itemIds.length) {
