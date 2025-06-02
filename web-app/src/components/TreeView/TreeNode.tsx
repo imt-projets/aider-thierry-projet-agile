@@ -4,7 +4,7 @@ import { Room } from "../Icons/Room";
 import { School } from "../Icons/School";
 import { TreeList } from "./TreeList";
 import type { Node } from "./TreeView";
-
+import { useAppContext } from "@/context/AppContext";
 const iconMap = new Map<string, React.ReactNode>([
     ["school", <School style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
     ["building", <Building style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
@@ -25,6 +25,7 @@ export const TreeNode = ({
     openNodes,
     toggleNode,
 }: TreeNodeProps) => {
+    const { selectElementInHierarchy } = useAppContext();
     return (
         <li className={node.type}>
             <div
@@ -47,6 +48,7 @@ export const TreeNode = ({
                             key={item.id}
                             className="object"
                             style={{ paddingLeft: `${(depth + 1) * 25}px` }}
+                            onClick={() => selectElementInHierarchy(item.id)}
                         >
                             {iconMap.get("object")}
                             <span>{item.name}</span>
