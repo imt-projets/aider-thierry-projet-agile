@@ -50,7 +50,9 @@ describe("getHierarchy", () => {
     });
 
     it("should fetch hierarchy and send it in the response", async () => {
-        await getHierarchy(mockRequest, mockReply, mockRepository as Repository<entities.Structure>);
+        await getHierarchy(mockRequest, mockReply, {
+            primary: mockRepository as Repository<entities.Structure>
+        });
 
         expect(mockRepository.find).toHaveBeenCalledWith({
             where: { type: entities.StructureTypeEnum.SCHOOL },

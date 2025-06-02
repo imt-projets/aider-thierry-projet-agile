@@ -7,10 +7,13 @@ import { Repository } from "typeorm";
 export const getItems = async (
     _ : FastifyRequest, 
     reply : FastifyReply, 
-    repository : Repository<entities.Item>
+    repositories: {
+        primary: Repository<entities.Item>,
+    }
 ) => {
+    const itemRepository = repositories.primary;
 
-    const items = await repository.find({})
+    const items = await itemRepository.find({})
 
     ReplyHelper.send(reply, enums.StatusCode.OK, items);
 }
@@ -23,15 +26,17 @@ export interface ItemByIdParams {
 export const getItemById = async (
     request: FastifyRequest<{ Params : ItemByIdParams}>,
     reply: FastifyReply,
-    repository: Repository<entities.Item>
+    repositories: {
+        primary: Repository<entities.Item>,
+    }
 ) => {
-
+    const itemRepository = repositories.primary;
     const { id } = request.params;
 
     if (!id) 
         return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Id is required to find an item")
 
-    const item = await repository.findOne({ where: { id } });
+    const item = await itemRepository.findOne({ where: { id } });
 
     if (!item) 
         return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "Item not found" );

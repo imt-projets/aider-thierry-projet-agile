@@ -9,8 +9,8 @@ interface RoutesConfig {
     method: MethodType;
     url : URL | string;
     handlerName : string;
-  	preHandler? : preHandlerHookHandler | preHandlerHookHandler[],
-	schema?: {
+    preHandler? : preHandlerHookHandler | preHandlerHookHandler[],
+    schema?: {
         body?: object;
         querystring?: object;
         params?: object;
@@ -23,17 +23,26 @@ interface RoutesConfig {
 
 
 type ServiceMethods<T extends ObjectLiteral> = {
-	[key: string]: (
+  	[key: string]: (
 		req: FastifyRequest<any>,
 		res: FastifyReply,
-		repository: Repository<T>
-	) => Promise<any>;
+		repositories: {
+			primary: Repository<T>;
+			[key: string]: Repository<any>;
+		}
+  	) => Promise<any>;
 };
 
-interface RouterOptions<Entity extends ObjectLiteral, Service extends  ServiceMethods<Entity>> {
-  entity: EntityTarget<Entity>;
-  service: Service;
-  routes: RoutesConfig[];
+interface RouterOptions<
+  	Entity extends ObjectLiteral, 
+  	Service = ServiceMethods<Entity>
+> {
+	entity: EntityTarget<Entity>;
+	service: Service;
+	routes: RoutesConfig[];
+	extraRepositories?: { 
+		[key: string]: EntityTarget<any> 
+	};
 }
 
 /**
@@ -60,33 +69,43 @@ interface RouterOptions<Entity extends ObjectLiteral, Service extends  ServiceMe
  * })
  */
 export const createRouterConfig = <
-	T extends ObjectLiteral, 
-	S extends ServiceMethods<T>
+	T extends ObjectLiteral,
+	S = ServiceMethods<T>
 >({
 	entity,
 	service,
 	routes,
-}: RouterOptions<T,S> 
-): FastifyPluginAsync => {
+	extraRepositories = {},
+}: RouterOptions<T, S>): FastifyPluginAsync => {
+	return async (fastify: FastifyInstance) => {
+		if (!fastify.hasDecorator("orm")) {
+		throw new Error("ORM is not registered!");
+		}
 
-  return async (fastify: FastifyInstance) => {
+		const primaryRepository: Repository<T> = fastify.orm.getRepository(entity);
 
-    if (!fastify.hasDecorator("orm")) {
-    	throw new Error("ORM is not registered!");
-    }
-    
-    const repository: Repository<T> = fastify.orm.getRepository(entity);
+		const repositories = {
+			primary: primaryRepository,
+			...Object.fromEntries(
+				Object.entries(extraRepositories).map(([key, entity]) => [
+					key,
+					fastify.orm.getRepository(entity)
+				])
+			)
+		};
 
-    for (const route of routes) {
-     	const handlerFn = service[route.handlerName];
+		for (const route of routes) {
+			const handlerFn = (service as ServiceMethods<T>)[route.handlerName];
 
-      	fastify.route({
+		fastify.route({
 			method: route.method,
 			url: route.url.toString(),
 			...(route.preHandler && { preHandler: route.preHandler }),
 			...(route.schema && { schema: route.schema }),
-			handler: routeHandler((req, res) => handlerFn(req, res, repository)),
+			handler: routeHandler(
+				(req, res) => handlerFn(req, res, repositories)
+			),
 		});
-    }
-  };
+		}
+	};
 };
