@@ -10,6 +10,7 @@ interface ScannerContextType {
   isScannerActive: boolean;
   setIsScannerActive: (active: boolean) => void;
   restartScan: () => void;
+  handleSendInventory: () => void;
   mode: 'inventoryRoom' | 'addingObject' | null;
   setMode: (mode: 'inventoryRoom' | 'addingObject' | null) => void;
 }
@@ -24,7 +25,16 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
 
   const addScannedCode = (code: string) => {
     setScannedCodes(prev => (prev.includes(code) ? prev : [...prev, code]));
+    
   };
+
+  const handleSendInventory = () => {
+    const inventory = {
+      roomCode: roomCode,
+      scannedCodes: scannedCodes
+    }
+    restartScan()
+  }
 
   const resetScannedCodes = () => setScannedCodes([]);
   const setRoomCode = (code: string) => setRoomCodeState(code);
@@ -47,7 +57,8 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
         setIsScannerActive,
         restartScan,
         mode,
-        setMode
+        setMode,
+        handleSendInventory,
       }}
     >
       {children}
