@@ -17,9 +17,7 @@ export default function ScanRoomScreen() {
     setIsScannerActive(true);
   }, []);
 
-  const handleRoomScan = (code: string) => {
-    setRoomCode(code);
-  }
+  const handleRoomScan = (code: string) => setRoomCode(code);
 
   const handleAnnuler = () => {
     resetRoomCode();
