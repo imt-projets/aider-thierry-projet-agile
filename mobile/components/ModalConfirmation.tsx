@@ -10,14 +10,14 @@ interface ModalConfirmationProps {
 }
 
 const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ modalVisible, setModalVisible, setIsScannerActive }) => {
-  const { scannedCodes, restartScan } = useScanner();
+  const { scannedCodes, restartScan, handleSendInventory } = useScanner();
   const router = useRouter();
 
   const handleModalClosed = (confirmed: boolean) => {
     setModalVisible(false);
     setIsScannerActive(!confirmed);
     if (confirmed) {
-      restartScan();
+      handleSendInventory();
       router.push('/');
     }
   };
