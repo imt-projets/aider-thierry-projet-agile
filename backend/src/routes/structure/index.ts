@@ -22,7 +22,7 @@ const structure = createRouterConfig({
     {
       handlerName: "getRoomFromInventoryId",
       method: "GET",
-      url: '/room/:id'
+      url: '/room/:name'
     },
     {
       handlerName: "editItemsInRoomFromInventoryId",
