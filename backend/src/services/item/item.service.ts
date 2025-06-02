@@ -43,3 +43,52 @@ export const getItemById = async (
     
     ReplyHelper.send(reply, enums.StatusCode.OK, item);
 }
+
+export interface UpdateItemRoomBody {
+    id: entities.Structure["id"];
+}
+
+export const updateItemRoom = async (
+    request: FastifyRequest<{ 
+        Params : ItemByIdParams,
+        Body: UpdateItemRoomBody
+    }>,
+    reply: FastifyReply,
+    repositories: {
+        primary: Repository<entities.Item>,
+        structure: Repository<entities.Structure>
+    } 
+) => {
+    const itemRepository = repositories.primary;
+    const structureRepository = repositories.structure;
+
+    const { id } = request.params;
+    const { id: roomId } = request.body;
+
+    if (!id) 
+        return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Id is required to find an item")
+
+    if (!roomId) {
+        return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Room ID is required.");
+    }
+
+    const item = await itemRepository.findOne({ where: { id } });
+
+    if (!item) 
+        return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "Item not found" );
+    
+    const room = await structureRepository.findOne({
+        where: { id: roomId }   
+    })
+      
+    if (!room) {
+        return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "Room not found.");
+    }
+
+    item.room = room;
+
+    const updatedItem = await itemRepository.save(item);
+
+    return ReplyHelper.send(reply, enums.StatusCode.OK, updatedItem);
+
+}

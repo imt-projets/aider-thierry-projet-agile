@@ -5,6 +5,9 @@ import schema from "@/schemas/schema";
 
 const item = createRouterConfig({
     entity: entities.Item,
+    extraRepositories: {
+        structure: entities.Structure
+    },
     routes: [
         {
             handlerName: "getItems",
@@ -17,6 +20,11 @@ const item = createRouterConfig({
             method: "GET",
             url: '/:id',
             schema: schema.swagger.items.getById
+        },
+        {
+            handlerName: 'updateItemRoom',
+            method: 'PUT',
+            url: '/:id/room'
         }
     ],
     service: services.Item
