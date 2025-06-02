@@ -1,7 +1,7 @@
 export const PathBarView = () => {
     return (
         <div id="path-bar--container">
-            <h1>Path view</h1>
+            <h4>path {'>'} to {'>'} object</h4>
         </div>
     );
 }

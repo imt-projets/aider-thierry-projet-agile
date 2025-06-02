@@ -3,7 +3,7 @@ import type { TreeViewDTO } from "@/dto";
 import { TreeViewSchema } from "@/dto";
 import { useFetch } from "@/hooks";
 import { useCallback, useEffect, useState } from "react";
-import { ObjectView, PathBarView } from "./components";
+import { ObjectView, PathBarView, MenuView, HistoricView } from "./components";
 
 const Home = () => {
 
@@ -33,7 +33,11 @@ const Home = () => {
 
                 <div className="container--object-view">
                     <PathBarView />
-                    <ObjectView />
+                    <div className="container--form-view">
+                        <MenuView />
+                        <ObjectView />
+                        <HistoricView />
+                    </div>
                 </div>
             </div>
         </div>
