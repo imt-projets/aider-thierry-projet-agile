@@ -1,17 +1,26 @@
 import zodToJsonSchema from "zod-to-json-schema";
 import { ItemSchema } from "..";
+import { successResponseSchema } from "@/schemas/core/response.schema";
+import z from 'zod';
+import { defaultErrorSchema } from "@/schemas/core";
 
-const jsonSchema = zodToJsonSchema(ItemSchema, 'Item');
-const GetAllItems = jsonSchema.definitions?.Item || jsonSchema;
+const wrappedItemSchema = successResponseSchema(z.array(ItemSchema));
+const jsonSchema = zodToJsonSchema(wrappedItemSchema, 'SuccessResponse');
+const GetAllItems = jsonSchema.definitions?.SuccessResponse || jsonSchema;
 
-export const getItems = {
+const getItems = {
     tags: ['Items'],
     description: "Get all items",
     response : {
         200:  {
             description: 'Successfull response',
-            type: 'array',
-            items: GetAllItems
+            ...GetAllItems
+        },
+        500: {
+            description : 'Internal Server Error',
+            ...defaultErrorSchema
         }
     }
 }
+
+export { getItems };
