@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle, View } from 'react-native';
 
 interface ButtonProps {
   title: string;
@@ -7,15 +7,19 @@ interface ButtonProps {
   type?: 'primary' | 'danger' | 'outline' | 'success';
   style?: ViewStyle;
   textStyle?: TextStyle;
+  icon?: React.ReactNode;
 }
 
-const Button: React.FC<ButtonProps> = ({ title, onPress, type = 'primary', style, textStyle }) => {
+const Button: React.FC<ButtonProps> = ({ title, onPress, type = 'primary', style, textStyle, icon }) => {
   const baseStyle = [styles.button, styles[type], style];
   const textBaseStyle = [styles.text, styles[`${type}Text`], textStyle];
 
   return (
     <TouchableOpacity style={baseStyle} onPress={onPress}>
-      <Text style={textBaseStyle}>{title}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+        {icon && <View style={{ marginRight: 10 }}>{icon}</View>}
+        <Text style={textBaseStyle}>{title}</Text>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -42,16 +46,14 @@ const styles = StyleSheet.create({
   primary: { backgroundColor: '#1976D2' },
   danger: { backgroundColor: '#F44336' },
   success : {
-    flex: 1,
     backgroundColor: '#009B12',
-
   },
   outline: {
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#222',
   },
-  text: { fontSize: 16, fontWeight: 'bold' },
+  text: { fontSize: 22, fontWeight: 'bold' },
   primaryText: { color: '#fff' },
   dangerText: { color: '#fff' },
   outlineText: { color: '#222' },
