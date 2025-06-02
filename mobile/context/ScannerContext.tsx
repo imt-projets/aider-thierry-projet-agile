@@ -25,13 +25,45 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
     
   };
 
-  const handleSendInventory = () => {
-    const inventory = {
-      roomCode: roomCode,
-      scannedCodes: scannedCodes
+  const handleSendInventory = async () => {
+    try {
+      const roomResponse = await fetch(`http://localhost:3000/structure/room/${roomCode}`);
+  
+      if (!roomResponse.ok) {
+        console.error("Erreur lors de la récupération de la salle.");
+        return;
+      }
+  
+      const roomData = await roomResponse.json();
+      const roomId = roomData.id;
+  
+      if (!roomId) {
+        console.error("ID de salle non trouvé dans la réponse.");
+        return;
+      }
+  
+      const updateResponse = await fetch(`http://localhost:3000/structure/room/${roomId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          names: scannedCodes, 
+        }),
+      });
+  
+      if (!updateResponse.ok) {
+        console.error("Erreur lors de la mise à jour de l’inventaire.");
+        return;
+      }
+  
+      console.log("Inventaire envoyé avec succès !");
+      restartScan();
+    } catch (error) {
+      console.error("Erreur réseau ou interne :", error);
     }
-    restartScan()
-  }
+  };
+  
 
   const resetScannedCodes = () => setScannedCodes([]);
   const setRoomCode = (code: string) => setRoomCodeState(code);
