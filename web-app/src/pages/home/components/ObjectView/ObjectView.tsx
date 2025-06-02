@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { FaPen, FaSave } from "react-icons/fa";
-
+import { Object } from "../../../../components/Icons/Object"
 export const ObjectView = () => {
     const { selectedElement, isLoading, error } = useAppContext();
     const [isEditing, setIsEditing] = useState(false);
@@ -53,8 +53,7 @@ export const ObjectView = () => {
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <span style={{ fontSize: 28 }}>🧊</span>
-                    <h1 style={{ margin: 0 }}>OBJECT TITLE</h1>
+                <Object style={{ width: 28, height: 28, verticalAlign: "middle" }} />
                 </div>
                 <div style={{ display: 'flex', gap: 16 }}>
                     <button
