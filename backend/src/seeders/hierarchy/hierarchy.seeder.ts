@@ -21,12 +21,12 @@ export class HierarchySeeder extends Seeder {
         
         // BUILDING
         const buildingA = structureRepository.create({
-            name: "Bâtiment A",
+            name: "A",
             type: entities.StructureTypeEnum.BUILDING,
             parent: school,
         });
         const buildingB = structureRepository.create({
-            name: "Bâtiment B",
+            name: "B",
             type: entities.StructureTypeEnum.BUILDING,
             parent: school,
         });
@@ -34,22 +34,22 @@ export class HierarchySeeder extends Seeder {
 
         // ROOM
         const roomA1 = structureRepository.create({
-            name: "Salle A101",
+            name: "A101",
             type: entities.StructureTypeEnum.ROOM,
             parent: buildingA,
         });
         const roomA2 = structureRepository.create({
-            name: "Salle A102",
+            name: "A102",
             type: entities.StructureTypeEnum.ROOM,
             parent: buildingA,
         });
         const roomB1 = structureRepository.create({
-            name: "Salle B201",
+            name: "B201",
             type: entities.StructureTypeEnum.ROOM,
             parent: buildingB,
         });
         const roomB2 = structureRepository.create({
-            name: "Salle B202",
+            name: "B202",
             type: entities.StructureTypeEnum.ROOM,
             parent: buildingB,
         });
