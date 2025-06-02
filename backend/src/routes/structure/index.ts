@@ -15,6 +15,11 @@ const structure = createRouterConfig({
       url: '/schools'
     },
     {
+      handlerName: "getRooms",
+      method: "GET",
+      url: '/rooms'
+    },
+    {
       handlerName: "getRoomFromInventoryId",
       method: "GET",
       url: '/room/:id'

@@ -20,7 +20,7 @@ export const getItems = async (
 
 
 export interface ItemByIdParams {
-    id : string;
+    id : entities.Item["id"];
 }
 
 export const getItemById = async (
@@ -44,13 +44,17 @@ export const getItemById = async (
     ReplyHelper.send(reply, enums.StatusCode.OK, item);
 }
 
+export interface ItemByInventoryNumberParams {
+    inventoryNumber : entities.Item["inventoryNumber"];
+}
+
 export interface UpdateItemRoomBody {
     id: entities.Structure["id"];
 }
 
-export const updateItemRoom = async (
+export const updateItemRoomFromInventoryId = async (
     request: FastifyRequest<{ 
-        Params : ItemByIdParams,
+        Params : ItemByInventoryNumberParams,
         Body: UpdateItemRoomBody
     }>,
     reply: FastifyReply,
@@ -62,17 +66,17 @@ export const updateItemRoom = async (
     const itemRepository = repositories.primary;
     const structureRepository = repositories.structure;
 
-    const { id } = request.params;
+    const { inventoryNumber } = request.params;
     const { id: roomId } = request.body;
 
-    if (!id) 
-        return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Id is required to find an item")
+    if (!inventoryNumber) 
+        return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "inventoryNumber is required to update room item")
 
     if (!roomId) {
         return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Room ID is required.");
     }
 
-    const item = await itemRepository.findOne({ where: { id } });
+    const item = await itemRepository.findOne({ where: { inventoryNumber } });
 
     if (!item) 
         return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "Item not found" );

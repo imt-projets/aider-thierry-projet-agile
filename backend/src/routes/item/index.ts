@@ -22,9 +22,9 @@ const item = createRouterConfig({
             schema: schema.swagger.items.getById
         },
         {
-            handlerName: 'updateItemRoom',
+            handlerName: 'updateItemRoomFromInventoryId',
             method: 'PUT',
-            url: '/:id/room'
+            url: '/:inventoryNumber/room'
         }
     ],
     service: services.Item
