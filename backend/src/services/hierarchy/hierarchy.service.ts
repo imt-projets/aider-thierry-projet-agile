@@ -7,11 +7,13 @@ import { enums } from "@/enums";
 export const getHierarchy = async (
     request : FastifyRequest, 
     reply : FastifyReply, 
-    repository : Repository<entities.Structure>
+    repositories: {
+        primary: Repository<entities.Structure>,
+    }
 ) => {
-
+    const hierarchyRepository = repositories.primary;
     // TODO SPRINT 2: Add icon in relationnal entity, and then update this model:
-    const schools = await repository.find({
+    const schools = await hierarchyRepository.find({
         where: { type: entities.StructureTypeEnum.SCHOOL },
         select: {
             id: true,

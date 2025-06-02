@@ -40,7 +40,9 @@ describe("getSchools", () => {
             find: jest.fn().mockResolvedValue(mockSchools),
         };
 
-        await services.Structure.getSchools({} as FastifyRequest, mockReply, mockRepository as Repository<entities.Structure>);
+        await services.Structure.getSchools({} as FastifyRequest, mockReply, {
+            primary: mockRepository as Repository<entities.Structure>
+        });
 
         expect(mockRepository.find).toHaveBeenCalledWith({
             where: { type: entities.StructureTypeEnum.SCHOOL },

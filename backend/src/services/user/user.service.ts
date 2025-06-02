@@ -7,9 +7,13 @@ import { Repository } from "typeorm";
 export const getUsers = async (
     _: FastifyRequest,
     reply: FastifyReply,
-    repository: Repository<entities.User>
+    repositories: {
+        primary: Repository<entities.User>,
+    }
 ) => {
-    const users = await repository.find();
+    const userRepository = repositories.primary;
+
+    const users = await userRepository.find();
     ReplyHelper.send(reply, enums.StatusCode.OK, users);
 };
 
@@ -20,14 +24,17 @@ interface UserByIdParams {
 export const getUserById = async (
     request: FastifyRequest<{ Params: UserByIdParams }>,
     reply: FastifyReply,
-    repository: Repository<entities.User>
+    repositories: {
+        primary: Repository<entities.User>,
+    }
 ) => {
+    const userRepository = repositories.primary;
     const { id } = request.params;
 
     if (!id)
         return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Id is required to find a user");
 
-    const user = await repository.findOne({ where: { id } });
+    const user = await userRepository.findOne({ where: { id } });
 
     if (!user)
         return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "User not found");
@@ -38,17 +45,20 @@ export const getUserById = async (
 export const createUser = async (
     request: FastifyRequest,
     reply: FastifyReply,
-    repository: Repository<entities.User>
+    repositories: {
+        primary: Repository<entities.User>,
+    }
 ) => {
+    const userRepository = repositories.primary;
     const { firstname, lastname, email, password } = request.body as Partial<entities.User>;
 
     if (!firstname || !lastname || !email || !password)
         return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Missing required fields");
 
-    const user = repository.create({ firstname, lastname, email, password });
+    const user = userRepository.create({ firstname, lastname, email, password });
 
     try {
-        const savedUser = await repository.save(user);
+        const savedUser = await userRepository.save(user);
         ReplyHelper.send(reply, enums.StatusCode.CREATED, savedUser);
     } catch (err) {
         ReplyHelper.error(reply, enums.StatusCode.INTERNAL_SERVER_ERROR, "Error saving user");
@@ -58,16 +68,19 @@ export const createUser = async (
 export const updateUser = async (
     request: FastifyRequest<{ Params: UserByIdParams }>,
     reply: FastifyReply,
-    repository: Repository<entities.User>
+    repositories: {
+        primary: Repository<entities.User>,
+    }
 ) => {
+    const userRepository = repositories.primary;
     const { id } = request.params;
     const data = request.body as Partial<entities.User>;
 
     if (!id)
         return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Id is required");
 
-    await repository.update(id, data);
-    const updated = await repository.findOne({ where: { id } });
+    await userRepository.update(id, data);
+    const updated = await userRepository.findOne({ where: { id } });
 
     if (!updated)
         return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "User not found after update");
@@ -78,13 +91,16 @@ export const updateUser = async (
 export const deleteUser = async (
     request: FastifyRequest<{ Params: UserByIdParams }>,
     reply: FastifyReply,
-    repository: Repository<entities.User>
+    repositories: {
+        primary: Repository<entities.User>,
+    }
 ) => {
+    const userRepository = repositories.primary;
     const { id } = request.params;
 
     if (!id)
         return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Id is required");
 
-    await repository.delete(id);
+    await userRepository.delete(id);
     ReplyHelper.send(reply, enums.StatusCode.NO_CONTENT, id);
 }

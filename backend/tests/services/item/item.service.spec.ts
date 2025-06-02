@@ -45,7 +45,9 @@ describe("items service", () => {
             find: jest.fn().mockResolvedValue(mockData)
         };
 
-        await services.Item.getItems(mockRequest, mockReply, mockRepository as Repository<entities.Item>)
+        await services.Item.getItems(mockRequest, mockReply, {
+            primary: mockRepository as Repository<entities.Item>
+        })
     
         expect(mockRepository.find).toHaveBeenCalledWith({});
 
@@ -81,7 +83,9 @@ describe("items service", () => {
                 id: "26626652-2f35-4061-9701-1dcdb419273e"
             }
         } as FastifyRequest<{ Params: ItemByIdParams }>;
-        await services.Item.getItemById(mockRequest, mockReply, mockRepository as Repository<entities.Item>)
+        await services.Item.getItemById(mockRequest, mockReply, {
+            primary: mockRepository as Repository<entities.Item>
+        })
     })
 
     it("reply error when forgetting id in request params", async () => {
@@ -92,7 +96,9 @@ describe("items service", () => {
         await services.Item.getItemById(
             mockRequest,
             mockReply,
-            {} as Repository<entities.Item>
+            { 
+                primary: {} as Repository<entities.Item>
+            } 
         );
 
         expect(ReplyHelper.error).toHaveBeenCalledWith(
@@ -117,7 +123,7 @@ describe("items service", () => {
         await services.Item.getItemById(
             mockRequest,
             mockReply,
-            mockRepository as Repository<entities.Item>
+            { primary: mockRepository as Repository<entities.Item>}
         );
 
         expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: "non-existent-id" } });
