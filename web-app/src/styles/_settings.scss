@@ -1,0 +1,64 @@
+@use "theme/colors";
+@use "theme/fonts";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+ul {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    color: colors.$white;
+}
+
+button {
+    cursor: pointer;
+    border: unset;
+    background-color: unset;
+}
+
+
+h1,h2 {
+    font-family: fonts.$roboto-font;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: fonts.$size-32;
+}
+
+h2 {
+    font-size: fonts.$size-24;
+}
+
+
+li {
+    font-family: fonts.$roboto-font;
+    font-size: fonts.$size-24;
+    font-weight: 400;
+}
+
+
+body {
+    overflow-x: hidden;
+    min-height: 100vh;
+    background: colors.$gray;
+}
+
+p {
+    font-family: fonts.$inter-font;
+}
+
+#root {
+    height: 100vh;
+    width: 100%;
+}
