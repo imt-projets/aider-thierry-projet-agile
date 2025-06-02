@@ -48,7 +48,7 @@ export const getRooms = async (
 }
 
 export interface RoomFromInventoryIdParams {
-    id : string;
+    name : string;
 }
 
 export interface EditItemsInRoom {
@@ -61,15 +61,15 @@ export const getRoomFromInventoryId = async (
     repositories: { primary: Repository<entities.Structure> }
 ) => {
     const structureRepository = repositories.primary
-    const { id } = request.params;
+    const { name } = request.params;
 
-    if (!id) 
+    if (!name) 
         return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Id is required to find an item");
 
     const room = await structureRepository.findOne({
         where: {
             type: StructureTypeEnum.ROOM,
-            id: id
+            name: name
         },
         relations: {
             items: true
@@ -82,9 +82,13 @@ export const getRoomFromInventoryId = async (
     ReplyHelper.send(reply, enums.StatusCode.OK, room);
 }
 
+export interface RoomFromIdParams {
+    id : string;
+}
+
 export const editItemsInRoomFromInventoryId = async (
     request: FastifyRequest<{
-        Params: RoomFromInventoryIdParams,
+        Params: RoomFromIdParams,
         Body: EditItemsInRoom
     }>,
     reply: FastifyReply,
