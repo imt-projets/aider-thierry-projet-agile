@@ -51,7 +51,7 @@ export default function ScanObjectsScreen() {
       <ModalConfirmation
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-        setIsScannerActive={setIsScannerActive}
+        setIsScannerActive={setIsScannerActive} 
       />
     </View>
   );
