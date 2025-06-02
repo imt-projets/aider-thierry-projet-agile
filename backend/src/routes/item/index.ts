@@ -13,7 +13,7 @@ const item = createRouterConfig({
             handlerName: "getItems",
             method: "GET",
             url: '',
-            // schema: schema.swagger.items.getAll
+            schema: schema.swagger.items.getAll
         },
         {
             handlerName: "getItemById",
