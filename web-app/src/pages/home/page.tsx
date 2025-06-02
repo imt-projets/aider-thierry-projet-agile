@@ -3,6 +3,7 @@ import type { TreeViewDTO } from "@/dto";
 import { TreeViewSchema } from "@/dto";
 import { useFetch } from "@/hooks";
 import { useCallback, useEffect, useState } from "react";
+import { ObjectView, PathBarView } from "./components";
 
 const Home = () => {
 
@@ -28,6 +29,11 @@ const Home = () => {
 
                 <div className="container--inventory-view">
                     {treeView && <TreeView schools={treeView} />}
+                </div>
+
+                <div className="container--object-view">
+                    <PathBarView />
+                    <ObjectView />
                 </div>
             </div>
         </div>

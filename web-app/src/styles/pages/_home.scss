@@ -20,8 +20,24 @@
 
 
         .container--inventory-view {
+            width: 32%;
+            padding: 24px;
+            padding-right: 6px;
+        }
+
+        .container--pathBar-view{
             width: 100%;
             padding: 24px;
+            padding-left: 6px;
         }
+
+        .container--object-view {
+            width: 100%;
+            padding: 24px;
+            padding-left: 6px;
+            gap: 16px;
+            display: flex;
+            flex-direction: column;
+       }
     }
 }
