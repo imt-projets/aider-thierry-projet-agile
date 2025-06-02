@@ -30,5 +30,4 @@ const getItemById = {
     }
 }
 
-console.log(getItemById.response)
 export { getItemById };
