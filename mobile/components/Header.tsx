@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-const Header = ({ title }: { title: string }) => (
+const Header = ({ title }: { title: string }) => (  
   <View style={styles.header}>
     <Image source={require('@/assets/logo-imt.png')} style={styles.logo} />
     <Text style={styles.title}>{title}</Text>
     <Image source={require('@/assets/logo-barcode.png')} style={styles.logo} />
-    
   </View>
 );
 
@@ -16,6 +15,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
+    paddingTop: 60,
     marginTop: 10,
     borderBottomWidth : 1
   },
