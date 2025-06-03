@@ -1,0 +1,13 @@
+@use '../theme/colors';
+@use '../theme/fonts';
+
+#menu--container {
+    width: 20%;
+    height: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: colors.$white;
+    border-right: 1px solid black;  
+}

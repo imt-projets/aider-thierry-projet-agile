@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { Interfaces } from '../../interfaces';
+import { Interfaces } from '@/interfaces';
 import path from 'path';
 
 config({ path: path.resolve(__dirname, '../../../../.env') });
@@ -33,4 +33,4 @@ const validateEnv = (): Interfaces.Environment => {
 };
 
 const environment = validateEnv();
-export { environment };
+export { environment, validateEnv };
