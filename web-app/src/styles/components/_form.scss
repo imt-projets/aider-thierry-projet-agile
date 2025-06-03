@@ -14,8 +14,8 @@
 .object-view-container {
     padding: 32px;
     background: colors.$white;
-    max-width: 1100px;
     overflow: scroll;
+    width: 100%;
 
     .object-view-header {
         display: flex;

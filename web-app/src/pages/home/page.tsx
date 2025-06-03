@@ -34,9 +34,13 @@ const Home = () => {
                 <div className="container--object-view">
                     <PathBarView />
                     <div className="container--form-view">
-                        <MenuView />
-                        <ObjectView />
-                        <HistoricView />
+                        <div className="container--left">
+                            <MenuView />
+                            <ObjectView />
+                        </div>
+                        <div className="container--right">
+                            <HistoricView />
+                        </div>
                     </div>
                 </div>
             </div>
