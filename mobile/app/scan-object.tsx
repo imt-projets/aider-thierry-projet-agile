@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 export default function ScanObjectsScreen() {
   const [lastScanned] = useState<string | null>(null);
   const [resetTrigger, setResetTrigger] = useState(0);
-  const { scannedCodes, addScannedCode, isScannerActive, restartScan, resetScannedCodes } = useScanner();
+  const { scannedCodes, addScannedCode, isScannerActive, resetScannedCodes, handleSendObject } = useScanner();
 
   const handleScan = (code: string) => {
     addScannedCode(code);
@@ -53,7 +53,7 @@ export default function ScanObjectsScreen() {
           </>
         ) : (
           <>
-            <Button title="Ajouter" onPress={() => {restartScan(); router.push('/');}} type="success" icon={<Octicons name="diff-added" size={24} color="white" />} />
+            <Button title="Ajouter" onPress={handleSendObject} type="success" icon={<Octicons name="diff-added" size={24} color="white" />} />
             <Button 
                 title="Annuler" 
                 onPress={handleAnnuler}
