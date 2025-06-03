@@ -26,7 +26,7 @@ const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ modalVisible, set
     <Modal visible={modalVisible} transparent animationType="fade" onRequestClose={() => setModalVisible(false)}>
       <View style={styles.overlay}>
         <View style={styles.content}>
-          <Text style={styles.title}>Avez-vous fini de faire l'inventaire de la salle ?</Text>
+          <Text style={styles.title}>Avez-vous terminé l'inventaire de la salle ?</Text>
           <Text style={styles.text}>Nombre d'objets scannés : {scannedCodes.length}</Text>
           <View style={styles.buttonRow}>
             <Pressable style={styles.noButton} onPress={() => handleModalClosed(false)}>

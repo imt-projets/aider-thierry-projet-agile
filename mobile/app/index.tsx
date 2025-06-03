@@ -37,14 +37,13 @@ export default function HomeScreen() {
           title="Faire l'inventaire"
           onPress={() => { setMode('inventoryRoom'); router.push('/scan-room'); }}
           type="primary"
-          style={{ paddingHorizontal: 30 }}
           icon={<Octicons name="checklist" size={24} color="white" />}
         />
         <Button
           title="Ajouter un objet"
           onPress={() => { setMode('addingObject'); router.push('/scan-room'); }}
           type="outline"
-          style={{ paddingHorizontal: 30, marginTop: 15 }}
+          style={{ marginTop: 15 }}
           icon={<MaterialIcons name="add-circle-outline" size={24} color="black" />}
         />
       </View>

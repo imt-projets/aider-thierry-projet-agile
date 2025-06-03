@@ -7,11 +7,12 @@ import { useScanner } from '@/context/ScannerContext';
 import Header from '@/components/Header';
 import Button from '@/components/Button';
 import { layout } from '@/styles/common';
+import { Entypo } from '@expo/vector-icons';
 
 export default function ScanRoomScreen() {
   const router = useRouter();
   const [resetTrigger, setResetTrigger] = useState(0);
-  const { roomCode, setRoomCode, resetRoomCode, isScannerActive, setIsScannerActive } = useScanner();
+  const { roomCode, setRoomCode, resetRoomCode, isScannerActive, setIsScannerActive, mode } = useScanner();
 
   useEffect(() => {
     setIsScannerActive(true);
@@ -27,6 +28,8 @@ export default function ScanRoomScreen() {
   };
 
   const scanned = roomCode !== null;
+
+  const nextRoute = mode === 'addingObject' ? '/scan-object' : '/scan-objects';
 
   return (
     <View style={layout.container}>
@@ -46,13 +49,13 @@ export default function ScanRoomScreen() {
       <View style={layout.footer}>
         {!scanned ? (
           <>
-            <Button title="Saisir le code" onPress={() => {}} type="outline" />
-            <Button title="Annuler" onPress={() => router.back()} type="danger" />
+            <Button title="Saisir le code" onPress={() => {}} type="outline" icon={<Entypo name="pencil" size={24} color="black" />}/>
+            <Button title="Annuler" onPress={() => router.back()} type="danger" icon={<Entypo name="circle-with-cross" size={24} color="white" />}/>
           </>
         ) : (
           <>
-            <Button title="Continuer" onPress={() => router.push('/scan-objects')} type="success" />
-            <Button title="Annuler" onPress={handleAnnuler} type="danger" />
+            <Button title="Continuer" onPress={() => router.push(nextRoute)} type="success" icon={<Entypo name="arrow-with-circle-right" size={24} color="white" />} />
+            <Button title="Annuler" onPress={handleAnnuler} type="danger" icon={<Entypo name="circle-with-cross" size={24} color="white" />}/>
           </>
         )}
       </View>
