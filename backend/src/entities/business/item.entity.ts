@@ -3,6 +3,7 @@ import { ItemType } from "./itemType.entity";
 import { Comment } from "./comment.entity";
 import { Supplier } from "./supplier.entity";
 import { EntityBase } from "../core";
+import { Structure } from "../organizational";
 
 @Entity()
 export class Item extends EntityBase {
@@ -25,10 +26,10 @@ export class Item extends EntityBase {
     description!: string;
 
     @Column()
-    lifetime!: number;
+    warrantyEndDate!: Date;
 
     @Column()
-    warrantyEndDate!: Date;
+    endOfLifeDate!: Date;
 
     @Column()
     brand!: string;
@@ -44,4 +45,7 @@ export class Item extends EntityBase {
 
     @ManyToMany(() => Supplier, (supplier) => supplier.items)
     suppliers!: Supplier[];
+
+    @ManyToOne(() => Structure, (room) => room.children)
+    room!: Structure
 }
