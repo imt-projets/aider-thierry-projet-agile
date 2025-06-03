@@ -7,7 +7,7 @@ describe("createRouterConfig", () => {
         const fakeRepository = {};
 
         const dummyHandler = jest.fn(async (req, res, repo) => {
-            expect(repo).toBe(fakeRepository);
+            expect(repo).toEqual({ primary: fakeRepository });
             return "handler result";
         });
 
@@ -15,10 +15,10 @@ describe("createRouterConfig", () => {
             entity: class DummyEntity {},
             service: { dummyHandler },
             routes: [
-                { 
-                    method: "GET", 
-                    url: "/", 
-                    handlerName: "dummyHandler" 
+                {
+                    method: "GET",
+                    url: "/",
+                    handlerName: "dummyHandler"
                 }
             ],
         });
@@ -32,10 +32,7 @@ describe("createRouterConfig", () => {
         await plugin(fastifyMock as unknown as FastifyInstance, {});
 
         expect(fastifyMock.hasDecorator).toHaveBeenCalledWith("orm");
-        expect(fastifyMock.orm.getRepository).toHaveBeenCalledWith(
-            expect.any(Function)
-        );
-
+        expect(fastifyMock.orm.getRepository).toHaveBeenCalledWith(expect.any(Function));
         expect(fastifyMock.route).toHaveBeenCalledTimes(1);
 
         const routeConfig = fastifyMock.route.mock.calls[0][0];
@@ -43,11 +40,18 @@ describe("createRouterConfig", () => {
         expect(routeConfig.url).toBe("/");
 
         const mockReq = {};
-        const mockRes = {};
+        
+        const mockSend = jest.fn();
+        const mockStatus = jest.fn(() => ({ send: mockSend }));
+        const mockRes = {
+            status: mockStatus
+        };
 
         await routeConfig.handler(mockReq, mockRes);
-        expect(dummyHandler).toHaveBeenCalledWith(mockReq, mockRes, fakeRepository);
+
+        expect(dummyHandler).toHaveBeenCalledWith(mockReq, mockRes, { primary: fakeRepository });
     });
+
 
     it("should throw if orm is not registered", async () => {
         const plugin = createRouterConfig({

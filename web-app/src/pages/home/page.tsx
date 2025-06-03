@@ -4,9 +4,12 @@ import { TreeViewSchema } from "@/dto";
 import { useFetch } from "@/hooks";
 import { useCallback, useEffect, useState } from "react";
 import { ObjectView, PathBarView, MenuView, HistoricView } from "./components";
+import { useAppContext } from "@/context/AppContext";
 
 const Home = () => {
 
+    const { selectedElement, isLoading, error } = useAppContext();
+    
     const response = useFetch('/hierarchy', [])
     const [treeView, setTreeView] = useState<TreeViewDTO>()
 
@@ -31,14 +34,22 @@ const Home = () => {
                     {treeView && <TreeView schools={treeView} />}
                 </div>
 
-                <div className="container--object-view">
-                    <PathBarView />
-                    <div className="container--form-view">
-                        <MenuView />
-                        <ObjectView />
-                        <HistoricView />
-                    </div>
-                </div>
+                  <div className="container--object-view">
+                    {selectedElement && (
+                        <>
+                            <PathBarView />
+                            <div className="container--form-view">
+                                <div className="container--left">
+                                    <MenuView />
+                                    <ObjectView />
+                                </div>
+                                <div className="container--right">
+                                    <HistoricView />
+                                </div>
+                            </div>
+                        </>
+                    )}
+                  </div>
             </div>
         </div>
     )

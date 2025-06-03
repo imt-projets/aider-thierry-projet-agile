@@ -18,7 +18,6 @@
             width: 64px;
         }
 
-
         .container--inventory-view {
             width: 22%;
             padding: 24px;
@@ -33,11 +32,26 @@
             display: flex;
             flex-direction: column;
 
+            .container--left {
+                display: inherit;
+                flex-direction: row;
+                width: 100%;
+            }
+
+            .container--right {
+                display: inherit;
+                flex-direction: row;
+            }
+
+
             .container--form-view {
                 width: 100%;
                 height: 100%;
                 display: flex;
                 flex-direction: row;
+                justify-content: space-between;
+
+                gap: 1px;
             }
        }
     }

@@ -1,6 +1,6 @@
-import { DatabaseConfiguration } from "../../src/config/typeorm/data-source";
+import { DatabaseConfiguration } from "../../../src/config/typeorm/data-source";
 import { DataSource } from "typeorm";
-import { Interfaces } from "../../src/interfaces";
+import { Interfaces } from "../../../src/interfaces";
 
 jest.mock('typeorm', () => {
 	return {
@@ -10,7 +10,7 @@ jest.mock('typeorm', () => {
 	};
 });
 
-jest.mock("../../src/config/typeorm/options", () => ({
+jest.mock("../../../src/config/typeorm/options", () => ({
 	getDatabaseOptions: jest.fn(() => ({
 		type: "postgres",
 		host: "localhost",

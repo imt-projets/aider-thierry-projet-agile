@@ -3,14 +3,28 @@ import type { ChangeEvent } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { FaPen, FaSave } from "react-icons/fa";
 import { Object } from "../../../../components/Icons/Object"
+import type { ItemDTO } from "@/dto";
+
 export const ObjectView = () => {
     const { selectedElement, isLoading, error } = useAppContext();
     const [isEditing, setIsEditing] = useState(false);
-    const [form, setForm] = useState<any>(selectedElement);
+    const [form, setForm] = useState<ItemDTO | null>(selectedElement);
+
 
     useEffect(() => {
         setForm(selectedElement);
     }, [selectedElement]);
+
+    const formatDateForInput = (dateString: string | undefined): string => {
+        if (!dateString) return '';
+        try {
+            const date = new Date(dateString);
+            return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+        } catch (error) {
+            console.error("Invalid date format:", error);
+            return '';
+        }
+    };
 
     if (error) {
         return (
@@ -29,6 +43,7 @@ export const ObjectView = () => {
     }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        if (!form) return;
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
@@ -38,57 +53,24 @@ export const ObjectView = () => {
         // TODO: Save the form
     };
 
-    const inputStyle = {
-        width: '100%',
-        border: '1px solid #333',
-        borderRadius: 6,
-        padding: '8px 12px',
-        fontSize: 16
-    };
-
-    const labelStyle = { fontWeight: 500, marginBottom: 4, display: 'block' };
-
     return (
-        <div style={{ padding: 32, background: '#fff', borderRadius: 8, maxWidth: 1100, margin: '0 auto', overflow: 'scroll' }}>
+        <div className="object-view-container">
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <Object style={{ width: 28, height: 28, verticalAlign: "middle" }} />
+            <div className="object-view-header">
+                <div className="object-view-header-left">
+                    <Object style={{ width: 28, height: 28, verticalAlign: "middle" }} />
                 </div>
-                <div style={{ display: 'flex', gap: 16 }}>
+                <div className="object-view-header-actions">
                     <button
-                        style={{
-                            background: '#FF9800',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: 6,
-                            padding: '10px 24px',
-                            fontWeight: 700,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 8,
-                            cursor: isEditing ? 'not-allowed' : 'pointer'
-                        }}
+                        className="object-view-btn"
                         onClick={handleEdit}
                         disabled={isEditing}
                     >
                         <FaPen style={{ fontSize: 18 }} />
                         MODIFIER
                     </button>
-
                     <button
-                        style={{
-                            background: '#2ECC40',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: 6,
-                            padding: '10px 24px',
-                            fontWeight: 700,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 8,
-                            cursor: isEditing ? 'pointer' : 'not-allowed'
-                        }}
+                        className="object-view-btn save"
                         onClick={handleSave}
                         disabled={!isEditing}
                     >
@@ -98,62 +80,62 @@ export const ObjectView = () => {
                 </div>
             </div>
 
-            <h2 style={{ fontSize: 18, marginBottom: 16 }}>TITRE CATEGORIE</h2>
-            <div style={{ display: 'flex', gap: 24, marginBottom: 16 }}>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>Numéro d’inventaire</label>
-                    <input style={inputStyle} name="inventoryNumber" value={form?.inventoryNumber || ''} onChange={handleChange} readOnly={!isEditing} />
+            <h2 className="object-view-title">Résumé de l'objet</h2>
+            <div className="object-view-row">
+                <div className="object-view-col">
+                    <label className="object-view-label">Numéro d’inventaire</label>
+                    <input className="object-view-input" name="inventoryNumber" value={form?.inventoryNumber || ''} onChange={handleChange} readOnly={!isEditing} />
                 </div>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>Nom de l'objet</label>
-                    <input style={inputStyle} name="name" value={form?.name || ''} onChange={handleChange} readOnly={!isEditing} />
+                <div className="object-view-col">
+                    <label className="object-view-label">Nom de l'objet</label>
+                    <input className="object-view-input" name="name" value={form?.name || ''} onChange={handleChange} readOnly={!isEditing} />
                 </div>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>Type d'objet</label>
-                    <select style={inputStyle} name="type" value={form?.type || ''} onChange={handleChange} disabled={!isEditing}>
+                <div className="object-view-col">
+                    {/* <label className="object-view-label">Type d'objet</label> */}
+                    {/* <select className="object-view-select" name="type" value={form?.type || ''} onChange={handleChange} disabled={!isEditing}>
                         <option value="">Champs</option>
                         <option value="Ordinateur">Ordinateur</option>
                         <option value="Écran">Écran</option>
                         <option value="Accessoire">Accessoire</option>
-                    </select>
+                    </select> */}
                 </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 24, marginBottom: 32 }}>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>Marque</label>
-                    <input style={inputStyle} name="brand" value={form?.brand || ''} onChange={handleChange} readOnly={!isEditing} />
+            <div className="object-view-row mb-32">
+                <div className="object-view-col">
+                    <label className="object-view-label">Marque</label>
+                    <input className="object-view-input" name="brand" value={form?.brand || ''} onChange={handleChange} readOnly={!isEditing} />
                 </div>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>Modèle</label>
-                    <input style={inputStyle} name="model" value={form?.model || ''} onChange={handleChange} readOnly={!isEditing} />
+                <div className="object-view-col">
+                    <label className="object-view-label">Modèle</label>
+                    <input className="object-view-input" name="model" value={form?.model || ''} onChange={handleChange} readOnly={!isEditing} />
                 </div>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>État de l'objet</label>
-                    <select style={inputStyle} name="state" value={form?.state || ''} onChange={handleChange} disabled={!isEditing}>
+                <div className="object-view-col">
+                    {/* <label className="object-view-label">État de l'objet</label> */}
+                    {/* <select className="object-view-select" name="state" value={form?.state || ''} onChange={handleChange} disabled={!isEditing}>
                         <option value="">Champs</option>
                         <option value="Neuf">Neuf</option>
                         <option value="Utilisé">Utilisé</option>
                         <option value="HS">HS</option>
-                    </select>
+                    </select> */}
                 </div>
             </div>
 
-            <h2 style={{ fontSize: 18, marginBottom: 16 }}>TITRE CATEGORIE</h2>
-            <div style={{ display: 'flex', gap: 24, marginBottom: 16 }}>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>Salle</label>
-                    <input style={inputStyle} name="room" value={form?.room || ''} onChange={handleChange} readOnly={!isEditing} />
+            <h2 className="object-view-title">Fournisseur & Description</h2>
+            <div className="object-view-row">
+                <div className="object-view-col">
+                    {/* <label className="object-view-label">Salle</label> */}
+                    {/* <input className="object-view-input" name="room" value={form?.room || ''} onChange={handleChange} readOnly={!isEditing} /> */}
                 </div>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>Fournisseur</label>
-                    <input style={inputStyle} name="supplier" value={form?.supplier || ''} onChange={handleChange} readOnly={!isEditing} />
+                <div className="object-view-col">
+                    {/* <label className="object-view-label">Fournisseur</label> */}
+                    {/* <input className="object-view-input" name="supplier" value={form?.supplier || ''} onChange={handleChange} readOnly={!isEditing} /> */}
                 </div>
             </div>
             <div style={{ marginBottom: 32 }}>
-                <label style={labelStyle}>Description</label>
+                <label className="object-view-label">Description</label>
                 <textarea
-                    style={{ ...inputStyle, minHeight: 100 }}
+                    className="object-view-textarea"
                     name="description"
                     value={form?.description || ''}
                     onChange={handleChange}
@@ -161,19 +143,19 @@ export const ObjectView = () => {
                 />
             </div>
 
-            <h2 style={{ fontSize: 18, marginBottom: 16 }}>TITRE CATEGORIE</h2>
-            <div style={{ display: 'flex', gap: 24 }}>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>Date de fin de garantie</label>
-                    <input type="date" style={inputStyle} name="warrantyEndDate" value={form?.warrantyEndDate || ''} onChange={handleChange} readOnly={!isEditing} />
+            <h2 className="object-view-title">DATES</h2>
+            <div className="object-view-row">
+                <div className="object-view-col">
+                    <label className="object-view-label">Date de fin de garantie</label>
+                    <input type="date" className="object-view-input" name="warrantyEndDate" value={formatDateForInput(form?.warrantyEndDate || '')} onChange={handleChange} readOnly={!isEditing} />
                 </div>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>Date de fin de vie</label>
-                    <input type="date" style={inputStyle} name="endOfLifeDate" value={form?.endOfLifeDate || ''} onChange={handleChange} readOnly={!isEditing} />
+                <div className="object-view-col">
+                    <label className="object-view-label">Date de fin de vie</label>
+                    <input type="date" className="object-view-input" name="endOfLifeDate" value={formatDateForInput(form?.endOfLifeDate || '')} onChange={handleChange} readOnly={!isEditing} />
                 </div>
-                <div style={{ flex: 1 }}>
-                    <label style={labelStyle}>Prix</label>
-                    <input style={inputStyle} name="price" value={form?.price || ''} onChange={handleChange} readOnly={!isEditing} />
+                <div className="object-view-col">
+                    <label className="object-view-label">Prix</label>
+                    <input className="object-view-input" name="price" value={(form?.price || '0')+ " €"} onChange={handleChange} readOnly={!isEditing} />
                 </div>
             </div>
         </div>
