@@ -35,7 +35,7 @@ const Home = () => {
                 </div>
 
                   <div className="container--object-view">
-                    {selectedElement && (
+                    {selectedElement ? (
                         <>
                             <PathBarView />
                             <div className="container--form-view">
@@ -48,7 +48,24 @@ const Home = () => {
                                 </div>
                             </div>
                         </>
-                    )}
+                    ) : 
+                        <div className="default--view">
+                            <div className="container-logos">
+                                <img 
+                                    src="./public/logo-barcode.png" 
+                                    alt="Logo Barcode" 
+                                    className="barcode-logo"
+                                />
+                                {/* <img 
+                                    src="./public/logo-imt.png" 
+                                    alt="Logo imt" 
+                                    className="imt-logo"
+                                /> */}
+                            </div>
+                            <h2>Bienvenue sur IMT'ventaire!</h2>
+                            <p>Pour afficher la vue objet, sélectionner le dans la hiérarchy</p>
+                        </div>
+                    }
                   </div>
             </div>
         </div>
