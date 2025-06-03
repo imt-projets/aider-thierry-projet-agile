@@ -1,4 +1,4 @@
 export { ObjectView } from "./ObjectView";
-export { PathBarView } from "./pathBarView";
+export { PathBarView } from "./PathBarView";
 export { MenuView } from "./MenuView";
 export { HistoricView } from "./HistoricView";
