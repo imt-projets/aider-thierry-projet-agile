@@ -80,7 +80,7 @@ export const ObjectView = () => {
                 </div>
             </div>
 
-            <h2 className="object-view-title">TITRE CATEGORIE</h2>
+            <h2 className="object-view-title">Résumé de l'objet</h2>
             <div className="object-view-row">
                 <div className="object-view-col">
                     <label className="object-view-label">Numéro d’inventaire</label>
@@ -91,7 +91,7 @@ export const ObjectView = () => {
                     <input className="object-view-input" name="name" value={form?.name || ''} onChange={handleChange} readOnly={!isEditing} />
                 </div>
                 <div className="object-view-col">
-                    <label className="object-view-label">Type d'objet</label>
+                    {/* <label className="object-view-label">Type d'objet</label> */}
                     {/* <select className="object-view-select" name="type" value={form?.type || ''} onChange={handleChange} disabled={!isEditing}>
                         <option value="">Champs</option>
                         <option value="Ordinateur">Ordinateur</option>
@@ -121,7 +121,7 @@ export const ObjectView = () => {
                 </div>
             </div>
 
-            <h2 className="object-view-title">TITRE CATEGORIE</h2>
+            <h2 className="object-view-title">Fournisseur & Description</h2>
             <div className="object-view-row">
                 <div className="object-view-col">
                     {/* <label className="object-view-label">Salle</label> */}
@@ -143,7 +143,7 @@ export const ObjectView = () => {
                 />
             </div>
 
-            <h2 className="object-view-title">TITRE CATEGORIE</h2>
+            <h2 className="object-view-title">DATES</h2>
             <div className="object-view-row">
                 <div className="object-view-col">
                     <label className="object-view-label">Date de fin de garantie</label>
