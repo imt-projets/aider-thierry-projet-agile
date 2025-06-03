@@ -1,7 +1,7 @@
-import { getDatabaseOptions } from "../../src/config/typeorm/options";
-import { Interfaces } from "../../src/interfaces";
+import { getDatabaseOptions } from "../../../src/config/typeorm/options";
+import { Interfaces } from "../../../src/interfaces";
 
-jest.mock('../../src/config/typeorm/data-options', () => {
+jest.mock('../../../src/config/typeorm/data-options', () => {
     return {
         getDataOptionsPath: jest.fn(() => ({
             entitiesPath: 'mock/entities',
