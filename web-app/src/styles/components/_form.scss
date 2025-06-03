@@ -13,9 +13,8 @@
 
 .object-view-container {
     padding: 32px;
-    background: #fff;
+    background: colors.$white;
     max-width: 1100px;
-    margin: 0 auto;
     overflow: scroll;
 
     .object-view-header {
@@ -75,24 +74,23 @@
     }
 
     .object-view-btn {
-        background: #FF9800;
-        color: #fff;
-        border: none;
+        background: colors.$orange;
+        color: colors.$white;
         border-radius: 6px;
         padding: 10px 24px;
         font-weight: 700;
         display: flex;
         align-items: center;
         gap: 8px;
-        cursor: pointer;
 
         &.save {
-            background: #2ECC40;
+            background: colors.$green;
         }
 
         &:disabled {
             cursor: not-allowed;
             opacity: 0.7;
+            background: colors.$gray;
         }
     }
 }
