@@ -20,45 +20,47 @@ export class HierarchySeeder extends Seeder {
         await structureRepository.save([school, school2]);
         
         // BUILDING
-        const buildingA = structureRepository.create({
-            name: "Bâtiment A",
+        const buildingJ = structureRepository.create({
+            name: "J",
             type: entities.StructureTypeEnum.BUILDING,
             parent: school,
         });
         const buildingB = structureRepository.create({
-            name: "Bâtiment B",
+            name: "B",
             type: entities.StructureTypeEnum.BUILDING,
             parent: school,
         });
-        await structureRepository.save([buildingA, buildingB]);
+        await structureRepository.save([buildingJ, buildingB]);
 
         // ROOM
-        const roomA1 = structureRepository.create({
-            name: "Salle A101",
+        const roomJ142 = structureRepository.create({
+            name: "J142",
             type: entities.StructureTypeEnum.ROOM,
-            parent: buildingA,
+            parent: buildingJ,
         });
-        const roomA2 = structureRepository.create({
-            name: "Salle A102",
+        const roomJ144 = structureRepository.create({
+            name: "J144",
             type: entities.StructureTypeEnum.ROOM,
-            parent: buildingA,
+            parent: buildingJ,
         });
-        const roomB1 = structureRepository.create({
-            name: "Salle B201",
+        const roomJ145 = structureRepository.create({
+            name: "J145",
+            type: entities.StructureTypeEnum.ROOM,
+            parent: buildingJ,
+        });
+        const roomB110 = structureRepository.create({
+            name: "B110",
             type: entities.StructureTypeEnum.ROOM,
             parent: buildingB,
         });
-        const roomB2 = structureRepository.create({
-            name: "Salle B202",
-            type: entities.StructureTypeEnum.ROOM,
-            parent: buildingB,
-        });
-        await structureRepository.save([roomA1, roomA2, roomB1, roomB2]);
+        await structureRepository.save([roomJ142, roomJ144, roomJ145, roomB110]);
 
         const chairType = itemTypeRepository.create({ name: "Chaise", description: "Objet pour s’asseoir" });
         const tableType = itemTypeRepository.create({ name: "Table", description: "Surface pour poser des choses" });
         const projectorType = itemTypeRepository.create({ name: "Projecteur", description: "Appareil de projection" });
-        await itemTypeRepository.save([chairType, tableType, projectorType]);
+        const wifiAccess = itemTypeRepository.create({ name: "Borne Wi-Fi", description: "Permet d'accéder à l'intranet de l'école" });
+
+        await itemTypeRepository.save([chairType, tableType, projectorType, wifiAccess]);
 
 
         const now = new Date();
@@ -68,7 +70,9 @@ export class HierarchySeeder extends Seeder {
             return date;
         };
 
+        // J142
         const items = [
+            // première chaise J142
             itemRepository.create({
                 name: "Chaise",
                 description: "Chaise en plastique",
@@ -76,29 +80,32 @@ export class HierarchySeeder extends Seeder {
                 warrantyEndDate: addYears(2),
                 endOfLifeDate: addYears(5),
                 brand: "Ikea",
-                room: roomA1,
+                room: roomJ142,
                 itemType: chairType,
                 suppliers: [],
                 serialNumber: "456123",
-                inventoryNumber: "24324",
+                inventoryNumber: "25520",
                 orderNumber: "349843",
                 model: "ADDE"
             }),
+            // première table J142
             itemRepository.create({
                 name: "Table",
-                description: "Table en bois",
+                description: "Table avec armature bleu et plateau de travail composite",
                 price: 75,
                 warrantyEndDate: addYears(3),
                 endOfLifeDate: addYears(7),
                 brand: "Ikea",
-                room: roomA1,
+                room: roomJ142,
                 itemType: tableType,
                 suppliers: [],
                 serialNumber: "123456",
-                inventoryNumber: "24325",
+                inventoryNumber: "26300",
                 orderNumber: "349822",
                 model: "LACK"
             }),
+
+            // PROJECTEUR J142
             itemRepository.create({
                 name: "Projecteur",
                 description: "Projecteur HD",
@@ -106,13 +113,102 @@ export class HierarchySeeder extends Seeder {
                 warrantyEndDate: addYears(3),
                 endOfLifeDate: addYears(6),
                 brand: "Epson",
-                room: roomB2,
+                room: roomJ142,
                 itemType: projectorType,
                 suppliers: [],
                 serialNumber: "123465",
-                inventoryNumber: "24326",
+                inventoryNumber: "25136",
                 orderNumber: "349811",
                 model: "EB-X41"
+                
+            }),
+
+            // table professeur J142
+            itemRepository.create({
+                name: "Table",
+                description: "Double table (bureau professeur) avec armature bleu et plateau de travail composite",
+                price: 75,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ142,
+                itemType: tableType,
+                suppliers: [],
+                serialNumber: "123456",
+                inventoryNumber: "25626",
+                orderNumber: "349822",
+                model: "LACK"
+            }),
+
+
+            // PREMIERE CHAISE J144
+            itemRepository.create({
+                name: "Chaise",
+                description: "Chaise en plastique",
+                price: 25,
+                warrantyEndDate: addYears(2),
+                endOfLifeDate: addYears(5),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: chairType,
+                suppliers: [],
+                serialNumber: "456123",
+                inventoryNumber: "25293",
+                orderNumber: "349843",
+                model: "ADDE"
+            }),
+
+
+            // PREMIERE TABLE J144
+            itemRepository.create({
+                name: "Table",
+                description: "Table avec armature bleu et plateau de travail composite",
+                price: 75,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: tableType,
+                suppliers: [],
+                serialNumber: "123456",
+                inventoryNumber: "26404",
+                orderNumber: "349822",
+                model: "LACK"
+            }),
+
+            // PROJECTEUR J144
+            itemRepository.create({
+                name: "Projecteur",
+                description: "Projecteur HD",
+                price: 300,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(6),
+                brand: "Epson",
+                room: roomJ144,
+                itemType: projectorType,
+                suppliers: [],
+                serialNumber: "123465",
+                inventoryNumber: "25141",
+                orderNumber: "349811",
+                model: "EB-X41"
+                
+            }),
+
+            // wifi access J142
+            itemRepository.create({
+                name: "Borne Wi-FI",
+                description: "La borne wifi de la J142",
+                price: 300,
+                warrantyEndDate: addYears(2),
+                endOfLifeDate: addYears(15),
+                brand: "Epson",
+                room: roomJ142,
+                itemType: wifiAccess,
+                suppliers: [],
+                serialNumber: "12346589",
+                inventoryNumber: "29627",
+                orderNumber: "3498113242",
+                model: "AR119"
                 
             }),
         ];

@@ -10,8 +10,8 @@ export const routeHandler = (
             console.log("Request received:", req.method, req.url);
             await handler(req, res);
         } catch (error) {
-            ReplyHelper.error(res, enums.StatusCode.INTERNAL_SERVER_ERROR, "Internal Server Error");
             console.error("Error in route handler:", error);
+            ReplyHelper.error(res, enums.StatusCode.INTERNAL_SERVER_ERROR, "Internal Server Error");
             throw error;
         }
     };

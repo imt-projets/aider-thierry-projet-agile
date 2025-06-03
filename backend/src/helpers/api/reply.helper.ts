@@ -4,15 +4,15 @@ import { FastifyReply } from "fastify";
 export class ReplyHelper {
     
     static send(reply: FastifyReply, statusCode : enums.StatusCode, data: unknown) {
-        reply.send({
+        reply.status(statusCode).send({
             status: "success",
             data
-        }).status(statusCode);
+        });
     }
 
     static error(reply: FastifyReply, statusCode : enums.StatusCode, message: string) {
-        reply.send({
+        reply.status(statusCode).send({
             message
-        }).status(statusCode);
+        });
     }
 }

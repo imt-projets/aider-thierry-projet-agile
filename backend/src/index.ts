@@ -4,6 +4,7 @@ import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
 import AutoLoad from '@fastify/autoload';
 import { join } from "path";
+import SwaggerUI from "@fastify/swagger-ui";
 
 const initializeApi = async () => {
 
@@ -25,8 +26,17 @@ const initializeApi = async () => {
     });
 
     await fastify.register(AutoLoad, {
+        dir: join(__dirname, 'plugins'),
+        options: {}
+    })
+
+    await fastify.register(AutoLoad, {
         dir: join(__dirname, 'routes'),
     });
+
+    await fastify.register(SwaggerUI, {
+        routePrefix: "/api-docs"
+    })
 
     await fastify.listen({
         port,
