@@ -3,14 +3,28 @@ import type { ChangeEvent } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { FaPen, FaSave } from "react-icons/fa";
 import { Object } from "../../../../components/Icons/Object"
+import type { ItemDTO } from "@/dto";
+
 export const ObjectView = () => {
     const { selectedElement, isLoading, error } = useAppContext();
     const [isEditing, setIsEditing] = useState(false);
-    const [form, setForm] = useState<any>(selectedElement);
+    const [form, setForm] = useState<ItemDTO | null>(selectedElement);
+
 
     useEffect(() => {
         setForm(selectedElement);
     }, [selectedElement]);
+
+    const formatDateForInput = (dateString: string | undefined): string => {
+        if (!dateString) return '';
+        try {
+            const date = new Date(dateString);
+            return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+        } catch (error) {
+            console.error("Invalid date format:", error);
+            return '';
+        }
+    };
 
     if (error) {
         return (
@@ -29,6 +43,7 @@ export const ObjectView = () => {
     }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        if (!form) return;
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
@@ -77,12 +92,12 @@ export const ObjectView = () => {
                 </div>
                 <div className="object-view-col">
                     <label className="object-view-label">Type d'objet</label>
-                    <select className="object-view-select" name="type" value={form?.type || ''} onChange={handleChange} disabled={!isEditing}>
+                    {/* <select className="object-view-select" name="type" value={form?.type || ''} onChange={handleChange} disabled={!isEditing}>
                         <option value="">Champs</option>
                         <option value="Ordinateur">Ordinateur</option>
                         <option value="Écran">Écran</option>
                         <option value="Accessoire">Accessoire</option>
-                    </select>
+                    </select> */}
                 </div>
             </div>
 
@@ -96,25 +111,25 @@ export const ObjectView = () => {
                     <input className="object-view-input" name="model" value={form?.model || ''} onChange={handleChange} readOnly={!isEditing} />
                 </div>
                 <div className="object-view-col">
-                    <label className="object-view-label">État de l'objet</label>
-                    <select className="object-view-select" name="state" value={form?.state || ''} onChange={handleChange} disabled={!isEditing}>
+                    {/* <label className="object-view-label">État de l'objet</label> */}
+                    {/* <select className="object-view-select" name="state" value={form?.state || ''} onChange={handleChange} disabled={!isEditing}>
                         <option value="">Champs</option>
                         <option value="Neuf">Neuf</option>
                         <option value="Utilisé">Utilisé</option>
                         <option value="HS">HS</option>
-                    </select>
+                    </select> */}
                 </div>
             </div>
 
             <h2 className="object-view-title">TITRE CATEGORIE</h2>
             <div className="object-view-row">
                 <div className="object-view-col">
-                    <label className="object-view-label">Salle</label>
-                    <input className="object-view-input" name="room" value={form?.room || ''} onChange={handleChange} readOnly={!isEditing} />
+                    {/* <label className="object-view-label">Salle</label> */}
+                    {/* <input className="object-view-input" name="room" value={form?.room || ''} onChange={handleChange} readOnly={!isEditing} /> */}
                 </div>
                 <div className="object-view-col">
-                    <label className="object-view-label">Fournisseur</label>
-                    <input className="object-view-input" name="supplier" value={form?.supplier || ''} onChange={handleChange} readOnly={!isEditing} />
+                    {/* <label className="object-view-label">Fournisseur</label> */}
+                    {/* <input className="object-view-input" name="supplier" value={form?.supplier || ''} onChange={handleChange} readOnly={!isEditing} /> */}
                 </div>
             </div>
             <div style={{ marginBottom: 32 }}>
@@ -132,15 +147,15 @@ export const ObjectView = () => {
             <div className="object-view-row">
                 <div className="object-view-col">
                     <label className="object-view-label">Date de fin de garantie</label>
-                    <input type="date" className="object-view-input" name="warrantyEndDate" value={form?.warrantyEndDate || ''} onChange={handleChange} readOnly={!isEditing} />
+                    <input type="date" className="object-view-input" name="warrantyEndDate" value={formatDateForInput(form?.warrantyEndDate || '')} onChange={handleChange} readOnly={!isEditing} />
                 </div>
                 <div className="object-view-col">
                     <label className="object-view-label">Date de fin de vie</label>
-                    <input type="date" className="object-view-input" name="endOfLifeDate" value={form?.endOfLifeDate || ''} onChange={handleChange} readOnly={!isEditing} />
+                    <input type="date" className="object-view-input" name="endOfLifeDate" value={formatDateForInput(form?.endOfLifeDate || '')} onChange={handleChange} readOnly={!isEditing} />
                 </div>
                 <div className="object-view-col">
                     <label className="object-view-label">Prix</label>
-                    <input className="object-view-input" name="price" value={form?.price || ''} onChange={handleChange} readOnly={!isEditing} />
+                    <input className="object-view-input" name="price" value={(form?.price || '0')+ " €"} onChange={handleChange} readOnly={!isEditing} />
                 </div>
             </div>
         </div>

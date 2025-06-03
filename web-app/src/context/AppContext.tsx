@@ -1,26 +1,10 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import { useFetch } from '@/hooks/useFetch';
 import { RequestHelper } from '@/api/helpers/request';
-
-interface Element {
-  id: string;
-  name: string;
-  inventoryNumber: string;
-  type: string;
-  brand: string;
-  model: string;
-  state: string;
-  room: string;
-  supplier: string;
-  description: string;
-  warrantyEndDate: string;
-  endOfLifeDate: string;
-  price: string;
-}
+import { ItemSchema, type ItemDTO } from '@/dto';
 
 interface AppContextType {
-  selectedElement: Element | null;
+  selectedElement: ItemDTO | null;
   selectElementInHierarchy: (id: string) => void;
   isLoading: boolean;
   error: string | null;
@@ -33,7 +17,7 @@ interface AppProviderProps {
 }
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [selectedElement, setSelectedElement] = useState<Element | null>(null);
+  const [selectedElement, setSelectedElement] = useState<ItemDTO | null>(null);
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,13 +34,14 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setIsLoading(true);
         const response = await RequestHelper.get(`/item/${selectedElementId}`);
         if (response.ok && response.data) {
-          setSelectedElement(response.data as Element);
+          const item = ItemSchema.parse(response.data);
+          setSelectedElement(item);
         } else {
           setSelectedElement(null);
           setError('Une erreur est survenue, contactez l\'administrateur');
         }
       } catch (error) {
-        setError(error as string);
+        console.error(error);
         setError('Une erreur est survenue, contactez l\'administrateur');
       } finally {
         setIsLoading(false);
