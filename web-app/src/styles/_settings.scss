@@ -24,12 +24,18 @@ button {
     cursor: pointer;
     border: unset;
     background-color: unset;
+    font-family: fonts.$inter-font;
+    font-size: fonts.$size-14;
 }
 
 
 h1,h2 {
     font-family: fonts.$roboto-font;
     font-weight: bold;
+}
+
+label {
+    font-family: fonts.$inter-font;
 }
 
 h1 {

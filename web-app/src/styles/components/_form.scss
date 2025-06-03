@@ -1,0 +1,100 @@
+@use '../theme/colors';
+@use '../theme/fonts';
+
+#form--container {
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: colors.$white;
+}
+
+.object-view-container {
+    padding: 32px;
+    background: colors.$white;
+    overflow: auto;
+    width: 100%;
+
+    .object-view-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+
+        .object-view-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .object-view-header-actions {
+            display: flex;
+            gap: 16px;
+        }
+    }
+
+    .object-view-title {
+        font-size: 24px;
+        margin-bottom: 16px;
+        font-family: fonts.$inter-font;
+        text-transform: uppercase;
+    }
+
+    .object-view-row {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 16px;
+
+        &.mb-32 {
+            margin-bottom: 32px;
+        }
+    }
+
+    .object-view-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .object-view-label {
+        font-weight: 500;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .object-view-input,
+    .object-view-select,
+    .object-view-textarea {
+        width: 100%;
+        border: 1px solid #333;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 16px;
+    }
+
+    .object-view-textarea {
+        min-height: 100px;
+    }
+
+    .object-view-btn {
+        background: colors.$orange;
+        color: colors.$white;
+        border-radius: 6px;
+        padding: 10px 24px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &.save {
+            background: colors.$green;
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+            background: colors.$gray;
+        }
+    }
+}
