@@ -1,10 +1,10 @@
 import "reflect-metadata"
-import { environment } from "./config/environment";
-import { DatabaseConfiguration } from "./config";
+import { environment, DatabaseConfiguration } from "@/config";
 import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
 import AutoLoad from '@fastify/autoload';
 import { join } from "path";
+import SwaggerUI from "@fastify/swagger-ui";
 
 const initializeApi = async () => {
 
@@ -20,13 +20,23 @@ const initializeApi = async () => {
     fastify.decorate('orm', orm);
 
     await fastify.register(fastifyCors, {
-        origin: '*',
+        origin: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        credentials: true
     });
+
+    await fastify.register(AutoLoad, {
+        dir: join(__dirname, 'plugins'),
+        options: {}
+    })
 
     await fastify.register(AutoLoad, {
         dir: join(__dirname, 'routes'),
     });
+
+    await fastify.register(SwaggerUI, {
+        routePrefix: "/api-docs"
+    })
 
     await fastify.listen({
         port,
