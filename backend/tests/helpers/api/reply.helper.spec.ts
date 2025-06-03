@@ -4,7 +4,7 @@ import { FastifyReply } from "fastify";
 
 const reply = {
     send: jest.fn().mockReturnThis(),
-    status: jest.fn()
+    status: jest.fn().mockReturnThis()
 } as unknown as FastifyReply
 
 describe("ReplyHelper", () => {
