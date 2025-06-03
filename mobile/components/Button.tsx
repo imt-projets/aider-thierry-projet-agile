@@ -16,8 +16,12 @@ const Button: React.FC<ButtonProps> = ({ title, onPress, type = 'primary', style
 
   return (
     <TouchableOpacity style={baseStyle} onPress={onPress}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-        {icon && <View style={{ marginRight: 10 }}>{icon}</View>}
+      {icon && (
+        <View style={{ marginRight: 12, marginLeft: 15, justifyContent: 'center' }}>
+          {icon}
+        </View>
+      )}
+      <View style={{ flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center' }}>
         <Text style={textBaseStyle}>{title}</Text>
       </View>
     </TouchableOpacity>
@@ -28,20 +32,24 @@ const styles = StyleSheet.create({
   button: {
     display : 'flex',
     flexDirection : 'row',
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 14,
     alignItems: 'center',
     marginHorizontal: 4,
-    shadowColor : 'gray',
     marginBottom : 20,
     height : 83,
     width : 318,
     marginTop : 0,
     marginRight : 'auto',
     marginLeft : 'auto',
-    justifyContent : 'center'
-
-
+    justifyContent : 'center',
+    // Ombre iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    // Ombre Android
+    elevation: 6,
   },
   primary: { backgroundColor: '#1976D2' },
   danger: { backgroundColor: '#F44336' },
@@ -50,7 +58,6 @@ const styles = StyleSheet.create({
   },
   outline: {
     backgroundColor: '#fff',
-    borderWidth: 1,
     borderColor: '#222',
   },
   text: { fontSize: 22, fontWeight: 'bold' },
