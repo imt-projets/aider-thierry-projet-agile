@@ -1,7 +1,7 @@
 services:
     db:
         image: postgres:15
-        container_name: postgres_container
+        container_name: database
         ports:
             - '${DB_PORT}:5432'
         environment:
@@ -12,6 +12,19 @@ services:
             - postgres_data:/var/lib/postgresql/data
         networks:
             - app_network
+
+    aider-thierry-api:
+        container_name : backend
+        build: 
+            context: .
+            dockerfile: backend/dockerfile
+        ports:
+            - "3056:3000"
+        networks:
+            - app_network
+        restart: "always"
+        depends_on:
+            - db
 
 volumes:
     postgres_data:
