@@ -2,13 +2,12 @@ import { TreeView } from "@/components";
 import type { TreeViewDTO } from "@/dto";
 import { TreeViewSchema } from "@/dto";
 import { useFetch } from "@/hooks";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { ObjectView, PathBarView, MenuView, HistoricView } from "./components";
-import { useAppContext } from "@/context/AppContext";
+import SelectionContext from "@/context/SelectionContext";
 
 const Home = () => {
-
-    const { selectedElement, isLoading, error } = useAppContext();
+    const { selectedItem } = useContext(SelectionContext);
     
     const response = useFetch('/hierarchy', [])
     const [treeView, setTreeView] = useState<TreeViewDTO>()
@@ -35,7 +34,7 @@ const Home = () => {
                 </div>
 
                   <div className="container--object-view">
-                    {selectedElement ? (
+                    {selectedItem ? (
                         <>
                             <PathBarView />
                             <div className="container--form-view">

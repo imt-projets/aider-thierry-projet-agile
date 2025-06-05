@@ -1,19 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import type { ChangeEvent } from "react";
-import { useAppContext } from "@/context/AppContext";
 import { FaPen, FaSave } from "react-icons/fa";
 import { Object } from "../../../../components/Icons/Object"
 import type { ItemDTO } from "@/dto";
+import SelectionContext from "../../../../context/SelectionContext";
+
 
 export const ObjectView = () => {
-    const { selectedElement, isLoading, error } = useAppContext();
+    const { selectedItem, error } = useContext(SelectionContext);
     const [isEditing, setIsEditing] = useState(false);
-    const [form, setForm] = useState<ItemDTO | null>(selectedElement);
+    const [form, setForm] = useState<ItemDTO | null>(selectedItem);
 
 
     useEffect(() => {
-        setForm(selectedElement);
-    }, [selectedElement]);
+        setForm(selectedItem);
+    }, [selectedItem]);
 
     const formatDateForInput = (dateString: string | undefined): string => {
         if (!dateString) return '';
@@ -34,7 +35,7 @@ export const ObjectView = () => {
         );
     }
 
-    if (!selectedElement) {
+    if (!selectedItem) {
         return (
             <div style={{ padding: 32, textAlign: 'center', color: '#888', fontSize: 22 }}>
                 Aucun objet sélectionné. Veuillez sélectionner un objet pour afficher ses détails.
