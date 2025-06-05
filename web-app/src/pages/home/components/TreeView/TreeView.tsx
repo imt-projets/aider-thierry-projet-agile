@@ -42,12 +42,15 @@ export const TreeView = () => {
                 const foundL3Nodes: TreeViewRoom[] = [];
 
                 for (const level3 of level2.children) {
-                    const hasMatchingItem = level3.items.some(item =>
+                    const matchingItems = level3.items.filter(item =>
                         item.inventoryNumber.toLowerCase().includes(lowerValue) ||
                         item.serialNumber.toLowerCase().includes(lowerValue)
                     );
-                    if (hasMatchingItem) {
-                        foundL3Nodes.push(level3);
+                    if (matchingItems.length > 0) {
+                        foundL3Nodes.push({
+                            ...level3,
+                            items: matchingItems,
+                        });
                     }
                 }
 
