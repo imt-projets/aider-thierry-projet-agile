@@ -6,11 +6,10 @@ import type { ItemDTO } from "@/dto";
 import SelectionContext from "../../../../context/SelectionContext";
 
 
-export const ObjectView = () => {
+export const ObjectForm = () => {
     const { selectedItem, error } = useContext(SelectionContext);
     const [isEditing, setIsEditing] = useState(false);
     const [form, setForm] = useState<ItemDTO | null>(selectedItem);
-
 
     useEffect(() => {
         setForm(selectedItem);

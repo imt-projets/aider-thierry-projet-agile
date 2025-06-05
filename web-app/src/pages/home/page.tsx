@@ -3,7 +3,7 @@ import type { TreeViewDTO } from "@/dto";
 import { TreeViewSchema } from "@/dto";
 import { useFetch } from "@/hooks";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { ObjectView, PathBarView, MenuView, HistoricView } from "./components";
+import { ObjectDetails, PathBarView, ObjectTabs, ObjectForm } from "./components";
 import SelectionContext from "@/context/SelectionContext";
 
 const Home = () => {
@@ -39,11 +39,11 @@ const Home = () => {
                             <PathBarView />
                             <div className="container--form-view">
                                 <div className="container--left">
-                                    <MenuView />
-                                    <ObjectView />
+                                    <ObjectTabs />
+                                    <ObjectForm />
                                 </div>
                                 <div className="container--right">
-                                    <HistoricView />
+                                    <ObjectDetails />
                                 </div>
                             </div>
                         </>

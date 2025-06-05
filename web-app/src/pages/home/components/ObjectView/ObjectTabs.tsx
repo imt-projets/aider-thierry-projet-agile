@@ -27,7 +27,7 @@ const TabPanel = (props: TabPanelProps) => {
   );
 }
 
-export const MenuView = () => {
+export const ObjectTabs = () => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
