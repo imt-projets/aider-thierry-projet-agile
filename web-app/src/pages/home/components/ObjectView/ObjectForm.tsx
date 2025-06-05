@@ -1,9 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { FaPen, FaSave } from "react-icons/fa";
-import { Object } from "../../../../components/Icons/Object"
 import type { ItemDTO } from "@/dto";
 import SelectionContext from "../../../../context/SelectionContext";
-import { FormTextArea, FormField } from "@/components/Form";
+import { FormField, FormTextArea, Item } from "@/components";
 
 export const ObjectForm = () => {
     const { selectedItem, error } = useContext(SelectionContext);
@@ -59,7 +58,7 @@ export const ObjectForm = () => {
         <div className="object-view-container">
             <div className="object-view-header">
                 <div className="object-view-header-left">
-                    <Object style={{ width: 28, height: 28, verticalAlign: "middle" }} />
+                    <Item style={{ width: 28, height: 28, verticalAlign: "middle" }} />
                 </div>
                 <div className="object-view-header-actions">
                     <button

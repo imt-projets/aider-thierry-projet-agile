@@ -1,4 +1,4 @@
-import { TreeView } from "@/components";
+import { TreeView } from "@/pages/home/components/TreeView";
 import type { TreeViewDTO } from "@/dto";
 import { TreeViewSchema } from "@/dto";
 import { useFetch } from "@/hooks";
@@ -51,12 +51,12 @@ const Home = () => {
                         <div className="default--view">
                             <div className="container-logos">
                                 <img 
-                                    src="./public/logo-barcode.png" 
+                                    src="./logo-barcode.png" 
                                     alt="Logo Barcode" 
                                     className="barcode-logo"
                                 />
                                 {/* <img 
-                                    src="./public/logo-imt.png" 
+                                    src="./logo-imt.png" 
                                     alt="Logo imt" 
                                     className="imt-logo"
                                 /> */}
