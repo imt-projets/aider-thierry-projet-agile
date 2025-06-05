@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { FaPen, FaSave } from "react-icons/fa";
 import type { ItemDTO } from "@/dto";
 import SelectionContext from "../../../../context/SelectionContext";
-import { FormField, FormTextArea, Item } from "@/components";
+import { FormField, FormSelectField, FormTextArea, Item } from "@/components";
 
 export const ObjectForm = () => {
     const { selectedItem, error } = useContext(SelectionContext);
@@ -104,9 +104,6 @@ export const ObjectForm = () => {
             </div>
 
             <div className="object--row">
-                <div className="title">
-                    <p className="object-view-title">Résumé de l'objet</p>
-                </div>
                 <div className="content">
                     <FormField
                         label="Marque"
@@ -122,6 +119,25 @@ export const ObjectForm = () => {
                         onChange={handleChangesForm}
                         readonly={!isEditing}
                     />
+
+
+                    <FormSelectField
+                        label="État de l'objet"
+                        value={form?.state || ''}
+                        onChange={handleChangesForm}
+                        name="state"
+                        disabled={!isEditing}
+                        options={
+                            [
+                                {value:"",child: "Champs"},
+                                {value:"Neuf",child: "Neuf"},
+                                {value:"Bon",child: "Bon"},
+                                {value:"Moyen",child: "Moyen"},
+                                {value:"En attente de destruction", child: "En attente de destruction"},
+                                {value: "Détruit", child: "Détruit"}
+                            ]
+                        }
+                    />
                 </div>
 
                 <div className="content" id="object-description">
@@ -133,6 +149,7 @@ export const ObjectForm = () => {
                         onChange={handleChangesForm}
                     />
                 </div>
+
             </div>
     
 
