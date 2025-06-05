@@ -1,4 +1,4 @@
-import { TreeViewSchema, type TreeViewDTO } from "@/dto";
+import { TreeViewSchema, type TreeViewBuilding, type TreeViewDTO, type TreeViewRoom, type TreeViewSchool } from "@/dto";
 import { useCallback, useEffect, useState } from "react";
 import { SearchBar, TreeList } from "./components";
 import { useFetch } from "@/hooks";
@@ -20,67 +20,55 @@ export const TreeView = () => {
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            if (!treeView) return;
-
-            const filtered = filterHierarchy(searchTerm);
-            setTreeView(filtered);
+            if (!treeView || !originalTreeView) return;
+            if (!searchTerm) {
+                setTreeView(originalTreeView);
+            } else {
+                setTreeView(findNodes(searchTerm, originalTreeView));
+            }
         }, 350);
         return () => clearTimeout(timeout);
     }, [searchTerm]);
 
-    const filterHierarchy = (value: string): TreeViewDTO => {
-        if (!originalTreeView) return [];
-        if (!value) return originalTreeView
 
-        const lowerValue = value.toLowerCase();
+    const findNodes = (searchValue: string, nodes: TreeViewDTO): TreeViewDTO => {
+        const lowerValue = searchValue.toLowerCase();
+        const foundL1Nodes: TreeViewSchool[] = [];
 
-        const deepCopyTreeView = structuredClone(originalTreeView)
+        for (const level1 of nodes) {
+            const foundL2Nodes: TreeViewBuilding[] = [];
 
-        return deepCopyTreeView
-            .map(school => {
-                const filteredBuildings = school.children
-                    .map(building => {
-                        const filteredRooms = building.children
-                            .map(room => {
-                                const filteredItems = room.items.filter(item =>
-                                    item.inventoryNumber.toLowerCase().includes(lowerValue) ||
-                                    item.serialNumber.toLowerCase().includes(lowerValue)
-                                );
+            for (const level2 of level1.children) {
+                const foundL3Nodes: TreeViewRoom[] = [];
 
-                                if (filteredItems.length > 0) {
-                                    return {
-                                        ...room,
-                                        items: filteredItems
-                                    };
-                                }
-
-                                return null;
-                            })
-                            .filter((room): room is NonNullable<typeof room> => room !== null);
-
-                        if (filteredRooms.length > 0) {
-                            return {
-                                ...building,
-                                children: filteredRooms
-                            };
-                        }
-
-                        return null;
-                    })
-                    .filter((building): building is NonNullable<typeof building> => building !== null);
-
-                if (filteredBuildings.length > 0) {
-                    return {
-                        ...school,
-                        children: filteredBuildings
-                    };
+                for (const level3 of level2.children) {
+                    const hasMatchingItem = level3.items.some(item =>
+                        item.inventoryNumber.toLowerCase().includes(lowerValue) ||
+                        item.serialNumber.toLowerCase().includes(lowerValue)
+                    );
+                    if (hasMatchingItem) {
+                        foundL3Nodes.push(level3);
+                    }
                 }
 
-                return null;
-            })
-        .filter((school): school is NonNullable<typeof school> => school !== null);
-    };
+                if (foundL3Nodes.length > 0) {
+                    foundL2Nodes.push({
+                        ...level2,
+                        children: foundL3Nodes,
+                    });
+                }
+            }
 
+            if (foundL2Nodes.length > 0) {
+                foundL1Nodes.push({
+                    ...level1,
+                    children: foundL2Nodes,
+                });
+            }
+        }
+
+        return foundL1Nodes;
+    };
 
     const fetchHierarchy = useCallback(() => {
         if (response.data) {
