@@ -1,5 +1,5 @@
-import { TreeList } from "./TreeList";
-import type { Node } from "./TreeView";
+import { TreeList } from "../TreeList/TreeList";
+import type { Node } from "../../TreeView";
 import { useContext } from "react";
 import SelectionContext from "@/context/SelectionContext";
 import { Building, Room, School, Item } from "@/components";

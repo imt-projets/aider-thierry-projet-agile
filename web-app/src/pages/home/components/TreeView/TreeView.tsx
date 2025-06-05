@@ -1,6 +1,6 @@
 import type { TreeViewDTO } from "@/dto";
 import { useState } from "react";
-import { TreeList } from "./TreeList";
+import { SearchBar, TreeList } from "./components";
 
 export interface Node {
     id: string;
@@ -19,6 +19,7 @@ export const TreeView = ({ schools }: { schools: TreeViewDTO }) => {
 
     return (
         <div id="treeView--container">
+            <SearchBar/>
             <TreeList nodes={schools as Node[]} depth={0} openNodes={openNodes} toggleNode={toggleNode} />
         </div>
     );
