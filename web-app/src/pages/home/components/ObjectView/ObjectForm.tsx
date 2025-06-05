@@ -1,10 +1,9 @@
 import { useState, useEffect, useContext } from "react";
-import type { ChangeEvent } from "react";
 import { FaPen, FaSave } from "react-icons/fa";
 import { Object } from "../../../../components/Icons/Object"
 import type { ItemDTO } from "@/dto";
 import SelectionContext from "../../../../context/SelectionContext";
-
+import { FormTextArea, FormField } from "@/components/Form";
 
 export const ObjectForm = () => {
     const { selectedItem, error } = useContext(SelectionContext);
@@ -42,9 +41,12 @@ export const ObjectForm = () => {
         );
     }
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleChangesForm = (name: string, value: string) => {
         if (!form) return;
-        setForm({ ...form, [e.target.name]: e.target.value });
+        setForm({ 
+            ...form, 
+            [name]:value
+        });
     };
 
     const handleEdit = () => setIsEditing(true);
@@ -55,7 +57,6 @@ export const ObjectForm = () => {
 
     return (
         <div className="object-view-container">
-            {/* Header */}
             <div className="object-view-header">
                 <div className="object-view-header-left">
                     <Object style={{ width: 28, height: 28, verticalAlign: "middle" }} />
@@ -80,82 +81,91 @@ export const ObjectForm = () => {
                 </div>
             </div>
 
-            <h2 className="object-view-title">Résumé de l'objet</h2>
-            <div className="object-view-row">
-                <div className="object-view-col">
-                    <label className="object-view-label">Numéro d’inventaire</label>
-                    <input className="object-view-input" name="inventoryNumber" value={form?.inventoryNumber || ''} onChange={handleChange} readOnly={!isEditing} />
+
+            <div className="object--row">
+                <div className="title">
+                    <p className="object-view-title">Résumé de l'objet</p>
                 </div>
-                <div className="object-view-col">
-                    <label className="object-view-label">Nom de l'objet</label>
-                    <input className="object-view-input" name="name" value={form?.name || ''} onChange={handleChange} readOnly={!isEditing} />
-                </div>
-                <div className="object-view-col">
-                    {/* <label className="object-view-label">Type d'objet</label> */}
-                    {/* <select className="object-view-select" name="type" value={form?.type || ''} onChange={handleChange} disabled={!isEditing}>
-                        <option value="">Champs</option>
-                        <option value="Ordinateur">Ordinateur</option>
-                        <option value="Écran">Écran</option>
-                        <option value="Accessoire">Accessoire</option>
-                    </select> */}
+                <div className="content">
+                    <FormField
+                        label="Numéro d'inventaire"
+                        name="inventoryNumber"
+                        onChange={handleChangesForm}
+                        readonly={!isEditing} 
+                        value={form?.inventoryNumber || ''} 
+                    />
+                    <FormField
+                        label="Nom de l'objet"
+                        name="name"
+                        value={form?.name || ''}
+                        onChange={handleChangesForm} 
+                        readonly={!isEditing}
+                    />
                 </div>
             </div>
 
-            <div className="object-view-row mb-32">
-                <div className="object-view-col">
-                    <label className="object-view-label">Marque</label>
-                    <input className="object-view-input" name="brand" value={form?.brand || ''} onChange={handleChange} readOnly={!isEditing} />
+            <div className="object--row">
+                <div className="title">
+                    <p className="object-view-title">Résumé de l'objet</p>
                 </div>
-                <div className="object-view-col">
-                    <label className="object-view-label">Modèle</label>
-                    <input className="object-view-input" name="model" value={form?.model || ''} onChange={handleChange} readOnly={!isEditing} />
+                <div className="content">
+                    <FormField
+                        label="Marque"
+                        name="brand"
+                        value={form?.brand || ''}
+                        onChange={handleChangesForm}
+                        readonly={!isEditing}
+                    />
+                    <FormField
+                        label="Modèle"
+                        name="model"
+                        value={form?.model || ''}
+                        onChange={handleChangesForm}
+                        readonly={!isEditing}
+                    />
                 </div>
-                <div className="object-view-col">
-                    {/* <label className="object-view-label">État de l'objet</label> */}
-                    {/* <select className="object-view-select" name="state" value={form?.state || ''} onChange={handleChange} disabled={!isEditing}>
-                        <option value="">Champs</option>
-                        <option value="Neuf">Neuf</option>
-                        <option value="Utilisé">Utilisé</option>
-                        <option value="HS">HS</option>
-                    </select> */}
-                </div>
-            </div>
 
-            <h2 className="object-view-title">Fournisseur & Description</h2>
-            <div className="object-view-row">
-                <div className="object-view-col">
-                    {/* <label className="object-view-label">Salle</label> */}
-                    {/* <input className="object-view-input" name="room" value={form?.room || ''} onChange={handleChange} readOnly={!isEditing} /> */}
-                </div>
-                <div className="object-view-col">
-                    {/* <label className="object-view-label">Fournisseur</label> */}
-                    {/* <input className="object-view-input" name="supplier" value={form?.supplier || ''} onChange={handleChange} readOnly={!isEditing} /> */}
+                <div className="content" id="object-description">
+                    <FormTextArea
+                        label="Description"
+                        name="description"
+                        value={form?.description || ''}
+                        readonly={!isEditing}
+                        onChange={handleChangesForm}
+                    />
                 </div>
             </div>
-            <div style={{ marginBottom: 32 }}>
-                <label className="object-view-label">Description</label>
-                <textarea
-                    className="object-view-textarea"
-                    name="description"
-                    value={form?.description || ''}
-                    onChange={handleChange}
-                    readOnly={!isEditing}
-                />
-            </div>
+    
 
-            <h2 className="object-view-title">DATES</h2>
-            <div className="object-view-row">
-                <div className="object-view-col">
-                    <label className="object-view-label">Date de fin de garantie</label>
-                    <input type="date" className="object-view-input" name="warrantyEndDate" value={formatDateForInput(form?.warrantyEndDate || '')} onChange={handleChange} readOnly={!isEditing} />
+            <div className="object--row">
+                <div className="title">
+                    <p className="object-view-title">Résumé de l'objet</p>
                 </div>
-                <div className="object-view-col">
-                    <label className="object-view-label">Date de fin de vie</label>
-                    <input type="date" className="object-view-input" name="endOfLifeDate" value={formatDateForInput(form?.endOfLifeDate || '')} onChange={handleChange} readOnly={!isEditing} />
-                </div>
-                <div className="object-view-col">
-                    <label className="object-view-label">Prix</label>
-                    <input className="object-view-input" name="price" value={(form?.price || '0')+ " €"} onChange={handleChange} readOnly={!isEditing} />
+                <div className="content">
+                    <FormField
+                        label="Date de fin de garantie"
+                        name="warrantyEndDate"
+                        value={formatDateForInput(form?.warrantyEndDate || '')}
+                        onChange={handleChangesForm}
+                        readonly={!isEditing}
+                        type="date"
+                    />
+                    <FormField
+                        label="Date de fin de vie"
+                        name="endOfLifeDate"
+                        value={formatDateForInput(form?.endOfLifeDate || '')}
+                        onChange={handleChangesForm}
+                        readonly={!isEditing}
+                        type="date"
+                    />
+                    {/* TODO: FIX */}
+                    <FormField
+                        label="Prix"
+                        name="price"
+                        value={(form?.price || '0') + " €"}
+                        onChange={handleChangesForm}
+                        readonly={!isEditing}
+                    />
                 </div>
             </div>
         </div>
