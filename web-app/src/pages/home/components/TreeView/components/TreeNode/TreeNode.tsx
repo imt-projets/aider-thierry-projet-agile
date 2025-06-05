@@ -70,7 +70,7 @@ export const TreeNode = ({
                             onClick={() => selectItem(item.id)}
                         >
                             {iconMap.get("object")}
-                            <span>{item.name}</span>
+                            <span>{item.inventoryNumber} - {item.serialNumber} </span>
                         </div>
                     ))}
                 </>

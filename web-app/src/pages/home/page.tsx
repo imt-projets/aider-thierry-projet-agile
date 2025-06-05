@@ -45,7 +45,7 @@ const Home = () => {
                                 /> */}
                             </div>
                             <h2>Bienvenue sur IMT'ventaire!</h2>
-                            <p>Pour afficher la vue objet, sélectionner le dans la hiérarchy</p>
+                            <p>Pour afficher les détails d'un objet, sélectionnez-le dans la hiérarchie</p>
                         </div>
                     }
                   </div>
