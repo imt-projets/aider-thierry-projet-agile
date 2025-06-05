@@ -18,11 +18,14 @@ export const SearchBar = ({onChanges} : SearchBarProps) => {
                 <div className="logo">
                     <FaSearch color="rgba(115, 115, 115, 1)"/>
                 </div>
-                <input 
-                    type="text"
-                    placeholder="Rechercher"
-                    onChange={handleChange}
-                />
+                <div className="input__container">
+                    <input 
+                        type="text"
+                        placeholder="Rechercher"
+                        onChange={handleChange}
+                        name="searchTerm"
+                    />
+                </div>
             </div>
         </div>
     );

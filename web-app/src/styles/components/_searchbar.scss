@@ -18,16 +18,25 @@
         }
     }
 
-    input {
-        padding: 8px;
-        border: none;
-        font-family: $inter-font;
-        font-size: $size-14;
-        outline: none;
+    .input__container {
+        width: 100%;
+        padding: 6px;
+        box-sizing: border-box;
+
+        input {
+            width: 100%;
+            border: none;
+            font-family: $inter-font;
+            font-size: $size-14;
+            outline: none;
+        
 
         &:focus {
             border: none;
             outline: none;
         }
     }
+    }
+
+    
 }
