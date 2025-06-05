@@ -1,9 +1,22 @@
 import { TreeList } from "../TreeList/TreeList";
-import type { Node } from "../../TreeView";
 import { useContext } from "react";
 import SelectionContext from "@/context/SelectionContext";
 import { Building, Room, School, Item } from "@/components";
+import type { TreeViewDTO } from "@/dto";
 
+export type TreeNodeType = {
+    id: string;
+    name: string;
+    type: "school" | "building" | "room";
+    children?: TreeNodeType[];
+    items?: {
+        id: string;
+        name: string;
+        inventoryNumber: string;
+        serialNumber: string;
+        type: "object";
+    }[]; 
+};
 
 const iconMap = new Map<string, React.ReactNode>([
     ["school", <School style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
@@ -13,7 +26,7 @@ const iconMap = new Map<string, React.ReactNode>([
 ]);
 
 interface TreeNodeProps {
-    node: Node;
+    node: TreeNodeType;
     depth: number;
     openNodes: Record<string, boolean>;
     toggleNode: (id: string) => void; 
@@ -42,7 +55,13 @@ export const TreeNode = ({
             </div>
             {openNodes[node.id] && (
                 <>
-                    {node.children && <TreeList nodes={node.children} depth={depth + 1} openNodes={openNodes} toggleNode={toggleNode} />}
+                    {node.children && (
+                        <TreeList 
+                            nodes={node.children as TreeViewDTO} 
+                            depth={depth + 1} 
+                            openNodes={openNodes} 
+                            toggleNode={toggleNode} 
+                    />)}
                     {node.items && node.items.map(item => (
                         <div
                             key={item.id}

@@ -1,8 +1,8 @@
-import { TreeNode } from "../TreeNode";
-import type { Node } from "../../TreeView";
+import type { TreeViewDTO } from "@/dto";
+import { TreeNode, type TreeNodeType } from "../TreeNode";
 
 interface TreeListProps {
-    nodes: Node[];
+    nodes: TreeViewDTO;
     depth: number;
     openNodes: Record<string, boolean>;
     toggleNode: (id: string) => void;
@@ -20,7 +20,7 @@ export const TreeList = ({
                 {nodes.map(node => (
                     <TreeNode
                         key={node.id}
-                        node={node}
+                        node={node as TreeNodeType}
                         depth={depth}
                         openNodes={openNodes}
                         toggleNode={toggleNode}
