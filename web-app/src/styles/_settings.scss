@@ -1,5 +1,5 @@
-@use "theme/colors";
-@use "theme/fonts";
+@use "theme/colors" as *;
+@use "theme/fonts" as *;
 
 * {
     margin: 0;
@@ -17,39 +17,39 @@ ul {
 
 a {
     text-decoration: none;
-    color: colors.$white;
+    color: $white;
 }
 
 button {
     cursor: pointer;
     border: unset;
     background-color: unset;
-    font-family: fonts.$inter-font;
-    font-size: fonts.$size-14;
+    font-family: $inter-font;
+    font-size: $size-14;
 }
 
 
 h1,h2 {
-    font-family: fonts.$roboto-font;
+    font-family: $roboto-font;
     font-weight: bold;
 }
 
 label {
-    font-family: fonts.$inter-font;
+    font-family: $inter-font;
 }
 
 h1 {
-    font-size: fonts.$size-32;
+    font-size: $size-32;
 }
 
 h2 {
-    font-size: fonts.$size-24;
+    font-size: $size-24;
 }
 
 
 li {
-    font-family: fonts.$roboto-font;
-    font-size: fonts.$size-24;
+    font-family: $roboto-font;
+    font-size: $size-24;
     font-weight: 400;
 }
 
@@ -57,11 +57,11 @@ li {
 body {
     overflow-x: hidden;
     min-height: 100vh;
-    background: colors.$gray;
+    background: $gray;
 }
 
 p {
-    font-family: fonts.$inter-font;
+    font-family: $inter-font;
 }
 
 #root {
