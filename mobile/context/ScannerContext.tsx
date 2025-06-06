@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 interface ScannerContextType {
   scannedCodes: string[];
@@ -10,6 +11,9 @@ interface ScannerContextType {
   setIsScannerActive: (active: boolean) => void;
   restartScan: () => void;
   handleSendInventory: () => void;
+  handleSendObject: () => void;
+  mode: 'inventoryRoom' | 'addingObject' | null;
+  setMode: (mode: 'inventoryRoom' | 'addingObject' | null) => void;
 }
 
 interface ResponseData {
@@ -36,8 +40,7 @@ export class ResponseHelper implements ResponseData {
       this.meta = meta
   }
 }
-const API_URL = "http://10.144.195.110:3000";
-
+const API_URL = "http://10.144.197.140:3000";
 
 type RequestMethod = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -122,6 +125,7 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
   const [isScannerActive, setIsScannerActive] = useState(true);
   const [scannedCodes, setScannedCodes] = useState<string[]>([]);
   const [roomCode, setRoomCodeState] = useState<string | null>(null);
+  const [mode, setMode] = useState<'inventoryRoom' | 'addingObject' | null>(null);
 
   const addScannedCode = (code: string) => {
     setScannedCodes(prev => (prev.includes(code) ? prev : [...prev, code]));
@@ -162,8 +166,40 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   
+  const handleSendObject = async () => {
+    try {
+      if (!roomCode) {
+        console.error("Code de salle non défini.");
+        return;
+      }
   
+      // Utilise RequestHelper.get au lieu de fetch direct
+      const roomResponse = await RequestHelper.get(`/structure/room/${roomCode}`);
+      const roomId = roomResponse?.data?.id;
   
+      if (!roomId) {
+        console.error("ID de salle non trouvé dans la réponse.");
+        return;
+      }
+  
+      // Utilise RequestHelper.put pour mettre à jour
+      const updateResponse = await RequestHelper.put(`/item/${scannedCodes[0]}/room`, {
+        id: roomId,
+      });
+  
+      if (!updateResponse?.ok) {
+        console.error("Erreur lors de la mise à jour de l’inventaire.");
+        return;
+      }
+  
+      console.log("Objet ajouté avec succès !");
+      restartScan();
+      router.push('/');
+  
+    } catch (error) {
+      console.error("Erreur réseau ou interne :", error);
+    }
+  };
 
   const resetScannedCodes = () => setScannedCodes([]);
   const setRoomCode = (code: string) => setRoomCodeState(code);
@@ -185,7 +221,10 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
         isScannerActive,
         setIsScannerActive,
         restartScan,
+        mode,
+        setMode,
         handleSendInventory,
+        handleSendObject,
       }}
     >
       {children}

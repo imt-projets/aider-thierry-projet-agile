@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, Vibration } from 'react-native';
-import { CameraView } from 'expo-camera';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Haptics from 'expo-haptics';
+import { useAudioPlayer } from 'expo-audio';
+
 
 interface ScannerProps {
   message: string;
@@ -26,22 +28,45 @@ const Scanner: React.FC<ScannerProps> = ({
   isActive,
   step,
 }) => {
+  const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
+  const scanLock = useRef(false); // Ajout du verrou
+  const scannerSound = require('../assets/scanner-sound.mp3');
+  const player = useAudioPlayer(scannerSound);
 
   useEffect(() => {
     setScanned(false);
+    scanLock.current = false; // Réinitialise le verrou lors du reset
   }, [resetTrigger]);
 
-  const handleBarCodeScanned = ({ data }: { data: string }) => {
-    if (!scanned) {
-      setScanned(true);
-      Vibration.vibrate(200);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      onScan(data);
-
-      if (scanMode === 'multiple') {
-        setTimeout(() => setScanned(false), 1000);
+  useEffect(() => {
+      if(!permission?.granted) {
+          requestPermission();
       }
+  }, [])
+
+ const handleBarCodeScanned = async ({ data }: { data: string }) => {
+    if (scanLock.current) return; // Bloque immédiatement les scans suivants
+    scanLock.current = true;
+    setScanned(true);
+    Vibration.vibrate(200);
+
+    try {
+      // Avant chaque play, on replace la tête au début
+      await player.seekTo(0);
+      player.play();
+    } catch (e) {
+      console.warn("Impossible de (re)jouer le son :", e);
+    }
+
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    onScan(data);
+
+    if (scanMode === 'multiple') {
+      setTimeout(() => {
+        setScanned(false);
+        scanLock.current = false; // Déverrouille après le délai
+      }, 2000);
     }
   };
 
@@ -68,7 +93,7 @@ const styles = StyleSheet.create({
   frame: {
     width: 335,
     height: 339,
-    borderWidth: 2,
+    borderWidth: 5,
     borderRadius: 16,
     overflow: 'hidden',
     backgroundColor: '#eee',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle, View } from 'react-native';
 
 interface ButtonProps {
   title: string;
@@ -7,15 +7,23 @@ interface ButtonProps {
   type?: 'primary' | 'danger' | 'outline' | 'success';
   style?: ViewStyle;
   textStyle?: TextStyle;
+  icon?: React.ReactNode;
 }
 
-const Button: React.FC<ButtonProps> = ({ title, onPress, type = 'primary', style, textStyle }) => {
+const Button: React.FC<ButtonProps> = ({ title, onPress, type = 'primary', style, textStyle, icon }) => {
   const baseStyle = [styles.button, styles[type], style];
   const textBaseStyle = [styles.text, styles[`${type}Text`], textStyle];
 
   return (
     <TouchableOpacity style={baseStyle} onPress={onPress}>
-      <Text style={textBaseStyle}>{title}</Text>
+      {icon && (
+        <View style={{ marginRight: 12, marginLeft: 15, justifyContent: 'center' }}>
+          {icon}
+        </View>
+      )}
+      <View style={{ flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center' }}>
+        <Text style={textBaseStyle}>{title}</Text>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -24,34 +32,35 @@ const styles = StyleSheet.create({
   button: {
     display : 'flex',
     flexDirection : 'row',
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 14,
     alignItems: 'center',
     marginHorizontal: 4,
-    shadowColor : 'gray',
     marginBottom : 20,
     height : 83,
     width : 318,
     marginTop : 0,
     marginRight : 'auto',
     marginLeft : 'auto',
-    justifyContent : 'center'
-
-
+    justifyContent : 'center',
+    // Ombre iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    // Ombre Android
+    elevation: 6,
   },
   primary: { backgroundColor: '#1976D2' },
   danger: { backgroundColor: '#F44336' },
   success : {
-    flex: 1,
     backgroundColor: '#009B12',
-
   },
   outline: {
     backgroundColor: '#fff',
-    borderWidth: 1,
     borderColor: '#222',
   },
-  text: { fontSize: 16, fontWeight: 'bold' },
+  text: { fontSize: 22, fontWeight: 'bold' },
   primaryText: { color: '#fff' },
   dangerText: { color: '#fff' },
   outlineText: { color: '#222' },

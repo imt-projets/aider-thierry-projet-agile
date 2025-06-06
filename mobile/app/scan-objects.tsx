@@ -7,6 +7,7 @@ import { useScanner } from '@/context/ScannerContext';
 import Header from '@/components/Header';
 import Button from '@/components/Button';
 import { layout } from '@/styles/common';
+import { Entypo } from '@expo/vector-icons';
 
 export default function ScanObjectsScreen() {
   const [lastScanned, setLastScanned] = useState<string | null>(null);
@@ -17,7 +18,7 @@ export default function ScanObjectsScreen() {
   const handleScan = (code: string) => {
     addScannedCode(code);
     setLastScanned(code);
-    setTimeout(() => setLastScanned(null), 1000);
+    setTimeout(() => setLastScanned(null), 2000);
   };
 
   return (
@@ -27,7 +28,7 @@ export default function ScanObjectsScreen() {
       <Scanner
         message="Veuillez scanner les objets de la salle"
         messageColor="#222"
-        frameColor={lastScanned ? '#4caf50' : '#1976D2'}
+        frameColor={lastScanned ? '#4caf50' : '#222'}
         onScan={handleScan}
         scanMode="multiple"
         scannedCount={scannedCodes.length}
@@ -37,7 +38,7 @@ export default function ScanObjectsScreen() {
       />
 
       <View style={layout.footer}>
-        <Button title="Saisir le code" onPress={() => {}} type="outline" />
+        <Button title="Saisir le code" onPress={() => {}} type="outline" icon={<Entypo name="pencil" size={24} color="black" />} />
         <Button
           title="Terminer"
           onPress={() => {
@@ -45,6 +46,7 @@ export default function ScanObjectsScreen() {
             setIsScannerActive(false);
           }}
           type="primary"
+          icon={<Entypo name="check" size={24} color="white" />}
         />
       </View>
 
