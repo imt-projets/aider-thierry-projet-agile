@@ -49,7 +49,7 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
             title: 'Actions',
             align: 'flex-end',
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            renderCell : row => {
+            renderCell : () => {
                 return (
                     <div className="actions">
                         <Link to={``}>
