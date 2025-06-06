@@ -26,6 +26,19 @@ services:
         depends_on:
             - db
 
+    frontend:
+        container_name: frontend
+        build:
+            context: ./web-app
+            dockerfile: dockerfile
+        ports:
+        - "8080:8080"
+        networks:
+        - app_network
+        depends_on:
+        - aider-thierry-api
+
+
 volumes:
     postgres_data:
         driver: local
