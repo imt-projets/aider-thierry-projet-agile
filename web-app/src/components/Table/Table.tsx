@@ -4,7 +4,7 @@ export type Row = { [key: string]: unknown };
 export type Column = {
     field : string
     title : string 
-    renderCell?: (row: Row) => ReactNode
+    renderCell?: (row: Row, index: number) => ReactNode
     align? : FlexAlignment
 };
 
@@ -48,7 +48,7 @@ export const Table = ({ columns, data, columnsTemplate } : TableProps) => {
         );
     }
 
-    const displayColumns = (row : Row) => {
+    const displayColumns = (row : Row, rowIndex: number) => {
         return columns.map(column => {
 
             const value = row[column.field];
@@ -61,7 +61,7 @@ export const Table = ({ columns, data, columnsTemplate } : TableProps) => {
                 >
                     {
                         column.renderCell 
-                            ? column.renderCell(row)
+                            ? column.renderCell(row, rowIndex)
                             : <p>{String(value)}</p>
                     }
                 </div>
@@ -75,7 +75,7 @@ export const Table = ({ columns, data, columnsTemplate } : TableProps) => {
                 className="row"
                 key={index}
                 style={{ gridTemplateColumns: getTemplateColumns() }}>
-                {displayColumns(row)}
+                {displayColumns(row, index)}
             </div>
         );
     }

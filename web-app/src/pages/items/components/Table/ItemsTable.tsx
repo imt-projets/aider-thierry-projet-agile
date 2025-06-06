@@ -19,8 +19,9 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
 
     const columns : Column[] = [
         {
-            field: "",
+            field: "id",
             title: "#",  
+            renderCell: (_row, idx) => <p>{idx + 1}</p>
         },
         {
             field: "name",
@@ -80,7 +81,7 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
 }
 
 const columnsItemsTemplate = new Map<string, number>([
-    ["id", 0.5],
+    ["id", 0.30],
     ["name", 2],
     ["inventoryNumber", 1],
     ["brand", 1],
