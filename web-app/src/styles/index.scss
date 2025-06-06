@@ -1,17 +1,32 @@
 // Theme
-@use 'theme/colors';
-@use 'theme/fonts';
+@use './theme/colors';
+@use './theme/fonts';
 
 // Settings
 @use 'settings';
 
+// Layout
+@use './layouts/pageLayout';
+
 // Pages
-@use 'pages/home';
+@use './pages/home';
+@use './pages/items';
+
+// Core component
+@use './components/formPart/formtextarea';
+@use './components/formPart/formfield';
+@use './components/formPart/formSelectField';
+@use './components/table';
+@use './components/iconButton';
 
 // Components
-@use 'components/treeView';
-@use 'components/form';
-@use 'components/pathBar';
-@use 'components/menu';
-@use 'components/historic';
+@use './components/header';
+@use './components/statisticsModal';
+@use './components/treeView';
+@use './components/searchBar';
+@use './components/objectForm';
+@use './components/pathBar';
+@use './components/objectTabs';
+@use './components/objectDetails';
+@use './components/itemsTable';
 

@@ -1,0 +1,13 @@
+@use '../theme/colors';
+
+.icon-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+
+    svg {
+        width: 28px;
+        height: 28px;
+    }
+}

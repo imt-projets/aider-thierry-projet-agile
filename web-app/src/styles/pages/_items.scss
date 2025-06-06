@@ -1,0 +1,19 @@
+#item {
+    .item--container {
+        padding: 32px;
+        width: 100%;
+        display: inherit;
+        flex-direction: column;
+        
+        gap: 32px;
+    
+        .row {
+            display: inherit;
+            width: 100%;
+        }
+
+        #statistics {
+            gap: 32px;
+        }
+    }
+}
