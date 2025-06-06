@@ -1,68 +1,90 @@
-@use '../theme/colors' as *;
+@use '../theme/colors';
 
-#home {
-    
-    .container--inventory-view {
-        width: 22%;
-        padding-right: 6px;        
-    }
+#home-page {
+    display: flex;
+    width: 100%;
+    height: 100%;
 
-    .container--object-view {
-        width: 100%;
-        padding-left: 6px;
-        gap: 8px;
-        display: flex;
-        flex-direction: column;
-
-        .container--left {
-            display: inherit;
-            flex-direction: row;
-            width: 100%;
-        }
-
-        .container--right {
-            display: inherit;
-            flex-direction: row;
-        }
-
-
-        .container--form-view {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-
-            gap: 1px;
-        }
-    }
-
-    .default--view {
-        background-color: $white;
+    .container--app {
         width: 100%;
         height: 100%;
+        display: inherit;
+        flex-direction: row;
 
-        display: flex;
-        flex-direction: column;
+        
+        .navigation--drawer {
+            background-color: colors.$blue;
+            height: 100%;
+            width: 64px;
+        }
 
-        align-items: center;
-        justify-content: center;
+        .container--inventory-view {
+            width: 22%;
+            padding: 24px;
+            padding-right: 6px;
 
-        gap: 10px;
 
-        .container-logos {
+            
+        }
+
+        .container--object-view {
+            width: 100%;
+            padding: 24px;
+            padding-left: 6px;
+            gap: 8px;
             display: flex;
-            gap: 36px;
+            flex-direction: column;
 
-            img {
-                width: 100px;
-                height: 100px;
+            .container--left {
+                display: inherit;
+                flex-direction: row;
+                width: 100%;
             }
 
-            .imt-logo {
-                width: 180px;
-                height: 100px;
+            .container--right {
+                display: inherit;
+                flex-direction: row;
             }
-        }           
+
+
+            .container--form-view {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+
+                gap: 1px;
+            }
+       }
+
+        .default--view {
+            background-color: colors.$white;
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 10px;
+
+            .container-logos {
+                display: flex;
+                gap: 36px;
+
+                img {
+                    width: 100px;
+                    height: 100px;
+                }
+
+                .imt-logo {
+                    width: 180px;
+                    height: 100px;
+                }
+            }           
+        }
     }
 }

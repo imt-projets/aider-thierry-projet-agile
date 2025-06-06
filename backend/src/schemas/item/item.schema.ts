@@ -13,6 +13,5 @@ export const ItemSchema = z.object({
     warrantyEndDate: z.string().transform(str => new Date(str)),
     endOfLifeDate: z.string().transform(str => new Date(str)),
     brand: z.string(),
-    model: z.string(),
-    state: z.string()
+    model: z.string()
 })

@@ -1,19 +1,16 @@
 import { z } from "zod";
 
-// TODO: Add ItemType, Comments, ...
+// TODO: Add State, ItemType, Comments, ...
 export const ItemSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	inventoryNumber: z.string(),
-	brand: z.string(),
-	model: z.string(),
-	description: z.string(),
-	warrantyEndDate: z.string(),
-	endOfLifeDate: z.string(),
-	price: z.number(),
-	state: z.string()
+  id: z.string(),
+  name: z.string(),
+  inventoryNumber: z.string(),
+  brand: z.string(),
+  model: z.string(),
+  description: z.string(),
+  warrantyEndDate: z.string(),
+  endOfLifeDate: z.string(),
+  price: z.number()
 });
 
-
-export const ItemsSchema = z.array(ItemSchema);
 export type ItemDTO = z.infer<typeof ItemSchema>;

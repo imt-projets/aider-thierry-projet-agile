@@ -2,8 +2,6 @@ import { z } from "zod";
 import { IdentityFieldsSchema } from "../core";
 
 export const TreeViewItemSchema = IdentityFieldsSchema.extend({
-    inventoryNumber: z.string(),
-    serialNumber: z.string()
 });
 
 export const TreeViewRoomSchema = IdentityFieldsSchema.extend({
@@ -23,8 +21,4 @@ export const TreeViewSchoolSchema = IdentityFieldsSchema.extend({
 
 export const TreeViewSchema = z.array(TreeViewSchoolSchema);
 
-export type TreeViewItem = z.infer<typeof TreeViewItemSchema>;
-export type TreeViewRoom = z.infer<typeof TreeViewRoomSchema>;
-export type TreeViewBuilding = z.infer<typeof TreeViewBuildingSchema>;
-export type TreeViewSchool = z.infer<typeof TreeViewSchoolSchema>;
 export type TreeViewDTO = z.infer<typeof TreeViewSchema>;
