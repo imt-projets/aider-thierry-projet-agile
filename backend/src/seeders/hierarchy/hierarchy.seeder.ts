@@ -1,6 +1,7 @@
 import { Seeder } from "@jorgebodega/typeorm-seeding";
 import { DataSource } from "typeorm";
 import { entities } from "@/entities";
+import { ItemStateTypeEnum } from "@/entities/business";
 
 export class HierarchySeeder extends Seeder {
     async run(dataSource: DataSource) {
@@ -86,7 +87,8 @@ export class HierarchySeeder extends Seeder {
                 serialNumber: "456123",
                 inventoryNumber: "25520",
                 orderNumber: "349843",
-                model: "ADDE"
+                model: "ADDE",
+                state: ItemStateTypeEnum.NEW
             }),
             // première table J142
             itemRepository.create({
@@ -102,7 +104,8 @@ export class HierarchySeeder extends Seeder {
                 serialNumber: "123456",
                 inventoryNumber: "26300",
                 orderNumber: "349822",
-                model: "LACK"
+                model: "LACK",
+                state: ItemStateTypeEnum.FAIR
             }),
 
             // PROJECTEUR J142
@@ -119,8 +122,8 @@ export class HierarchySeeder extends Seeder {
                 serialNumber: "123465",
                 inventoryNumber: "25136",
                 orderNumber: "349811",
-                model: "EB-X41"
-                
+                model: "EB-X41",
+                state: ItemStateTypeEnum.GOOD
             }),
 
             // table professeur J142
@@ -137,7 +140,8 @@ export class HierarchySeeder extends Seeder {
                 serialNumber: "123456",
                 inventoryNumber: "25626",
                 orderNumber: "349822",
-                model: "LACK"
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
             }),
 
 
@@ -155,7 +159,8 @@ export class HierarchySeeder extends Seeder {
                 serialNumber: "456123",
                 inventoryNumber: "25293",
                 orderNumber: "349843",
-                model: "ADDE"
+                model: "ADDE",
+                state: ItemStateTypeEnum.NEW
             }),
 
 
@@ -173,7 +178,8 @@ export class HierarchySeeder extends Seeder {
                 serialNumber: "123456",
                 inventoryNumber: "26404",
                 orderNumber: "349822",
-                model: "LACK"
+                model: "LACK",
+                state: ItemStateTypeEnum.PENDING_DESTRUCTION
             }),
 
             // PROJECTEUR J144
@@ -190,8 +196,8 @@ export class HierarchySeeder extends Seeder {
                 serialNumber: "123465",
                 inventoryNumber: "25141",
                 orderNumber: "349811",
-                model: "EB-X41"
-                
+                model: "EB-X41",
+                state: ItemStateTypeEnum.FAIR
             }),
 
             // wifi access J142
@@ -208,8 +214,8 @@ export class HierarchySeeder extends Seeder {
                 serialNumber: "12346589",
                 inventoryNumber: "29627",
                 orderNumber: "3498113242",
-                model: "AR119"
-                
+                model: "AR119",
+                state: ItemStateTypeEnum.GOOD
             }),
         ];
 

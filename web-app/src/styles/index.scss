@@ -5,13 +5,25 @@
 // Settings
 @use 'settings';
 
+// Layout
+@use './layouts/pageLayout';
+
 // Pages
 @use 'pages/home';
+@use 'pages/items';
+
+// Core component
+@use 'components/formPart/formtextarea';
+@use 'components/formPart/formfield';
+@use 'components/formPart/formSelectField';
 
 // Components
+@use 'components/header';
+@use 'components/statisticsModal';
 @use 'components/treeView';
-@use 'components/form';
+@use 'components/searchBar';
+@use 'components/objectForm';
 @use 'components/pathBar';
-@use 'components/menu';
-@use 'components/historic';
+@use 'components/objectTabs';
+@use 'components/objectDetails';
 

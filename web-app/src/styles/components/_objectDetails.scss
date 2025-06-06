@@ -1,5 +1,5 @@
-@use '../theme/colors';
-@use '../theme/fonts';
+@use '../theme/colors' as *;
+@use '../theme/fonts' as *;
 
 #historic--container {
     width: 100%;
@@ -9,6 +9,6 @@
     flex-direction: column;
     justify-content: center;
     margin-left: 1.5rem;
-    background-color: colors.$white;
+    background-color: $white;
     box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 1.5px 4px 0 rgba(0, 0, 0, 0.10);
 }

@@ -1,1 +1,2 @@
-export { ObjectView, PathBarView, MenuView, HistoricView } from "./ObjectView";
+export * from "./ObjectView";
+export * from './TreeView';
