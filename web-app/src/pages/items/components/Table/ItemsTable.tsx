@@ -1,6 +1,6 @@
 import type { ItemDTO } from "@/dto"
 import { Link } from "react-router-dom";
-import { IconButton, Table, type Column } from "@/components";
+import { Chip, IconButton, Table, type Column } from "@/components";
 import { FaEdit } from "react-icons/fa";
 import { useContext } from "react";
 import SelectionContext from "@/context/SelectionContext";
@@ -19,7 +19,7 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
 
     const columns : Column[] = [
         {
-            field: "temp3",
+            field: "",
             title: "#",  
         },
         {
@@ -41,8 +41,9 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
             title: "Description"
         },
         {
-            field: "temp2",
-            title: "Salle"
+            field: "room",
+            title: "Salle",
+            renderCell: row => <Chip text={row.room?.name ?? ""} color="#E5E7FF" textColor="#4F5AED"/>
         },
         {
             field: "price",
@@ -88,5 +89,6 @@ const columnsItemsTemplate = new Map<string, number>([
     ["endOfLifeDate", 1],
     ["price", 0.75],
     ["description", 3],
-    ["actions", 0.75]
+    ["actions", 0.75],
+    ["room", 0.75]
 ]);

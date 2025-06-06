@@ -6,7 +6,7 @@ import { ItemsTable, StatisticsModal } from "./components";
 
 const Items = () => {
 
-    const response = useFetch('/item', []);
+    const response = useFetch('/item/room', []);
 
     const [items, setItems] = useState<ItemDTO[]>([]);
 

@@ -16,6 +16,11 @@ const item = createRouterConfig({
             schema: schema.swagger.items.getAll
         },
         {
+            handlerName: "getItemsWithRooms",
+            method: "GET",
+            url: '/room'
+        },
+        {
             handlerName: "getItemById",
             method: "GET",
             url: '/:id',

@@ -4,6 +4,19 @@ import { ReplyHelper } from "@/helpers";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Repository } from "typeorm";
 
+
+export interface ItemByIdParams {
+    id : entities.Item["id"];
+}
+
+export interface ItemByInventoryNumberParams {
+    inventoryNumber : entities.Item["inventoryNumber"];
+}
+
+export interface UpdateItemRoomBody {
+    id: entities.Structure["id"];
+}
+
 export const getItems = async (
     _ : FastifyRequest, 
     reply : FastifyReply, 
@@ -18,10 +31,20 @@ export const getItems = async (
     ReplyHelper.send(reply, enums.StatusCode.OK, items);
 }
 
+export const getItemsWithRooms = async (
+    _: FastifyRequest,
+    reply: FastifyReply,
+    repositories: {
+        primary: Repository<entities.Item>
+    }
+) => {
+    const itemRepository = repositories.primary;
 
-export interface ItemByIdParams {
-    id : entities.Item["id"];
+    const items = await itemRepository.find({ relations: { room: true }})
+
+    ReplyHelper.send(reply, enums.StatusCode.OK, items);
 }
+
 
 export const getItemById = async (
     request: FastifyRequest<{ Params : ItemByIdParams}>,
@@ -42,14 +65,6 @@ export const getItemById = async (
         return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "Item not found" );
     
     ReplyHelper.send(reply, enums.StatusCode.OK, item);
-}
-
-export interface ItemByInventoryNumberParams {
-    inventoryNumber : entities.Item["inventoryNumber"];
-}
-
-export interface UpdateItemRoomBody {
-    id: entities.Structure["id"];
 }
 
 export const updateItemRoomFromInventoryId = async (
