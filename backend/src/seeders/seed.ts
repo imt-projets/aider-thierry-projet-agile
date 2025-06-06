@@ -4,13 +4,12 @@ import { runSeeders, SeederOptions } from 'typeorm-extension'
 import { HierarchySeeder } from "./hierarchy";
 import { UserSeeder } from "./user"; 
 import { User } from "@/services/user";
-
+import { InventoryToConfirmSeeder } from "./inventoryToConfirm/inventoryToConfirm.seeder";
 
 const initializeSeeder = async () => {
-
     const options : DataSourceOptions & SeederOptions = {
         ...getDatabaseOptions(environment),
-        seeds: [HierarchySeeder, UserSeeder],
+        seeds: [HierarchySeeder, UserSeeder, InventoryToConfirmSeeder],
     }
 
     const dataSource = await new DataSource(
