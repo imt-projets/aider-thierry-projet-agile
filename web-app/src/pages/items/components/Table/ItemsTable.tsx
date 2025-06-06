@@ -1,7 +1,6 @@
 import type { ItemDTO } from "@/dto"
-import Table, { type Column } from "./Table"
 import { Link } from "react-router-dom";
-import IconButton from "@/components/IconButton/IconButton";
+import { IconButton, Table, type Column } from "@/components";
 import { FaEdit } from "react-icons/fa";
 import { useContext } from "react";
 import SelectionContext from "@/context/SelectionContext";
@@ -18,7 +17,6 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
         selectItem(id);
     }
 
-    console.log(items);
     const columns : Column[] = [
         {
             field: "temp3",
@@ -54,7 +52,6 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
             field: 'action',
             title: 'Actions',
             align: 'flex-end',
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             renderCell : row => {
                 return (
                     <div className="actions">
@@ -74,7 +71,22 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
             <Table
                 columns={columns}
                 data={items}
+                columnsTemplate={columnsItemsTemplate}
             />
         </div>
     )
 }
+
+const columnsItemsTemplate = new Map<string, number>([
+    ["id", 0.5],
+    ["name", 2],
+    ["inventoryNumber", 1],
+    ["brand", 1],
+    ["model", 1],
+    ["state", 1],
+    ["warrantyEndDate", 1],
+    ["endOfLifeDate", 1],
+    ["price", 0.75],
+    ["description", 3],
+    ["actions", 0.75]
+]);

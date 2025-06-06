@@ -1,40 +1,26 @@
 import { type ReactNode } from 'react';
 
-export type Row = { [key: string]: unknown }
+export type Row = { [key: string]: unknown };
 export type Column = {
     field : string
     title : string 
     renderCell?: (row: Row) => ReactNode
     align? : FlexAlignment
-}
+};
 
-type FlexAlignment = "flex-start" | "center" | "flex-end"
+type FlexAlignment = "flex-start" | "center" | "flex-end";
 
 interface TableProps {
     columns : Column[]
-    data : Row[]
-}
+    data : Row[],
+    columnsTemplate : Map<string,number>
+};
 
-const columnsMap = new Map<string, number>([
-    ["id", 0.5],
-    ["name", 2],
-    ["inventoryNumber", 1],
-    ["brand", 1],
-    ["model", 1],
-    ["state", 1],
-    ["warrantyEndDate", 1],
-    ["endOfLifeDate", 1],
-    ["price", 0.75],
-    ["description", 3],
-    ["actions", 0.75]
-])
-
-const Table = ({ columns, data } : TableProps) => {
+export const Table = ({ columns, data, columnsTemplate } : TableProps) => {
 
     const getTemplateColumns = () => {
         return columns.reduce((template, column) => {
-            // Get width ratio from the map or default to 1
-            const widthRatio = columnsMap.get(column.field) || 1;
+            const widthRatio = columnsTemplate.get(column.field) || 1;
             return template + widthRatio + 'fr '
         }, '');
     }
@@ -59,7 +45,7 @@ const Table = ({ columns, data } : TableProps) => {
                     )
                 }
             </div>
-        )
+        );
     }
 
     const displayColumns = (row : Row) => {
@@ -79,7 +65,7 @@ const Table = ({ columns, data } : TableProps) => {
                             : <p>{String(value)}</p>
                     }
                 </div>
-            )   
+            );
         })
     }
 
@@ -90,7 +76,8 @@ const Table = ({ columns, data } : TableProps) => {
                 key={index}
                 style={{ gridTemplateColumns: getTemplateColumns() }}>
                 {displayColumns(row)}
-            </div>)
+            </div>
+        );
     }
 
     return (
@@ -102,7 +89,5 @@ const Table = ({ columns, data } : TableProps) => {
                 {displayRows()}
             </div>
         </div>
-    )
+    );
 }
-
-export default Table;
