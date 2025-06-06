@@ -47,7 +47,8 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
         },
         {
             field: "price",
-            title: "Prix"
+            title: "Prix",
+            renderCell: row => <p>{row.price + " €"}</p>
         },
         {
             field: 'action',
