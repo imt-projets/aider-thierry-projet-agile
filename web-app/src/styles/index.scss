@@ -5,11 +5,14 @@
 // Settings
 @use 'settings';
 
+// Layout
+@use './layouts/pageLayout';
+
 // Pages
 @use 'pages/home';
 
-
 // Core component
+@use 'components/header';
 @use 'components/formPart/formtextarea';
 @use 'components/formPart/formfield';
 @use 'components/formPart/formSelectField';
