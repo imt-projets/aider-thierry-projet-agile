@@ -10,14 +10,16 @@
 
 // Pages
 @use 'pages/home';
+@use 'pages/items';
 
 // Core component
-@use 'components/header';
 @use 'components/formPart/formtextarea';
 @use 'components/formPart/formfield';
 @use 'components/formPart/formSelectField';
 
 // Components
+@use 'components/header';
+@use 'components/statisticsModal';
 @use 'components/treeView';
 @use 'components/searchBar';
 @use 'components/objectForm';

@@ -14,4 +14,6 @@ export const ItemSchema = z.object({
 	state: z.string()
 });
 
+
+export const ItemsSchema = z.array(ItemSchema);
 export type ItemDTO = z.infer<typeof ItemSchema>;
