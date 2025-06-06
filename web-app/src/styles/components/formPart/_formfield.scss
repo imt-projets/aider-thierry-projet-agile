@@ -1,0 +1,28 @@
+@use '../../theme/fonts' as *;
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: space-between;
+
+    .label {
+        font-family: $inter-font;
+        font-size: $size-16;
+    }
+
+    .input-container{
+        display: inherit;
+        height: 30px;
+        overflow: hidden;
+
+        input {
+            width: 100%;
+            border-radius: 8px;
+            padding: 8px;
+
+            font-family: $inter-font;
+            font-size: $size-14;
+        }
+    }
+}

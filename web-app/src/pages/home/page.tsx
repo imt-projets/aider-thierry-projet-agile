@@ -1,74 +1,52 @@
-import { TreeView } from "@/components";
-import type { TreeViewDTO } from "@/dto";
-import { TreeViewSchema } from "@/dto";
-import { useFetch } from "@/hooks";
-import { useCallback, useEffect, useState } from "react";
-import { ObjectView, PathBarView, MenuView, HistoricView } from "./components";
-import { useAppContext } from "@/context/AppContext";
+import { TreeView } from "@/pages/home/components/TreeView";
+import {  useContext } from "react";
+import { ObjectDetails, PathBarView, ObjectTabs, ObjectForm } from "./components";
+import SelectionContext from "@/context/SelectionContext";
+import PageLayout from "@/layouts/PageLayout";
 
 const Home = () => {
-
-    const { selectedElement, isLoading, error } = useAppContext();
+    const { selectedItem } = useContext(SelectionContext);
     
-    const response = useFetch('/hierarchy', [])
-    const [treeView, setTreeView] = useState<TreeViewDTO>()
-
-    const fetchHierarchy = useCallback(() => {
-        if (response.data) {
-            const treeViewParsed = TreeViewSchema.parse(response.data);
-            setTreeView(treeViewParsed);
-        }
-    }, [response.data])
-
-    useEffect(() => {
-        fetchHierarchy()
-    }, [fetchHierarchy]);
-
     return (
-        <div id="home-page">
-            <div className="container--app">
-                <div className="navigation--drawer">
-                </div>
-
-                <div className="container--inventory-view">
-                    {treeView && <TreeView schools={treeView} />}
-                </div>
-
-                  <div className="container--object-view">
-                    {selectedElement ? (
-                        <>
-                            <PathBarView />
-                            <div className="container--form-view">
-                                <div className="container--left">
-                                    <MenuView />
-                                    <ObjectView />
-                                </div>
-                                <div className="container--right">
-                                    <HistoricView />
-                                </div>
-                            </div>
-                        </>
-                    ) : 
-                        <div className="default--view">
-                            <div className="container-logos">
-                                <img 
-                                    src="./public/logo-barcode.png" 
-                                    alt="Logo Barcode" 
-                                    className="barcode-logo"
-                                />
-                                {/* <img 
-                                    src="./public/logo-imt.png" 
-                                    alt="Logo imt" 
-                                    className="imt-logo"
-                                /> */}
-                            </div>
-                            <h2>Bienvenue sur IMT'ventaire!</h2>
-                            <p>Pour afficher la vue objet, sélectionner le dans la hiérarchy</p>
-                        </div>
-                    }
-                  </div>
+        <PageLayout id="home">
+            <div className="container--inventory-view">
+                <TreeView/>
             </div>
-        </div>
+
+            <div className="container--object-view">
+                {selectedItem ? (
+                    <>
+                        <PathBarView />
+                        <div className="container--form-view">
+                            <div className="container--left">
+                                <ObjectTabs />
+                                <ObjectForm />
+                            </div>
+                            <div className="container--right">
+                                <ObjectDetails />
+                            </div>
+                        </div>
+                    </>
+                ) : 
+                    <div className="default--view">
+                        <div className="container-logos">
+                            <img 
+                                src="./logo-barcode.png" 
+                                alt="Logo Barcode" 
+                                className="barcode-logo"
+                            />
+                            {/* <img 
+                                src="./logo-imt.png" 
+                                alt="Logo imt" 
+                                className="imt-logo"
+                            /> */}
+                        </div>
+                        <h2>Bienvenue sur IMT'ventaire!</h2>
+                        <p>Pour afficher les détails d'un objet, sélectionnez-le dans la hiérarchie</p>
+                    </div>
+                }
+            </div>
+        </PageLayout>
     )
 }
 

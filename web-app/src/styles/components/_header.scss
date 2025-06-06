@@ -1,0 +1,6 @@
+@use '../theme/colors' as *;
+
+.navigation--drawer {
+    background-color: $blue;
+    width: 64px;
+}
