@@ -3,7 +3,8 @@ import Table, { type Column } from "./Table"
 import { Link } from "react-router-dom";
 import IconButton from "@/components/IconButton/IconButton";
 import { FaEdit } from "react-icons/fa";
-
+import { useContext } from "react";
+import SelectionContext from "@/context/SelectionContext";
 
 interface ItemsTableProps {
     items : ItemDTO[]
@@ -11,6 +12,11 @@ interface ItemsTableProps {
 
 export const ItemsTable = ({ items } : ItemsTableProps) => {
 
+    const { selectItem } = useContext(SelectionContext);
+
+    const handleClick = (id: string) => {
+        selectItem(id);
+    }
 
     console.log(items);
     const columns : Column[] = [
@@ -49,10 +55,10 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
             title: 'Actions',
             align: 'flex-end',
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            renderCell : () => {
+            renderCell : row => {
                 return (
                     <div className="actions">
-                        <Link to={``}>
+                        <Link to={`/`} onClick={() => handleClick(row.id as string)}>
                             <IconButton>
                                 <FaEdit />
                             </IconButton>
