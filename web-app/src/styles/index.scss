@@ -16,6 +16,8 @@
 @use 'components/formPart/formtextarea';
 @use 'components/formPart/formfield';
 @use 'components/formPart/formSelectField';
+@use 'components/table';
+@use 'components/iconButton';
 
 // Components
 @use 'components/header';
@@ -26,4 +28,5 @@
 @use 'components/pathBar';
 @use 'components/objectTabs';
 @use 'components/objectDetails';
+@use 'components/itemsTable';
 

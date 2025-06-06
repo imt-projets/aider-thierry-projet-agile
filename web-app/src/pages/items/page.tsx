@@ -2,7 +2,7 @@ import { type ItemDTO, ItemsSchema } from "@/dto";
 import { useFetch } from "@/hooks";
 import PageLayout from "@/layouts/PageLayout"
 import { useCallback, useEffect, useState } from "react";
-import { StatisticsModal } from "./components";
+import { ItemsTable, StatisticsModal } from "./components";
 
 const Items = () => {
 
@@ -36,6 +36,12 @@ const Items = () => {
                         color="red"
                         title="Nombre d’objets n’ayant pas de salle"
                         value="2356"
+                    />
+                </div>
+
+                <div className="row">
+                    <ItemsTable
+                        items={items}
                     />
                 </div>
             </div>
