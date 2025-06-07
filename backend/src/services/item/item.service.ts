@@ -2,7 +2,7 @@ import { entities } from "@/entities";
 import { enums } from "@/enums";
 import { ReplyHelper } from "@/helpers";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { Repository } from "typeorm";
+import { FindOptionsWhere, Repository } from "typeorm";
 
 
 export interface ItemByIdParams {
@@ -29,6 +29,36 @@ export const getItems = async (
     const items = await itemRepository.find({})
 
     ReplyHelper.send(reply, enums.StatusCode.OK, items);
+}
+
+
+export interface ItemPaginationParams {
+    page: string;
+}
+
+export const getItemsPaginationTable = async (
+    request: FastifyRequest<{Params: ItemPaginationParams}>, 
+    reply : FastifyReply, 
+    repositories: {
+        primary: Repository<entities.Item>,
+    }
+) => {
+    const itemRepository = repositories.primary;
+
+    const page = parseInt(request.params.page) || 1;
+
+    const pageCount = 8;
+    const skip = (page-1) * pageCount;
+
+
+    const itemsProperties = await itemRepository.findAndCount({
+        skip,
+        take: pageCount,
+        relations: { room: true }
+    })
+
+    ReplyHelper.send(reply, enums.StatusCode.OK, { items : itemsProperties[0], count: itemsProperties[1] });
+
 }
 
 export const getItemsWithRooms = async (

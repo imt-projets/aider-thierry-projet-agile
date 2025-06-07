@@ -21,6 +21,11 @@ const item = createRouterConfig({
             url: '/room'
         },
         {
+            handlerName: "getItemsPaginationTable",
+            method: "GET",
+            url: '/page/:page'
+        },
+        {
             handlerName: "getItemById",
             method: "GET",
             url: '/:id',
