@@ -4,12 +4,14 @@ import { Chip, IconButton, Table, type Column } from "@/components";
 import { FaEdit } from "react-icons/fa";
 import { useContext } from "react";
 import SelectionContext from "@/context/SelectionContext";
+import type { JSX } from "@emotion/react/jsx-runtime";
 
 interface ItemsTableProps {
     items : ItemDTO[]
+    children?: JSX.Element | JSX.Element[]
 }
 
-export const ItemsTable = ({ items } : ItemsTableProps) => {
+export const ItemsTable = ({ items, children } : ItemsTableProps) => {
 
     const { selectItem } = useContext(SelectionContext);
 
@@ -76,6 +78,9 @@ export const ItemsTable = ({ items } : ItemsTableProps) => {
                 data={items}
                 columnsTemplate={columnsItemsTemplate}
             />
+            <div className="children--container">
+                { children ?? null }
+            </div>
         </div>
     )
 }
