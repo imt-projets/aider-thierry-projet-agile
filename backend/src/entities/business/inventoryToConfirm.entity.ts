@@ -7,6 +7,7 @@ type Mapping= {
     itemsList?: string[];
     removedItem?: string[];
     newRoom?: string;
+    newRoomName?: string;
 };
 
 @Entity()
@@ -16,6 +17,9 @@ export class InventoryToConfirm extends EntityBase {
 
     @Column()
     room!: string;
+
+    @Column()
+    roomName!: string;
 
     @Column({ type: 'timestamp' })
     date!: Date;

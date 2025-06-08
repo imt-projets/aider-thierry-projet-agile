@@ -118,8 +118,6 @@ export const editItemsInRoomFromInventoryId = async (
     if (!room) 
         return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "Room not found");
 
-
-
     const { ids: itemIds } = request.body;
 
     const items = await itemRepository.find({
@@ -131,6 +129,7 @@ export const editItemsInRoomFromInventoryId = async (
     }
     
     room.items = items;
+    
     const updatedRoom = await structureRepository.save(room);
 
     return ReplyHelper.send(reply, enums.StatusCode.OK, updatedRoom);
