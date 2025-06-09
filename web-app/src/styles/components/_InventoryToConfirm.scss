@@ -25,6 +25,12 @@ $color-background-success-light: #dcfce7;
   align-items: center;
 }
 
+@mixin flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 @mixin button-base {
   padding: 0.5rem 1.25rem;
   border-radius: 0.5rem;
@@ -181,7 +187,7 @@ $color-background-success-light: #dcfce7;
 }
 
 .inventory-actions {
-  @include flex-between;
+  @include flex-end;
   gap: 1rem;
   margin-top: 2rem;
 }
