@@ -5,6 +5,7 @@ import { InventoryCard } from '.';
 import { RequestHelper } from "@/api";
 import { ConfirmationModal } from "@/components/ConfirmationModal/ConfirmationModal";
 import { Notification } from "@/components/Notification/Notification";
+import PageLayout from "@/layouts/PageLayout";
 
 interface NotificationState {
   message: string;
@@ -168,6 +169,7 @@ export const InventoryToConfirm = () => {
   const currentInventory = inventories[0];
 
   return (
+    <PageLayout id="inventaireToConfirm">
     <div className="inventory-container">
       <h1 className="inventory-title">Inventaires à confirmer</h1>
 
@@ -201,5 +203,6 @@ export const InventoryToConfirm = () => {
         />
       )}
     </div>
+    </PageLayout>
   );
 };

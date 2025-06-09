@@ -33,5 +33,9 @@ const NAVIGATION : NavigationItem[] = [
     {
         title: 'Items',
         path: '/items'
+    },
+    {
+        title : 'Inventaire à confirmer',
+        path : '/inventaireToConfirm'
     }
 ] 
