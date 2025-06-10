@@ -17,13 +17,12 @@ const ITEMS_PER_PAGE = 8;
 
 export const ItemsTable = ({ items, count, page, handleClickOnPagination } : ItemsTableProps) => {
 
-
     const { selectItem } = useContext(SelectionContext);
 
     const handleClick = (id: string) => {
         selectItem(id);
     }
-
+    
     const columns : Column[] = [
         {
             field: "id",
@@ -51,7 +50,11 @@ export const ItemsTable = ({ items, count, page, handleClickOnPagination } : Ite
         {
             field: "room",
             title: "Salle",
-            renderCell: row => <Chip text={row.room?.name ?? ""} color="#E5E7FF" textColor="#4F5AED"/>
+            renderCell: row => 
+                <Chip 
+                    text={row.room?.name ?? ""}  
+                    color="#E5E7FF" textColor="#4F5AED"
+                />
         },
         {
             field: "price",

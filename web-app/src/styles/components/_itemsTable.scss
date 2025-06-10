@@ -10,15 +10,12 @@
         .table-header {
             color: #464F60;
             background-color: #F4F7FC;
-            font-family: $inter-font;
             font-weight: 600;
             font-size: $size-12;
             padding-top: 24px;
         }
 
         .rows {
-
-            font-family: $inter-font;
             font-weight: 400;
             font-size: $size-14;
 
@@ -36,25 +33,9 @@
         margin-right: 24px;
     }
 
-
-    .children--container {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        background-color: #F4F7FC;
-        margin-right: 12px;
-
-
-        color: #687182;
-        font-size: $size-12;
-        font-family: $inter-font;
-
-        .pagination--actions {
-            display: inherit;
-            flex-direction: row;
-            align-items: center;
-            gap: 8px;
-
+    .footer {
+        .pagination--informations > p {
+            color: $gray-board-content;
         }
 
         .icon-button {
@@ -62,12 +43,19 @@
             border-radius: 8px;
         }
 
+        .pagination--actions {
+            display: inherit;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+        }
 
         .pagination--counter {
             font-weight: 600;
 
             display: inherit;
             align-self: center;
+            color: $gray-board-content;
 
             .left {
                 color: $black

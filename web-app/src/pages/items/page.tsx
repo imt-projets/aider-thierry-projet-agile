@@ -1,4 +1,4 @@
-import { type ItemDTO, ItemsPaginationSchema, ItemsSchema } from "@/dto";
+import { type ItemDTO, ItemsPaginationSchema } from "@/dto";
 import { useFetch } from "@/hooks";
 import PageLayout from "@/layouts/PageLayout"
 import { useCallback, useEffect, useState } from "react";
@@ -24,11 +24,11 @@ const Items = () => {
     useEffect(() => fetchItems(),[fetchItems])
 
     const goToPage = (page: number) => {
+        console.log(page)
         if (page > 0 && page !== pagination) {
             setPagination(page);
         }
     };
-
 
     return (
         <PageLayout id="item">
