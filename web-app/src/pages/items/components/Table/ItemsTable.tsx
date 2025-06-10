@@ -50,11 +50,25 @@ export const ItemsTable = ({ items, count, page, handleClickOnPagination } : Ite
         {
             field: "room",
             title: "Salle",
-            renderCell: row => 
-                <Chip 
-                    text={(row as { room?: { name?: string } }).room?.name ?? ""}  
-                    color="#E5E7FF" textColor="#4F5AED"
-                />
+            renderCell: row => {
+                const roomName = (row as { room?: { name?: string } }).room?.name;
+                if (roomName) {
+                    return (
+                        <Chip 
+                            text={roomName}
+                            color="#E5E7FF"
+                            textColor="#4F5AED"
+                        />
+                    );
+                }
+                return (
+                    <Chip 
+                        text="Pas de salle attitrée"
+                        color="#FFE5E5"
+                        textColor="#D32F2F"
+                    />
+                );
+            }
         },
         {
             field: "price",

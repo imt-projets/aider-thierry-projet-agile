@@ -15,7 +15,7 @@ export const ItemSchema = z.object({
   state: z.string(),
   serialNumber: z.string(),
   orderNumber: z.string(),
-  room: RoomSchema.optional()
+  room: RoomSchema.nullable().optional()
 });
 
 export const ItemsSchema = z.array(ItemSchema)
