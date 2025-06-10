@@ -48,7 +48,6 @@ const handleInventoryRoom = async (
     reply: FastifyReply,
     repositories: Repositories
 ): Promise<boolean> => {
-    if (itemIds.length === 0) return true;
 
     try {
         await services.Structure.editItemsInRoomFromInventoryId(
