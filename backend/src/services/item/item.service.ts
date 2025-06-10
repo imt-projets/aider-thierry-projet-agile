@@ -112,7 +112,7 @@ export const updateItemRoomFromInventoryId = async (
     const structureRepository = repositories.structure;
 
     const { inventoryNumber } = request.params;
-    const { id: roomId } = request.body;
+    const { id: roomId } = request.body; 
 
     if (!inventoryNumber) 
         return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "inventoryNumber is required to update room item")
@@ -135,7 +135,6 @@ export const updateItemRoomFromInventoryId = async (
     }
 
     item.room = room;
-
     const updatedItem = await itemRepository.save(item);
 
     return ReplyHelper.send(reply, enums.StatusCode.OK, updatedItem);

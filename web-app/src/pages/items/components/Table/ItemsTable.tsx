@@ -52,7 +52,7 @@ export const ItemsTable = ({ items, count, page, handleClickOnPagination } : Ite
             title: "Salle",
             renderCell: row => 
                 <Chip 
-                    text={row.room?.name ?? ""}  
+                    text={(row as { room?: { name?: string } }).room?.name ?? ""}  
                     color="#E5E7FF" textColor="#4F5AED"
                 />
         },

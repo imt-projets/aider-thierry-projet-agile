@@ -14,15 +14,15 @@ type FlexAlignment = "flex-start" | "center" | "flex-end";
 interface TableProps {
     columns : Column[]
     data : Row[],
-    columnsTemplate : Map<string,number>
-    children: JSX.Element | JSX.Element[]
+    columnsTemplate?: Map<string,number>
+    children?: JSX.Element | JSX.Element[]
 };
 
 export const Table = ({ columns, data, columnsTemplate, children } : TableProps) => {
 
     const getTemplateColumns = () => {
         return columns.reduce((template, column) => {
-            const widthRatio = columnsTemplate.get(column.field) || 1;
+            const widthRatio = columnsTemplate?.get(column.field) ?? 1;
             return template + widthRatio + 'fr '
         }, '');
     }

@@ -4,3 +4,5 @@ export * from './Header';
 export * from './IconButton';
 export * from './Table';
 export * from './Chip';
+export * from './Notification';
+export * from './ConfirmationModal';
