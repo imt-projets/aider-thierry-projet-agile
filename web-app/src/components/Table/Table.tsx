@@ -1,3 +1,4 @@
+import type { JSX } from '@emotion/react/jsx-runtime';
 import { type ReactNode } from 'react';
 
 export type Row = { [key: string]: unknown };
@@ -5,7 +6,7 @@ export type Column = {
     field : string
     title : string 
     renderCell?: (row: Row, index: number) => ReactNode
-    align? : FlexAlignment
+    align? : FlexAlignment,
 };
 
 type FlexAlignment = "flex-start" | "center" | "flex-end";
@@ -14,9 +15,10 @@ interface TableProps {
     columns : Column[]
     data : Row[],
     columnsTemplate : Map<string,number>
+    children: JSX.Element | JSX.Element[]
 };
 
-export const Table = ({ columns, data, columnsTemplate } : TableProps) => {
+export const Table = ({ columns, data, columnsTemplate, children } : TableProps) => {
 
     const getTemplateColumns = () => {
         return columns.reduce((template, column) => {
@@ -87,6 +89,9 @@ export const Table = ({ columns, data, columnsTemplate } : TableProps) => {
                 className="rows" 
             >
                 {displayRows()}
+            </div>
+            <div className="footer">
+                { children ?? null }
             </div>
         </div>
     );
