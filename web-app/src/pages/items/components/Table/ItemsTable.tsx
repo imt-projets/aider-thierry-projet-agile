@@ -1,11 +1,9 @@
 import type { ItemDTO } from "@/dto"
 import { Link } from "react-router-dom";
-import { Chip, IconButton, Table, type Column } from "@/components";
+import { Chip, IconButton, Pagination, Table, type Column } from "@/components";
 import { FaEdit } from "react-icons/fa";
 import { useContext } from "react";
 import SelectionContext from "@/context/SelectionContext";
-import { MdKeyboardArrowLeft } from "react-icons/md";
-import { MdNavigateNext } from "react-icons/md";
 
 interface ItemsTableProps {
     items : ItemDTO[];
@@ -103,27 +101,12 @@ export const ItemsTable = ({ items, count, page, handleClickOnPagination } : Ite
                 <div className="pagination--informations">
                     <p>{(page*ITEMS_PER_PAGE)-ITEMS_PER_PAGE+1}-{page*ITEMS_PER_PAGE} of {count}</p>
                 </div>
-
-                <div className="pagination--actions">
-                    <IconButton 
-                        onClick={() => handleClickOnPagination(page - 1)}
-                            disabled={page <= 1}
-                        >
-                        <MdKeyboardArrowLeft  />
-                    </IconButton>
-
-                    <div className="pagination--counter">
-                        <span className="left">{page}</span>
-                        <span>/ {count/ITEMS_PER_PAGE}</span>                      
-                    </div>
-
-                    <IconButton 
-                        onClick={() => handleClickOnPagination(page + 1)}
-                        disabled={items.length === 0 || items.length % ITEMS_PER_PAGE === 0}
-                    >
-                        <MdNavigateNext/>
-                    </IconButton>
-                </div>
+                <Pagination
+                    page={page}
+                    totalCount={count}
+                    itemsPerPage={ITEMS_PER_PAGE}
+                    onPageChange={handleClickOnPagination}
+                />
             </Table>
         </div>
     )

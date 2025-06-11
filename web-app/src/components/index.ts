@@ -6,3 +6,4 @@ export * from './Table';
 export * from './Chip';
 export * from './Notification';
 export * from './ConfirmationModal';
+export * from './Pagination';

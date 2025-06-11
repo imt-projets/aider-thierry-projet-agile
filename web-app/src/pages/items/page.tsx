@@ -1,34 +1,15 @@
 import { type ItemDTO, ItemsPaginationSchema } from "@/dto";
-import { useFetch } from "@/hooks";
+import { usePaginationResource } from "@/hooks";
 import PageLayout from "@/layouts/PageLayout"
-import { useCallback, useEffect, useState } from "react";
 import { ItemsTable, StatisticsModal } from "./components";
 
 const Items = () => {
 
-    const [pagination, setPagination] = useState(1);
-    const [count, setCount] = useState(1);
-
-    const response = useFetch(`/item/page/${pagination}`, {items: [], count:0});
-
-    const [items, setItems] = useState<ItemDTO[]>([]);
-
-    const fetchItems = useCallback(() => {
-        if (response.data) {
-            const parsed = ItemsPaginationSchema.parse(response.data);
-            setItems(parsed.items);
-            setCount(parsed.count);
-        }
-    },  [response.data])
-
-    useEffect(() => fetchItems(),[fetchItems])
-
-    const goToPage = (page: number) => {
-        console.log(page)
-        if (page > 0 && page !== pagination) {
-            setPagination(page);
-        }
-    };
+    const {
+        data: items,
+        meta,
+        controls
+    } = usePaginationResource<ItemDTO>("/item", ItemsPaginationSchema);
 
     return (
         <PageLayout id="item">
@@ -53,9 +34,9 @@ const Items = () => {
                 <div className="row">
                     <ItemsTable
                         items={items}
-                        handleClickOnPagination={goToPage}
-                        count={count}
-                        page={pagination}
+                        handleClickOnPagination={controls.goTo}
+                        count={meta.total}
+                        page={meta.page}
                     />      
                 </div>
             </div>

@@ -217,6 +217,24 @@ export class HierarchySeeder extends Seeder {
                 model: "AR119",
                 state: ItemStateTypeEnum.GOOD
             }),
+
+
+
+            itemRepository.create({
+                name: "OBJET FANTOME",
+                description: "UN OBJET DETRUIT POUR DES TESTS",
+                price: 43837,
+                warrantyEndDate: addYears(100),
+                endOfLifeDate: addYears(150),
+                brand: "Test",
+                itemType: wifiAccess,
+                suppliers: [],
+                serialNumber: "12346589",
+                inventoryNumber: "29627",
+                orderNumber: "3498113242",
+                model: "AR119",
+                state: ItemStateTypeEnum.DESTROYED
+            }),
         ];
 
         await itemRepository.save(items);
