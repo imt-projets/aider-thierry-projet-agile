@@ -2,6 +2,9 @@ import { type ItemDTO, ItemsPaginationSchema } from "@/dto";
 import { usePaginationResource } from "@/hooks";
 import PageLayout from "@/layouts/PageLayout"
 import { ItemsTable, StatisticsModal } from "./components";
+import { IoIosAdd } from "react-icons/io";
+import { IconButton } from "@/components";
+import { FaRegFileExcel } from "react-icons/fa";
 
 const Items = () => {
 
@@ -14,8 +17,20 @@ const Items = () => {
     return (
         <PageLayout id="item">
             <div className="item--container">
-                <div className="row">
+                <div className="row" id="header">
                     <h1>OBJETS</h1>
+                    <div className="actions">
+                        <IconButton id="export">
+                            <FaRegFileExcel/>
+                            export EXCEL des objets
+                        </IconButton>
+
+
+                        <IconButton id="add">
+                            <IoIosAdd/>
+                            ajouter un objet
+                        </IconButton>
+                    </div>
                 </div>
 
                 <div className="row" id="statistics">
