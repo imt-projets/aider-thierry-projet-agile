@@ -7,3 +7,4 @@ export * from './Chip';
 export * from './Notification';
 export * from './ConfirmationModal';
 export * from './Pagination';
+export * from './Loader';

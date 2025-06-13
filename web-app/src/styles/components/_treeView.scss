@@ -12,6 +12,13 @@
     align-items: center;
     padding: 12px;
 
+    .treeView--loader {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+
     .treeList--container{
         width: 100%;
         ul {
@@ -34,6 +41,10 @@
                     vertical-align: middle;
                 }
                 
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
             }
 
             .room > li {
