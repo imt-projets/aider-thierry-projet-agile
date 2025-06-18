@@ -2,7 +2,6 @@ import { TreeViewSchema, type TreeViewBuilding, type TreeViewDTO, type TreeViewR
 import { useCallback, useEffect, useState } from "react";
 import { SearchBar, TreeList } from "./components";
 import { useFetch } from "@/hooks";
-import { ClipLoader } from "react-spinners";
 import { Loader } from "@/components";
 
 export const TreeView = () => {
