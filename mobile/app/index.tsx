@@ -10,7 +10,20 @@ import { MaterialIcons, Octicons } from '@expo/vector-icons';
 export default function HomeScreen() {
   const router = useRouter();
   const { setMode } = useScanner();
+  const {restartScan} = useScanner();
 
+  const goToInventory = () => {
+    setMode('inventoryRoom'); 
+    router.push('/scan-room');
+    restartScan();
+
+  }
+
+  const goToAddObject = () => {
+    setMode('addingObject');
+    router.push('/scan-room');
+    restartScan();
+  }
   return (
     <View style={[layout.container, { justifyContent: 'space-between', paddingBottom: 60, paddingTop: 60 }]}>
       
@@ -35,13 +48,13 @@ export default function HomeScreen() {
       <View>
         <Button
           title="Faire l'inventaire"
-          onPress={() => { setMode('inventoryRoom'); router.push('/scan-room'); }}
+          onPress={goToInventory}
           type="primary"
           icon={<Octicons name="checklist" size={24} color="white" />}
         />
         <Button
           title="Ajouter un objet"
-          onPress={() => { setMode('addingObject'); router.push('/scan-room'); }}
+          onPress={goToAddObject}
           type="outline"
           style={{ marginTop: 15 }}
           icon={<MaterialIcons name="add-circle-outline" size={24} color="black" />}

@@ -16,6 +16,9 @@ export default function ScanRoomScreen() {
 
   useEffect(() => {
     setIsScannerActive(true);
+    return () => {
+      setIsScannerActive(false);
+    };
   }, []);
 
   const handleRoomScan = (code: string) => {

@@ -23,12 +23,12 @@
 @use './components/header';
 @use './components/statisticsModal';
 @use './components/treeView';
-@use './components/searchBar';
+@use './components/searchbar';
 @use './components/objectForm';
 @use './components/pathBar';
 @use './components/objectTabs';
 @use './components/objectDetails';
 @use './components/itemsTable';
-@use 'components/InventoryToConfirm';
-@use 'components/ConfirmationModal';
-@use 'components/Notification'
+@use './components/InventoryToConfirm';
+@use './components/ConfirmationModal';
+@use './components/Notification';

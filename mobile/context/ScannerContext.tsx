@@ -1,7 +1,9 @@
 import { router } from 'expo-router';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import Item from  "@/interfaces/Item"
+
 interface ScannerContextType {
-  scannedCodes: string[];
+  scannedItems: Item[];
   roomCode: string | null;
   addScannedCode: (code: string) => void;
   resetScannedCodes: () => void;
@@ -40,7 +42,7 @@ export class ResponseHelper implements ResponseData {
       this.meta = meta
   }
 }
-const API_URL = "http://10.144.197.140:3000";
+const API_URL = "http://10.144.195.110:3056";
 
 type RequestMethod = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -123,13 +125,21 @@ const ScannerContext = createContext<ScannerContextType | undefined>(undefined);
 
 export const ScannerProvider = ({ children }: { children: ReactNode }) => {
   const [isScannerActive, setIsScannerActive] = useState(true);
-  const [scannedCodes, setScannedCodes] = useState<string[]>([]);
+  const [scannedItems, setScannedItems] = useState<Item[]>([]);
   const [roomCode, setRoomCodeState] = useState<string | null>(null);
   const [mode, setMode] = useState<'inventoryRoom' | 'addingObject' | null>(null);
 
-  const addScannedCode = (code: string) => {
-    setScannedCodes(prev => (prev.includes(code) ? prev : [...prev, code]));
+  const addScannedCode = async (code: string) => {
+    const itemResponse = await RequestHelper.get(`/item/inventory/${code}`);
     
+    if (itemResponse.ok && itemResponse.data) {
+      const item = itemResponse.data as Item;
+      setScannedItems(prev => {
+        const exists = prev.some(i => i.id === item.id);
+        if (exists) return prev;
+        return [...prev, item];
+      });
+    }
   };
 
   const handleSendInventory = async () => {
@@ -139,7 +149,6 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
   
-      // Utilise RequestHelper.get au lieu de fetch direct
       const roomResponse = await RequestHelper.get(`/structure/room/${roomCode}`);
       const roomId = roomResponse?.data?.id;
   
@@ -148,18 +157,20 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
   
-      // Utilise RequestHelper.put pour mettre à jour
       const updateResponse = await RequestHelper.put(`/structure/room/${roomId}`, {
-        ids: scannedCodes,
+        ids: scannedItems.map(item => item.inventoryNumber),
       });
   
       if (!updateResponse?.ok) {
-        console.error("Erreur lors de la mise à jour de l’inventaire.");
+        console.error("Erreur lors de la mise à jour de l'inventaire.");
         return;
       }
   
       console.log("Inventaire envoyé avec succès !");
       restartScan();
+      
+      setIsScannerActive(true);
+      router.push('/');
   
     } catch (error) {
       console.error("Erreur réseau ou interne :", error);
@@ -173,7 +184,6 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
   
-      // Utilise RequestHelper.get au lieu de fetch direct
       const roomResponse = await RequestHelper.get(`/structure/room/${roomCode}`);
       const roomId = roomResponse?.data?.id;
   
@@ -182,13 +192,12 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
   
-      // Utilise RequestHelper.put pour mettre à jour
-      const updateResponse = await RequestHelper.put(`/item/${scannedCodes[0]}/room`, {
+      const updateResponse = await RequestHelper.put(`/item/${scannedItems[0].inventoryNumber}/room`, {
         id: roomId,
       });
   
       if (!updateResponse?.ok) {
-        console.error("Erreur lors de la mise à jour de l’inventaire.");
+        console.error("Erreur lors de la mise à jour de l'inventaire.");
         return;
       }
   
@@ -201,7 +210,7 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const resetScannedCodes = () => setScannedCodes([]);
+  const resetScannedCodes = () => setScannedItems([]);
   const setRoomCode = (code: string) => setRoomCodeState(code);
   const resetRoomCode = () => setRoomCodeState(null);
   const restartScan = () => {
@@ -212,7 +221,7 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ScannerContext.Provider
       value={{
-        scannedCodes,
+        scannedItems,
         roomCode,
         addScannedCode,
         resetScannedCodes,

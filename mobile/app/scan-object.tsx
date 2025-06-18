@@ -1,5 +1,5 @@
 // pages/scan-objects.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import Scanner from '@/components/Scanner';
 import { useScanner } from '@/context/ScannerContext';
@@ -12,7 +12,14 @@ import { router } from 'expo-router';
 export default function ScanObjectsScreen() {
   const [lastScanned] = useState<string | null>(null);
   const [resetTrigger, setResetTrigger] = useState(0);
-  const { scannedCodes, addScannedCode, isScannerActive, resetScannedCodes, handleSendObject } = useScanner();
+  const { scannedItems, addScannedCode, isScannerActive, resetScannedCodes, handleSendObject, setIsScannerActive } = useScanner();
+
+  useEffect(() => {
+    setIsScannerActive(true);
+    return () => {
+      setIsScannerActive(false);
+    };
+  }, []);
 
   const handleScan = (code: string) => {
     addScannedCode(code);
@@ -23,7 +30,7 @@ export default function ScanObjectsScreen() {
     setResetTrigger(prev => prev + 1);
   };
 
-  const isObjectScanned = scannedCodes.length > 0;
+  const isObjectScanned = scannedItems.length > 0;
 
   return (
     <View style={layout.container}>
