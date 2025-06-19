@@ -59,7 +59,7 @@ export default function ScanObjectsScreen() {
       />
 
       <Footer
-        isScanned={false}
+        isScanned={scannedItems.length > 0}
         onCancel={handleCancel}
         onFinish={handleFinish}
         finishText="Terminer"

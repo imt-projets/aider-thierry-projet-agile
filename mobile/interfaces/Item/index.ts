@@ -1,3 +1,9 @@
+export interface ItemType {
+  id: string;
+  name: string;
+  description?: string;
+}
+
 export default interface Item {
     id: string;
     name: string;
@@ -11,4 +17,6 @@ export default interface Item {
     brand: string;
     model: string;
     state: string;
+    itemType: ItemType;
+    room : any; // TODO : avoir un type ROOM
 }

@@ -15,6 +15,11 @@ const hierarchy = createRouterConfig({
             url: ''
         },
         {
+            handlerName: "createInventoryToConfirm",
+            method: "POST",
+            url: ''
+        },
+        {
             handlerName: "deleteInventoryToConfirm",
             method: "DELETE",
             url: '/:id'

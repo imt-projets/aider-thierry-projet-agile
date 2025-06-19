@@ -4,9 +4,28 @@ import Item from '@/interfaces/Item';
 import {
   getItemByInventoryNumber,
   getRoomByCode,
-  updateRoomInventory,
-  updateItemRoom
+  sendInventoryToConfirm
 } from '@/services/ScannerService';
+
+const groupByType = (items: Item[]) =>
+  items.reduce((acc: Record<string, Item[]>, item) => {
+    const typeName = item.itemType?.name || 'Inconnu';
+    acc[typeName] = acc[typeName] || [];
+    acc[typeName].push(item);
+    return acc;
+  }, {});
+
+const createMapping = (added: Item[], removed: Item[]) => {
+  const groupAdded = groupByType(added);
+  const groupRemoved = groupByType(removed);
+  const allTypes = Array.from(new Set([...Object.keys(groupAdded), ...Object.keys(groupRemoved)]));
+
+  return allTypes.map(type => ({
+    itemType: type,
+    itemsList: groupAdded[type]?.map(item => item.inventoryNumber) || [],
+    removedItem: groupRemoved[type]?.map(item => item.inventoryNumber) || []
+  }));
+};
 
 export default function useScanner() {
   const {
@@ -23,92 +42,95 @@ export default function useScanner() {
     setError,
     clearError,
     resetScannedCodes,
-    restartScan
+    restartScan,
   } = scannerContext();
 
-  const addScannedCode = async (code: string) => {
+  const withLoading = async (fn: () => Promise<void>) => {
     setIsLoading(true);
     setError(null);
     try {
-      const itemResponse = await getItemByInventoryNumber(code);
-      if (itemResponse.ok && itemResponse.data) {
-        const item = itemResponse.data as Item;
-        setScannedItems((prev: Item[]) => {
-          const exists = prev.some(i => i.id === item.id);
-          if (exists) return prev;
-          return [...prev, item];
-        });
-      } else {
-        setError(itemResponse.error || 'Item non trouvé');
-      }
-    } catch (error: any) {
-      setError(error.message || 'Erreur lors du scan');
+      await fn();
+    } catch (err: any) {
+      setError(err.message || 'Erreur inconnue');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const addScannedCode = async (code: string) => {
+    const { ok, data, error } = await getItemByInventoryNumber(code);
+    if (!ok || !data) {
+    throw new Error(error || 'Item non trouvé');
+    }
+
+    const newItem = data as Item;
+    setScannedItems(prev =>
+    prev.some(item => item.id === newItem.id) ? prev : [...prev, newItem]
+    );
   };
 
   const handleSendInventory = async () => {
-    if (!roomCode) {
-      setError('Code de salle non défini');
-      return;
-    }
-    setIsLoading(true);
-    setError(null);
-    try {
-      const roomResponse = await getRoomByCode(roomCode);
-      if (!roomResponse.ok || !roomResponse.data?.id) {
-        setError(roomResponse.error || 'Salle non trouvée');
-        return;
+    if (!roomCode) return setError('Code de salle non défini');
+
+    await withLoading(async () => {
+      const roomRes = await getRoomByCode(roomCode);
+      const roomName = roomRes?.data?.name || '';
+      const initialItems = roomRes?.data?.items || [];
+      const scannedIds = scannedItems.map(item => item.inventoryNumber);
+
+      const removedItems = initialItems.filter(
+        (item: Item) => !scannedIds.includes(item.inventoryNumber)
+      );
+
+      const payload = {
+        type: 'INVENTAIRE_SALLE',
+        room: roomRes?.data?.id,
+        roomName,
+        date: new Date(),
+        mapping: createMapping(scannedItems, removedItems)
+      };
+
+      const res = await sendInventoryToConfirm(payload);
+      if (res.status == 201) {
+        restartScan();
+        router.push('/');
+      } else {
+        throw new Error(res.error || "Erreur lors de l'envoi");
       }
-      const inventoryNumbers = scannedItems.map(item => item.inventoryNumber);
-      const updateResponse = await updateRoomInventory(roomResponse.data.id, inventoryNumbers);
-      if (!updateResponse.ok) {
-        setError(updateResponse.error || 'Erreur lors de la mise à jour');
-        return;
-      }
-      restartScan();
-      setIsScannerActive(true);
-      router.push('/');
-    } catch (error: any) {
-      setError(error.message || 'Erreur interne');
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   const handleSendObject = async () => {
-    if (!roomCode) {
-      setError('Code de salle non défini');
-      return;
-    }
-    if (scannedItems.length === 0) {
-      setError('Aucun objet scanné');
-      return;
-    }
-    setIsLoading(true);
-    setError(null);
-    try {
-      const roomResponse = await getRoomByCode(roomCode);
-      if (!roomResponse.ok || !roomResponse.data?.id) {
-        setError(roomResponse.error || 'Salle non trouvée');
-        return;
+    if (!roomCode) return setError('Code de salle non défini');
+    if (scannedItems.length === 0) return setError('Aucun objet scanné');
+
+    await withLoading(async () => {
+      const roomRes = await getRoomByCode(roomCode);
+      const roomName = roomRes?.data?.name || '';
+
+      const payload = {
+        type: 'MOVE_ITEM',
+        room: scannedItems[0]?.room?.id ?? '-',
+        roomName: scannedItems[0]?.room?.name ?? '-',
+        date: new Date(),
+        mapping: [
+          {
+            itemType: scannedItems[0]?.itemType.name,
+            newRoom: roomRes?.data?.id,
+            newRoomName: roomName,
+            itemsList: scannedItems.map(item => item.inventoryNumber)
+          }
+        ]
+      };
+
+      const res = await sendInventoryToConfirm(payload);
+      if (res.ok) {
+        restartScan();
+        router.push('/');
+      } else {
+        throw new Error(res.error || "Erreur lors de l'envoi");
       }
-      const updateResponse = await updateItemRoom(
-        scannedItems[0].inventoryNumber,
-        roomResponse.data.id
-      );
-      if (!updateResponse.ok) {
-        setError(updateResponse.error || 'Erreur lors de la mise à jour');
-        return;
-      }
-      restartScan();
-      router.push('/');
-    } catch (error: any) {
-      setError(error.message || 'Erreur interne');
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   return {

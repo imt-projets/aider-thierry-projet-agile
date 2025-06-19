@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 export const layout = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#fff', justifyContent : 'space-around', paddingTop : 16},
+    container: { flex: 1, backgroundColor: '#fff', justifyContent : 'space-around', paddingTop : 20},
     footer: {
       flexDirection: 'column',
       justifyContent: 'space-between',
