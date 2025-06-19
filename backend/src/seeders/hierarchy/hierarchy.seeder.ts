@@ -237,10 +237,7 @@ export class HierarchySeeder extends Seeder {
                 orderNumber: "3498113242",
                 model: "AR119",
                 state: ItemStateTypeEnum.GOOD
-            })
-
-
-
+            }),
             itemRepository.create({
                 name: "OBJET FANTOME",
                 description: "UN OBJET DETRUIT POUR DES TESTS",

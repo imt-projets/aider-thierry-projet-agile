@@ -7,6 +7,9 @@
     width: inherit;
 
     .table {
+        display: flex;
+        flex-direction: column;
+        height: 620px;
 
         .table-header {
             color: #464F60;
@@ -19,6 +22,11 @@
         .rows {
             font-weight: 400;
             font-size: $size-14;
+            flex : 1 1 auto;
+            grid-auto-rows: max-content;
+            max-height: 500px;
+            overflow-y: auto;
+            gap: 2px;
 
             .row {
                 background-color: $white;
