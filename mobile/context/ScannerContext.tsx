@@ -1,12 +1,6 @@
 import { router } from 'expo-router';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import Item from "@/interfaces/Item";
-import {
-  getItemByInventoryNumber,
-  getRoomByCode,
-  updateRoomInventory,
-  updateItemRoom
-} from '@/services/ScannerService';
 
 interface ScannerContextType {
   scannedItems: Item[];
