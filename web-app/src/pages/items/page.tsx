@@ -11,7 +11,8 @@ const Items = () => {
     const {
         data: items,
         meta,
-        controls
+        controls,
+        loading
     } = usePaginationResource<ItemDTO>("/item", ItemsPaginationSchema);
 
     return (
@@ -48,6 +49,7 @@ const Items = () => {
 
                 <div className="row">
                     <ItemsTable
+                        loading={loading}
                         items={items}
                         handleClickOnPagination={controls.goTo}
                         count={meta.total}

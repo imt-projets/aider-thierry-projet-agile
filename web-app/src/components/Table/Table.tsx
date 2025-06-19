@@ -1,5 +1,6 @@
 import type { JSX } from '@emotion/react/jsx-runtime';
 import { type ReactNode } from 'react';
+import { Loader } from '../Loader';
 
 export type Row = { [key: string]: unknown };
 export type Column = {
@@ -16,9 +17,10 @@ interface TableProps {
     data : Row[],
     columnsTemplate?: Map<string,number>
     children?: JSX.Element | JSX.Element[]
+    loading?: boolean
 };
 
-export const Table = ({ columns, data, columnsTemplate, children } : TableProps) => {
+export const Table = ({ columns, data, columnsTemplate, children, loading } : TableProps) => {
 
     const getTemplateColumns = () => {
         return columns.reduce((template, column) => {
@@ -72,6 +74,11 @@ export const Table = ({ columns, data, columnsTemplate, children } : TableProps)
     }
 
     const displayRows = () => {
+        
+        if (loading) {
+            return <Loader/>
+        }
+
         return data.map((row,index) => 
             <div 
                 className="row"

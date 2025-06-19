@@ -61,6 +61,7 @@ export const usePaginationResource = <T>(
 
 	return {
 		data: items,
+		loading : response.loading,
 		meta,
 		controls,
 	};
