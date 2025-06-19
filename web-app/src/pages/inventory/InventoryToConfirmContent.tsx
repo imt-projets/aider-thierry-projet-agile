@@ -24,10 +24,10 @@ export const InventoryContent = ({
 				<MoveContent mapping={mapping} roomName={roomName} />
 			) : (
 				<ItemsContent
-				mapping={mapping}
-				invIndex={invIndex}
-				onMoveToRemoved={onMoveToRemoved}
-				onMoveToAdded={onMoveToAdded}
+					mapping={mapping}
+					invIndex={invIndex}
+					onMoveToRemoved={onMoveToRemoved}
+					onMoveToAdded={onMoveToAdded}
 				/>
 			)}
 		</div>
