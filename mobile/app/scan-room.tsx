@@ -3,16 +3,24 @@ import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Scanner from '@/components/Scanner';
-import { useScanner } from '@/context/ScannerContext';
+import useScanner from '@/hooks/useScanner';
 import Header from '@/components/Header';
-import Button from '@/components/Button';
+import Footer from '@/components/Footer';
 import { layout } from '@/styles/common';
-import { Entypo } from '@expo/vector-icons';
+import { scannerContext } from '@/context/ScannerContext';
 
 export default function ScanRoomScreen() {
   const router = useRouter();
   const [resetTrigger, setResetTrigger] = useState(0);
-  const { roomCode, setRoomCode, resetRoomCode, isScannerActive, setIsScannerActive, mode } = useScanner();
+  const {
+    roomCode,
+    setRoomCode,
+    resetRoomCode,
+    isScannerActive,
+    setIsScannerActive,
+  } = useScanner();
+
+  const { mode, restartScan } = scannerContext();
 
   useEffect(() => {
     setIsScannerActive(true);
@@ -26,20 +34,23 @@ export default function ScanRoomScreen() {
   }
 
   const handleAnnuler = () => {
-    resetRoomCode();
+    restartScan();
     setResetTrigger(prev => prev + 1);
   };
 
-  const scanned = roomCode !== null;
+  const handleContinue = () => {
+    const nextRoute = mode === 'addingObject' ? '/add-object' : '/room-inventory';
+    router.push(nextRoute);
+  };
 
-  const nextRoute = mode === 'addingObject' ? '/scan-object' : '/scan-objects';
+  const scanned = roomCode !== null;
 
   return (
     <View style={layout.container}>
       <Header title="IMT'ventaire" />
 
       <Scanner
-        message={scanned ? 'Code barre de la salle récupéré' : 'Veuillez scanner le code barre de la salle'}
+        message={scanned ? 'Code barre de la salle récupéré' + roomCode : 'Veuillez scanner le code barre de la salle'}
         messageColor={scanned ? '#4caf50' : '#222'}
         frameColor={scanned ? '#4caf50' : '#222'}
         onScan={handleRoomScan}
@@ -49,19 +60,13 @@ export default function ScanRoomScreen() {
         step="salle"
       />
 
-      <View style={layout.footer}>
-        {!scanned ? (
-          <>
-            <Button title="Saisir le code" onPress={() => {}} type="outline" icon={<Entypo name="pencil" size={24} color="black" />}/>
-            <Button title="Annuler" onPress={() => router.back()} type="danger" icon={<Entypo name="circle-with-cross" size={24} color="white" />}/>
-          </>
-        ) : (
-          <>
-            <Button title="Continuer" onPress={() => router.push(nextRoute)} type="success" icon={<Entypo name="arrow-with-circle-right" size={24} color="white" />} />
-            <Button title="Annuler" onPress={handleAnnuler} type="danger" icon={<Entypo name="circle-with-cross" size={24} color="white" />}/>
-          </>
-        )}
-      </View>
+      <Footer
+        isScanned={scanned}
+        onCancel={handleAnnuler}
+        onContinue={handleContinue}
+        showBackButton={true}
+        onBack={() => router.back()}
+      />
     </View>
   );
 }

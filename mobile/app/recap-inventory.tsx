@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useScanner } from "@/context/ScannerContext";
+import { scannerContext } from "@/context/ScannerContext";
 import ModalConfirmation from '@/components/ModalConfirmation';
 import Header from '@/components/Header';
 
 export default function RecapInventoryScreen() {
-    const { scannedItems, handleSendInventory, restartScan } = useScanner();
+    const { scannedItems, restartScan } = scannerContext();
     const router = useRouter();
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -55,7 +55,7 @@ export default function RecapInventoryScreen() {
             <ModalConfirmation
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
-                setIsScannerActive={() => {}} // Pas besoin de gérer le scanner ici
+                setIsScannerActive={() => {}}
             />
         </View>
     );

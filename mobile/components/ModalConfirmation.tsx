@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useScanner } from '@/context/ScannerContext';
+import { scannerContext } from '@/context/ScannerContext';
+import useScanner from '@/hooks/useScanner';
 
 interface ModalConfirmationProps {
   modalVisible: boolean;
@@ -10,7 +11,8 @@ interface ModalConfirmationProps {
 }
 
 const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ modalVisible, setModalVisible, setIsScannerActive }) => {
-  const { scannedItems, handleSendInventory } = useScanner();
+  const { scannedItems } = scannerContext();
+  const { handleSendInventory } = useScanner();
   const router = useRouter();
 
   const handleModalClosed = async (confirmed: boolean) => {
@@ -28,15 +30,6 @@ const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ modalVisible, set
           <Text style={styles.title}>Confirmer l'envoi de l'inventaire</Text>
           <Text style={styles.subtitle}>Êtes-vous sûr de vouloir envoyer cet inventaire ?</Text>
           <Text style={styles.subtitle}>Nombre d'objets : {scannedItems.length}</Text>
-          
-          <ScrollView style={styles.itemsList} showsVerticalScrollIndicator={false}>
-            {scannedItems.map((item, index) => (
-              <View key={index} style={styles.itemRow}>
-                <Text style={styles.itemName}>{item.name}</Text>
-                <Text style={styles.itemNumber}>#{item.inventoryNumber}</Text>
-              </View>
-            ))}
-          </ScrollView>
 
           <View style={styles.buttonRow}>
             <Pressable style={styles.noButton} onPress={() => handleModalClosed(false)}>
