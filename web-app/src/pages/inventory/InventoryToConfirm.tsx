@@ -31,10 +31,10 @@ export const InventoryToConfirm = () => {
 	const fetchInventories = async () => {
 		try {
 			const response = await RequestHelper.get("/inventoryToConfirm");
-		if (response.ok && response.data) {
-			const result = response.data as InventoryToConfirmDTO[];
-			setInventories(result);
-		}
+			if (response.ok && response.data) {
+				const result = response.data as InventoryToConfirmDTO[];
+				setInventories(result);
+			}
 		} catch (error) {
 			console.error("Erreur lors du chargement des inventaires:", error);
 			showNotification("Erreur lors du chargement des inventaires", "error");
@@ -68,8 +68,7 @@ export const InventoryToConfirm = () => {
 
 	const moveToRemoved = useCallback((item: string, invIndex: number, type: string) => {
 		updateInventoryMapping(invIndex, (mapping) =>
-		mapping
-			.map((m) =>
+			mapping.map((m) =>
 				m.itemType !== type
 					? m
 					: {
@@ -128,7 +127,7 @@ export const InventoryToConfirm = () => {
 			const response = action === 'validate'
 				? await RequestHelper.post(endpoint, {
 					ids: inventory.mapping.reduce((acc, mapping) => {
-					return [...acc, ...(mapping.itemsList || [])];
+						return [...acc, ...(mapping.itemsList || [])];
 					}, [] as string[])
 				})
 				: await RequestHelper.delete(endpoint, {});
