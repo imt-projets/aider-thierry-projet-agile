@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { scannerContext } from "@/context/ScannerContext";
 import ModalConfirmation from '@/components/ModalConfirmation';
 import Header from '@/components/Header';
+import { layout } from '@/styles/common';
 
 export default function RecapInventoryScreen() {
-    const { scannedItems, restartScan } = scannerContext();
+    const { scannedItems, restartScan, isLoading } = scannerContext();
     const router = useRouter();
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -16,11 +17,15 @@ export default function RecapInventoryScreen() {
 
     const handleCancel = () => {
         restartScan();
-        router.push('/scan-room');
+        router.push('/');
+    };
+
+    const handleContinueScan = () => {
+        router.push('/room-inventory');
     };
     
     return (
-        <View style={styles.container}>
+        <View style={layout.container}>
             <Header title="IMT'ventaire" />
             
             <View style={styles.content}>
@@ -43,13 +48,29 @@ export default function RecapInventoryScreen() {
                 </ScrollView>
 
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+                    <TouchableOpacity
+                        style={styles.cancelButton}
+                        onPress={handleCancel}
+                        disabled={isLoading}
+                    >
                         <Text style={styles.cancelButtonText}>Annuler</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
-                        <Text style={styles.confirmButtonText}>Confirmer</Text>
+                    <TouchableOpacity
+                        style={styles.confirmButton}
+                        onPress={handleConfirm}
+                        disabled={isLoading}
+                    >
+                        {isLoading
+                            ? <ActivityIndicator color="#fff" />
+                            : <Text style={styles.confirmButtonText}>Confirmer</Text>
+                        }
                     </TouchableOpacity>
                 </View>
+                {isLoading && (
+                    <View style={styles.loaderOverlay}>
+                        <ActivityIndicator size="large" color="#007AFF" />
+                    </View>
+                )}
             </View>
 
             <ModalConfirmation
@@ -62,10 +83,6 @@ export default function RecapInventoryScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
     content: {
         flex: 1,
         padding: 20,
@@ -153,5 +170,13 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
+    },
+    loaderOverlay: {
+        position: 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: 'rgba(255,255,255,0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 10,
     },
 });

@@ -11,14 +11,20 @@ interface ModalConfirmationProps {
 }
 
 const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ modalVisible, setModalVisible, setIsScannerActive }) => {
-  const { scannedItems } = scannerContext();
-  const { handleSendInventory } = useScanner();
+  const { scannedItems, mode } = scannerContext();
+  const { handleSendInventory, handleSendObject } = useScanner();
   const router = useRouter();
 
   const handleModalClosed = async (confirmed: boolean) => {
     setModalVisible(false);
+    console.log(mode);
+    
     if (confirmed) {
-      handleSendInventory();
+      if (mode == 'inventoryRoom') {
+        handleSendInventory();
+      } else {
+        handleSendObject();
+      }
       router.push('/');
     }
   };

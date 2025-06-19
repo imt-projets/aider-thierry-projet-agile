@@ -63,7 +63,7 @@ export const getItemByInventoryNumber = async (
 
     const item = await itemRepository.findOne({ 
         where: { inventoryNumber },
-        relations: ['room']
+        relations: ['room', 'itemType']
     });
 
     if (!item) 

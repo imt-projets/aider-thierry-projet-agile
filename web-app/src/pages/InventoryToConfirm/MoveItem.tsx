@@ -11,7 +11,7 @@ export const MoveContent = ({ mapping, roomName }: MoveContentProps) => {
     (m.itemsList || []).map(item => ({
       id: item,
       type: m.itemType,
-      currentRoom: roomName,
+      currentRoom: roomName ?? "Aucune salle",
       newRoom: m.newRoomName,
     }))
   );
