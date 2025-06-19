@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Modal } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Modal, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useScanner } from '@/context/ScannerContext';
+import { scannerContext } from '@/context/ScannerContext';
+import useScanner from '@/hooks/useScanner';
 
 interface ModalConfirmationProps {
   modalVisible: boolean;
@@ -10,12 +11,12 @@ interface ModalConfirmationProps {
 }
 
 const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ modalVisible, setModalVisible, setIsScannerActive }) => {
-  const { scannedCodes, restartScan, handleSendInventory } = useScanner();
+  const { scannedItems } = scannerContext();
+  const { handleSendInventory } = useScanner();
   const router = useRouter();
 
-  const handleModalClosed = (confirmed: boolean) => {
+  const handleModalClosed = async (confirmed: boolean) => {
     setModalVisible(false);
-    setIsScannerActive(!confirmed);
     if (confirmed) {
       handleSendInventory();
       router.push('/');
@@ -26,14 +27,16 @@ const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ modalVisible, set
     <Modal visible={modalVisible} transparent animationType="fade" onRequestClose={() => setModalVisible(false)}>
       <View style={styles.overlay}>
         <View style={styles.content}>
-          <Text style={styles.title}>Avez-vous terminé l'inventaire de la salle ?</Text>
-          <Text style={styles.text}>Nombre d'objets scannés : {scannedCodes.length}</Text>
+          <Text style={styles.title}>Confirmer l'envoi de l'inventaire</Text>
+          <Text style={styles.subtitle}>Êtes-vous sûr de vouloir envoyer cet inventaire ?</Text>
+          <Text style={styles.subtitle}>Nombre d'objets : {scannedItems.length}</Text>
+
           <View style={styles.buttonRow}>
             <Pressable style={styles.noButton} onPress={() => handleModalClosed(false)}>
-              <Text style={styles.noText}>Non</Text>
+              <Text style={styles.noText}>Annuler</Text>
             </Pressable>
             <Pressable style={styles.yesButton} onPress={() => handleModalClosed(true)}>
-              <Text style={styles.yesText}>Oui</Text>
+              <Text style={styles.yesText}>Envoyer</Text>
             </Pressable>
           </View>
         </View>
@@ -50,22 +53,49 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    width: 300,
+    width: 350,
+    maxHeight: 500,
     backgroundColor: '#fff',
     padding: 24,
     borderRadius: 16,
     alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
-  text: {
+  subtitle: {
     fontSize: 16,
     textAlign: 'center',
+    marginBottom: 16,
+    color: '#666',
+  },
+  itemsList: {
+    maxHeight: 200,
+    width: '100%',
     marginBottom: 20,
+  },
+  itemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    marginBottom: 6,
+  },
+  itemName: {
+    fontSize: 14,
+    fontWeight: '500',
+    flex: 1,
+  },
+  itemNumber: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '600',
   },
   buttonRow: {
     flexDirection: 'row',

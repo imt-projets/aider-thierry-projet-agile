@@ -32,6 +32,11 @@ const item = createRouterConfig({
             schema: schema.swagger.items.getById
         },
         {
+            handlerName: "getItemByInventoryNumber",
+            method: "GET",
+            url: '/inventory/:inventoryNumber'
+        },
+        {
             handlerName: 'updateItemRoomFromInventoryId',
             method: 'PUT',
             url: '/:inventoryNumber/room'
