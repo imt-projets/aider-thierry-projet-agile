@@ -4,7 +4,6 @@ import { View } from 'react-native';
 import Scanner from '@/components/Scanner';
 import useScanner from '@/hooks/useScanner';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { layout } from '@/styles/common';
 import { router } from 'expo-router';
 
@@ -16,7 +15,8 @@ export default function ScanObjectScreen() {
     addScannedCode,
     isScannerActive,
     resetScannedCodes,
-    setIsScannerActive
+    setIsScannerActive,
+    isLoading
   } = useScanner();
 
   useEffect(() => {
@@ -45,7 +45,6 @@ export default function ScanObjectScreen() {
   return (
     <View style={layout.container}>
       <Header title="IMT'ventaire" />
-
       <Scanner
         message={isObjectScanned ? "Code barre de l'objet récupéré" : "Veuillez scanner le code barre de l'objet à ajouter"}
         messageColor={isObjectScanned ? '#4caf50' : '#222'}
@@ -55,14 +54,10 @@ export default function ScanObjectScreen() {
         resetTrigger={resetTrigger}
         isActive={isScannerActive}
         step="object"
-      />
-
-      <Footer
-        isScanned={isObjectScanned}
         onCancel={handleAnnuler}
         onAdd={handleAdd}
-        showBackButton={true}
-        onBack={() => router.back()}
+        isLoading={isLoading}
+        scanned={isObjectScanned}
       />
     </View>
   );

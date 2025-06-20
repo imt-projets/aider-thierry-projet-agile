@@ -18,5 +18,5 @@ export default interface Item {
     model: string;
     state: string;
     itemType: ItemType;
-    room : any; // TODO : avoir un type ROOM
+    room : any; // TODO : avoir un type ROOM (comme ItemType)
 }

@@ -4,9 +4,9 @@ import { View } from 'react-native';
 import Scanner from '@/components/Scanner';
 import useScanner from '@/hooks/useScanner';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { layout } from '@/styles/common';
 import { useRouter } from 'expo-router';
+import useManualInput from '@/hooks/useManualInput';
 
 export default function ScanObjectsScreen() {
   const [lastScanned, setLastScanned] = useState<string | null>(null);
@@ -15,9 +15,12 @@ export default function ScanObjectsScreen() {
     scannedItems,
     addScannedCode,
     isScannerActive,
-    setIsScannerActive
+    setIsScannerActive,
+    isLoading
   } = useScanner();
   const router = useRouter();
+
+  const manualInput = useManualInput(addScannedCode);
 
   useEffect(() => {
     setIsScannerActive(true);
@@ -38,33 +41,27 @@ export default function ScanObjectsScreen() {
   };
 
   const handleCancel = () => {
-    // Logique d'annulation si nécessaire
     router.back();
   };
 
   return (
     <View style={layout.container}>
       <Header title="IMT'ventaire" />
-
       <Scanner
         message="Veuillez scanner les objets de la salle"
         messageColor="#222"
         frameColor={lastScanned ? '#4caf50' : '#222'}
-        onScan={handleScan}
+        onScan={addScannedCode}
         scanMode="multiple"
         scannedCount={scannedItems.length}
         resetTrigger={resetTrigger}
         isActive={isScannerActive}
         step="object"
-      />
-
-      <Footer
-        isScanned={scannedItems.length > 0}
         onCancel={handleCancel}
         onFinish={handleFinish}
-        finishText="Terminer"
-        showBackButton={true}
-        onBack={() => router.back()}
+        isLoading={isLoading}
+        scanned={scannedItems.length > 0}
+        enableManualInput={true}
       />
     </View>
   );

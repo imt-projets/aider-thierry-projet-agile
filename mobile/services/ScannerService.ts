@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.1.54:3056";
+const API_URL = "http://192.0.0.2:3056";
 
 const apiCall = async (url: string, options?: RequestInit) => {
   try {
@@ -35,4 +35,9 @@ export const sendInventoryToConfirm = async (inventory: any) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(inventory)
   });
+};
+
+export const checkRoomExists = async (code: string) => {
+  const res = await getRoomByCode(code);
+  return res.ok && res.data && res.data.id;
 };

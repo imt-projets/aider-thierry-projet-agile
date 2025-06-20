@@ -5,9 +5,10 @@ import { useRouter } from 'expo-router';
 import Scanner from '@/components/Scanner';
 import useScanner from '@/hooks/useScanner';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { layout } from '@/styles/common';
 import { scannerContext } from '@/context/ScannerContext';
+import { checkRoomExists } from '@/services/ScannerService';
+import useManualInput from '@/hooks/useManualInput';
 
 export default function ScanRoomScreen() {
   const router = useRouter();
@@ -18,9 +19,21 @@ export default function ScanRoomScreen() {
     resetRoomCode,
     isScannerActive,
     setIsScannerActive,
+    isLoading
   } = useScanner();
 
-  const { mode, restartScan } = scannerContext();
+  const { mode } = scannerContext();
+
+  const handleRoomScan = async (code: string) => {
+    const exists = await checkRoomExists(code);
+    if (exists) {
+      setRoomCode(code);
+    } else {
+      throw new Error('Salle inexistante ou code invalide');
+    }
+  };
+
+  const manualInput = useManualInput(handleRoomScan);
 
   useEffect(() => {
     setIsScannerActive(true);
@@ -29,12 +42,8 @@ export default function ScanRoomScreen() {
     };
   }, []);
 
-  const handleRoomScan = (code: string) => {
-    setRoomCode(code);
-  }
-
   const handleAnnuler = () => {
-    restartScan();
+    resetRoomCode();
     setResetTrigger(prev => prev + 1);
   };
 
@@ -48,9 +57,8 @@ export default function ScanRoomScreen() {
   return (
     <View style={layout.container}>
       <Header title="IMT'ventaire" />
-
       <Scanner
-        message={scanned ? 'Code barre de la salle récupéré' + roomCode : 'Veuillez scanner le code barre de la salle'}
+        message={scanned ? 'Code barre de la salle récupéré' : 'Veuillez scanner le code barre de la salle'}
         messageColor={scanned ? '#4caf50' : '#222'}
         frameColor={scanned ? '#4caf50' : '#222'}
         onScan={handleRoomScan}
@@ -58,14 +66,11 @@ export default function ScanRoomScreen() {
         resetTrigger={resetTrigger}
         isActive={isScannerActive}
         step="salle"
-      />
-
-      <Footer
-        isScanned={scanned}
         onCancel={handleAnnuler}
         onContinue={handleContinue}
-        showBackButton={true}
-        onBack={() => router.back()}
+        isLoading={isLoading}
+        scanned={scanned}
+        enableManualInput={true}
       />
     </View>
   );
