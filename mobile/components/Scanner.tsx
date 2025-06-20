@@ -8,6 +8,7 @@ import { layout } from '@/styles/common';
 import { Entypo } from '@expo/vector-icons';
 import ScannerCamera from './ScannerCamera';
 import ScannerManualInput from './ScannerManualInput';
+import useManualInput from '@/hooks/useManualInput';
 
 interface ScannerProps {
   message: string;
@@ -52,10 +53,7 @@ const Scanner: React.FC<ScannerProps> = ({
   const scannerSound = require('../assets/scanner-sound.mp3');
   const player = useAudioPlayer(scannerSound);
 
-  const [showManual, setShowManual] = useState(false);
-  const [manualCode, setManualCode] = useState('');
-  const [manualError, setManualError] = useState('');
-  const [manualLoading, setManualLoading] = useState(false);
+  const manualInput = useManualInput(async (code) => { await onScan(code); });
 
   useEffect(() => {
     setScanned(false);
@@ -96,23 +94,6 @@ const Scanner: React.FC<ScannerProps> = ({
     await onScan(code);
   };
 
-  const openManual = () => { setShowManual(true); setManualError(''); setManualCode(''); };
-  const closeManual = () => { setShowManual(false); setManualError(''); setManualCode(''); };
-  const submitManual = async () => {
-    if (!manualCode.trim()) return;
-    setManualLoading(true);
-    setManualError('');
-    try {
-      await handleScan(manualCode.trim());
-      setShowManual(false);
-      setManualCode('');
-    } catch (e) {
-      setManualError('Code non trouvé ou erreur serveur');
-    } finally {
-      setManualLoading(false);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Text style={[styles.title, { color: messageColor }]}>{message}</Text>
@@ -120,13 +101,13 @@ const Scanner: React.FC<ScannerProps> = ({
         <ScannerCamera
           isActive={isActive}
           frameColor={frameColor}
-          onScan={handleScan}
+          onScan={onScan}
           resetTrigger={resetTrigger}
         />
         {enableManualInput && (
           <TouchableOpacity
             style={styles.fab}
-            onPress={openManual}
+            onPress={manualInput.open}
             activeOpacity={0.7}
           >
             <Entypo name="pencil" size={28} color="#fff" />
@@ -145,17 +126,17 @@ const Scanner: React.FC<ScannerProps> = ({
           onAdd={onAdd}
           onFinish={onFinish}
           isLoading={isLoading}
-          onManualInput={enableManualInput ? openManual : undefined}
+          onManualInput={enableManualInput ? manualInput.open : undefined}
         />
       </View>
       <ScannerManualInput
-        visible={enableManualInput && showManual}
-        code={manualCode}
-        setCode={setManualCode}
-        loading={manualLoading}
-        error={manualError}
-        onSubmit={submitManual}
-        onClose={closeManual}
+        visible={enableManualInput && manualInput.show}
+        code={manualInput.code}
+        setCode={manualInput.setCode}
+        loading={manualInput.loading}
+        error={manualInput.error}
+        onSubmit={manualInput.submit}
+        onClose={manualInput.close}
       />
     </View>
   );
