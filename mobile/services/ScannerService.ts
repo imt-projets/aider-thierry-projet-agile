@@ -1,4 +1,4 @@
-const API_URL = "http://192.0.0.2:3056";
+const API_URL = "http://192.168.1.54:3056";
 
 const apiCall = async (url: string, options?: RequestInit) => {
   try {

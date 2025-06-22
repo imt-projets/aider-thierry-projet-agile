@@ -66,7 +66,7 @@ const Scanner: React.FC<ScannerProps> = ({
       }
   }, [])
 
-  const handleBarCodeScanned = async ({ data }: { data: string }) => {
+ const handleBarCodeScanned = async ({ data }: { data: string }) => {
     if (scanLock.current) return;
     scanLock.current = true;
     setScanned(true);
@@ -99,7 +99,7 @@ const Scanner: React.FC<ScannerProps> = ({
       <Text style={[styles.title, { color: messageColor }]}>{message}</Text>
       <View>
         <ScannerCamera
-          isActive={isActive}
+          isActive={isActive && !manualInput.show}
           frameColor={frameColor}
           onScan={onScan}
           resetTrigger={resetTrigger}
