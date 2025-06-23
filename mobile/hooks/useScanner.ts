@@ -64,7 +64,7 @@ export default function useScanner() {
 
   const addScannedCode = (item: Item) => {
     setScannedItems(prev =>
-    prev.some(item => item.id === item.id) ? prev : [...prev, item]
+    prev.some(i => i.id === item.id) ? prev : [...prev, item]
     );
   };
 
