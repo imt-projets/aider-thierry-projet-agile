@@ -19,12 +19,14 @@ export default function ScanObjectsScreen() {
   const {
     scannedItems,
     addScannedCode,
-    isLoading
+    isLoading,
+    removeScannedItem
   } = useScanner();
   const router = useRouter();
   const { restartScan } = scannerContext();
   const [isPageFocused, setIsPageFocused] = useState(true);
-
+  const [showScanToast, setShowScanToast] = useState(false);
+  const [lastScannedItem, setLastScannedItem] = useState<any>(null);
 
   useEffect(() => {
     if (scannedItems.length > 0) setScanError('');
@@ -37,13 +39,27 @@ export default function ScanObjectsScreen() {
     }, [])
   );
 
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (showScanToast) {
+      timer = setTimeout(() => setShowScanToast(false), 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [showScanToast]);
+
+  useEffect(() => {
+    if (!isPageFocused) setShowScanToast(false);
+  }, [isPageFocused]);
+
   const handleScan = async (code: string) => {
     setScanError('');
     try {
       const itemResponse = await getItemByInventoryNumber(code);
       addScannedCode(itemResponse.data);
       setLastScanned(code);
-    setTimeout(() => setLastScanned(null), 2000);
+      setLastScannedItem(itemResponse.data);
+      setShowScanToast(true);
+      setTimeout(() => setLastScanned(null), 2000);
     } catch (error) {
       if (error instanceof ApiNotFoundError) {
         setScanError('Salle inexistante ou code invalide');
@@ -54,7 +70,6 @@ export default function ScanObjectsScreen() {
       }
     }
   };
-
 
   const handleFinish = () => {
     router.push('/recap-inventory');
@@ -74,6 +89,18 @@ export default function ScanObjectsScreen() {
     <View style={layout.container}>
       <Header title="IMT'ventaire" onHomePress={handleHome} />
       <Toast visible={!!scanError} message={scanError} onClose={() => setScanError('')} />
+      <Toast
+        visible={showScanToast}
+        message={lastScannedItem ? `Objet scanné : ${lastScannedItem.name || lastScannedItem.inventoryNumber}` : 'Objet scanné'}
+        onClose={() => setShowScanToast(false)}
+        duration={5000}
+        actionLabel="Annuler"
+        onAction={() => {
+          if (lastScannedItem) removeScannedItem(lastScannedItem.inventoryNumber);
+          setShowScanToast(false);
+        }}
+        type="success"
+      />
       <Scanner
         message="Veuillez scanner les objets de la salle"
         messageColor="#222"
