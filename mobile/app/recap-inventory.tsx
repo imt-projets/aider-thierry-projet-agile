@@ -6,13 +6,17 @@ import ModalConfirmation from '@/components/ModalConfirmation';
 import Header from '@/components/Header';
 import { layout } from '@/styles/common';
 import useScanner from '@/hooks/useScanner';
+import { Entypo } from '@expo/vector-icons';
+import Item from '@/interfaces/Item';
 
 export default function RecapInventoryScreen() {
     const { scannedItems, restartScan, isLoading, mode } = scannerContext();
     const router = useRouter();
     const [modalVisible, setModalVisible] = useState(false);
     const [modalCancelVisible, setModalCancelVisible] = useState(false);
-    const { handleSendInventory, handleSendObject } = useScanner();
+    const [modalRemoveVisible, setModalRemoveVisible] = useState(false);
+    const [itemToRemove, setItemToRemove] = useState<Item | null>(null);
+    const { handleSendInventory, handleSendObject, removeScannedItem } = useScanner();
 
     const handleConfirm = () => {
         setModalVisible(true);
@@ -47,6 +51,11 @@ export default function RecapInventoryScreen() {
             <View style={styles.content}>
                 <Text style={styles.title}>Récapitulatif de l'inventaire</Text>
                 <Text style={styles.subtitle}>Nombre d'objets scannés : {scannedItems.length}</Text>
+                {scannedItems.length === 0 && (
+                    <Text style={styles.errorText}>
+                        Aucun objet scanné. Veuillez scanner au moins un objet pour valider l'inventaire.
+                    </Text>
+                )}
                 
                 <ScrollView style={styles.itemsList} showsVerticalScrollIndicator={false}>
                     {scannedItems.map((item, index) => (
@@ -58,6 +67,16 @@ export default function RecapInventoryScreen() {
                             <View style={styles.itemDetails}>
                                 <Text style={styles.itemNumber}>#{item.inventoryNumber}</Text>
                                 <Text style={styles.itemBrand}>{item.brand}</Text>
+                            </View>
+                            <View style={styles.removeIconWrapper}>
+                                <TouchableOpacity
+                                    style={styles.removeIcon}
+                                    onPress={() => { setItemToRemove(item); setModalRemoveVisible(true); }}
+                                    activeOpacity={0.7}
+                                    accessibilityLabel={`Retirer ${item.name}`}
+                                >
+                                    <Entypo name="cross" size={26} color="#F44336" />
+                                </TouchableOpacity>
                             </View>
                         </View>
                     ))}
@@ -81,13 +100,13 @@ export default function RecapInventoryScreen() {
                         <Text style={styles.cancelButtonText}>Annuler</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.confirmButton}
+                        style={[styles.confirmButton, (isLoading || scannedItems.length === 0) && styles.confirmButtonDisabled]}
                         onPress={handleConfirm}
-                        disabled={isLoading}
+                        disabled={isLoading || scannedItems.length === 0}
                     >
                         {isLoading
                             ? <ActivityIndicator color="#fff" />
-                            : <Text style={styles.confirmButtonText}>Confirmer</Text>
+                            : <Text style={[styles.confirmButtonText, (isLoading || scannedItems.length === 0) && styles.confirmButtonTextDisabled]}>Confirmer</Text>
                         }
                     </TouchableOpacity>
                 </View>
@@ -105,7 +124,7 @@ export default function RecapInventoryScreen() {
                 message={`Êtes-vous sûr de vouloir envoyer cet inventaire ?\nNombre d'objets : ${scannedItems.length}`}
                 confirmText="Envoyer"
                 cancelText="Annuler"
-                onConfirm={handleModalClosed}
+                onConfirm={() => handleModalClosed()}
             />
             <ModalConfirmation
                 modalVisible={modalCancelVisible}
@@ -115,6 +134,15 @@ export default function RecapInventoryScreen() {
                 confirmText="Oui"
                 cancelText="Non"
                 onConfirm={handleCancel}
+            />
+            <ModalConfirmation
+                modalVisible={modalRemoveVisible}
+                setModalVisible={setModalRemoveVisible}
+                title="Retirer l'objet ?"
+                message={`Voulez-vous vraiment retirer l'objet ${itemToRemove ? itemToRemove.name : ''} (#${itemToRemove ? itemToRemove.inventoryNumber : ''}) de l'inventaire ?`}
+                confirmText="Retirer"
+                cancelText="Annuler"
+                onConfirm={() => { if(itemToRemove) removeScannedItem(itemToRemove.inventoryNumber); setItemToRemove(null); }}
             />
         </View>
     );
@@ -200,6 +228,10 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         alignItems: 'center',
     },
+    confirmButtonDisabled: {
+        backgroundColor: '#bdbdbd',
+        opacity: 0.6,
+    },
     cancelButtonText: {
         color: '#fff',
         fontSize: 16,
@@ -209,6 +241,9 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
+    },
+    confirmButtonTextDisabled: {
+        color: '#eee',
     },
     continueInventaireButtonContainer: {
         alignItems: 'center',
@@ -238,5 +273,29 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 10,
+    },
+    removeIconWrapper: {
+        marginLeft: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    removeIcon: {
+        backgroundColor: '#fdeaea',
+        borderRadius: 20,
+        padding: 6,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#F44336',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.10,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    errorText: {
+        color: '#F44336',
+        fontWeight: 'bold',
+        fontSize: 16,
+        textAlign: 'center',
+        marginVertical: 20,
     },
 });

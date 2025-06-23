@@ -132,6 +132,10 @@ export default function useScanner() {
     });
   };
 
+  const removeScannedItem = (inventoryNumber: string) => {
+    setScannedItems(prev => prev.filter(item => item.inventoryNumber !== inventoryNumber));
+  };
+
   return {
     scannedItems,
     setScannedItems,
@@ -147,6 +151,7 @@ export default function useScanner() {
     restartScan,
     addScannedCode,
     handleSendInventory,
-    handleSendObject
+    handleSendObject,
+    removeScannedItem,
   };
 }
