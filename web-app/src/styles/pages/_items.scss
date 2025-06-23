@@ -16,6 +16,9 @@
                 display: flex;
                 gap: 16px;
                 flex-direction: row;
+                button {
+                    height: 100%;
+                }
             }
             
             button {
