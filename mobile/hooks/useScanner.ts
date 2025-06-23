@@ -62,15 +62,9 @@ export default function useScanner() {
     }
   };
 
-  const addScannedCode = async (code: string) => {
-    const { ok, data, error } = await getItemByInventoryNumber(code);
-    if (!ok || !data) {
-    throw new Error(error || 'Item non trouvé');
-    }
-
-    const newItem = data as Item;
+  const addScannedCode = (item: Item) => {
     setScannedItems(prev =>
-    prev.some(item => item.id === newItem.id) ? prev : [...prev, newItem]
+    prev.some(item => item.id === item.id) ? prev : [...prev, item]
     );
   };
 
