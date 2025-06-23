@@ -2,7 +2,7 @@ import { entities } from "@/entities";
 import { enums } from "@/enums";
 import { ReplyHelper } from "@/helpers";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { FindOptionsWhere, Repository } from "typeorm";
+import { FindOptionsWhere, IsNull, Not, Repository } from "typeorm";
 
 
 export interface ItemByIdParams {
@@ -171,4 +171,27 @@ export const updateItemRoomFromInventoryId = async (
 
     return ReplyHelper.send(reply, enums.StatusCode.OK, updatedItem);
 
+}
+
+export const getItemsRoomStats = async (
+    _: FastifyRequest,
+    reply: FastifyReply,
+    repositories: {
+        primary: Repository<entities.Item>
+    }
+) => {
+    const itemRepository = repositories.primary;
+
+    const nb_items_ok = await itemRepository.count({
+        where: { room: { id: Not(IsNull()) } }
+    });
+
+    const nb_items_no_rooms = await itemRepository.count({
+        where: { room: IsNull() }
+    });
+
+    return ReplyHelper.send(reply, enums.StatusCode.OK, {
+        ok: nb_items_ok,
+        no_rooms: nb_items_no_rooms
+    });
 }
