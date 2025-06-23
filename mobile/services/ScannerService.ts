@@ -36,3 +36,8 @@ export const sendInventoryToConfirm = async (inventory: any) => {
     body: JSON.stringify(inventory)
   });
 };
+
+export const checkRoomExists = async (code: string) => {
+  const res = await getRoomByCode(code);
+  return res.ok && res.data && res.data.id;
+};

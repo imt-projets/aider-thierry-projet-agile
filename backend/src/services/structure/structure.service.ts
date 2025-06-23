@@ -71,9 +71,7 @@ export const getRoomFromInventoryId = async (
             type: StructureTypeEnum.ROOM,
             name: name
         },
-        relations: {
-            items: true
-        }
+        relations: ['items', 'items.itemType']
     })
 
     if (!room) 

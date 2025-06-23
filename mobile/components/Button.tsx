@@ -8,14 +8,15 @@ interface ButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
   icon?: React.ReactNode;
+  disabled?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({ title, onPress, type = 'primary', style, textStyle, icon }) => {
+const Button: React.FC<ButtonProps> = ({ title, onPress, type = 'primary', style, textStyle, icon, disabled }) => {
   const baseStyle = [styles.button, styles[type], style];
   const textBaseStyle = [styles.text, styles[`${type}Text`], textStyle];
 
   return (
-    <TouchableOpacity style={baseStyle} onPress={onPress}>
+    <TouchableOpacity style={baseStyle} onPress={onPress} disabled={disabled}>
       {icon && (
         <View style={{ marginRight: 12, marginLeft: 15, justifyContent: 'center' }}>
           {icon}

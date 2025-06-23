@@ -1,14 +1,21 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Entypo } from '@expo/vector-icons';
 
 interface HeaderProps {
   title? : string;
-  homePage? : boolean
+  homePage? : boolean;
+  onHomePress?: () => void;
 }
 
-const Header = ({ title, homePage }: HeaderProps) => (
+const Header = ({ title, homePage, onHomePress }: HeaderProps) => (
   <View style={!homePage ? styles.header : [styles.header, styles.noBorder]}>
-    <Image source={require('@/assets/logo-imt.png')} style={homePage ? styles.logoHomePage : styles.logo} />
+    {!homePage && onHomePress && (
+      <TouchableOpacity onPress={onHomePress} style={styles.homeBtn}>
+        <Entypo name="home" size={28} color="#1976D2" />
+      </TouchableOpacity>
+    )}
+    {homePage && (<Image source={require('@/assets/logo-imt.png')} style={homePage ? styles.logoHomePage : styles.logo} />)}
     {!homePage && (
       <>
         <Text style={styles.title}>{title}</Text>
@@ -34,6 +41,13 @@ const styles = StyleSheet.create({
   logo: { width: 40, height: 40, resizeMode: 'contain' },
   logoHomePage : { width: 80, height: 40, resizeMode: 'contain' },
   title: { fontSize: 20, fontWeight: 'bold', color: '#222' },
+  homeBtn: {
+    marginRight: 12,
+    marginLeft: -4,
+    padding: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 

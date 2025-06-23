@@ -1,40 +1,53 @@
 // pages/scan-room.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Scanner from '@/components/Scanner';
 import useScanner from '@/hooks/useScanner';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { layout } from '@/styles/common';
 import { scannerContext } from '@/context/ScannerContext';
+import { checkRoomExists } from '@/services/ScannerService';
+import useManualInput from '@/hooks/useManualInput';
+import Toast from '@/components/Toast';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function ScanRoomScreen() {
   const router = useRouter();
   const [resetTrigger, setResetTrigger] = useState(0);
+  const [scanError, setScanError] = useState('');
   const {
     roomCode,
     setRoomCode,
     resetRoomCode,
-    isScannerActive,
-    setIsScannerActive,
+    isLoading
   } = useScanner();
 
   const { mode, restartScan } = scannerContext();
 
-  useEffect(() => {
-    setIsScannerActive(true);
-    return () => {
-      setIsScannerActive(false);
-    };
-  }, []);
+  const [isPageFocused, setIsPageFocused] = useState(true);
 
-  const handleRoomScan = (code: string) => {
-    setRoomCode(code);
-  }
+  useFocusEffect(
+    useCallback(() => {
+      setIsPageFocused(true);
+      return () => setIsPageFocused(false);
+    }, [])
+  );
+
+  const handleRoomScan = async (code: string) => {
+    setScanError('');
+    const exists = await checkRoomExists(code);
+    if (exists) {
+      setRoomCode(code);
+    } else {
+      setScanError('Salle inexistante ou code invalide');
+    }
+  };
+
+  const manualInput = useManualInput(handleRoomScan);
 
   const handleAnnuler = () => {
-    restartScan();
+    resetRoomCode();
     setResetTrigger(prev => prev + 1);
   };
 
@@ -43,29 +56,35 @@ export default function ScanRoomScreen() {
     router.push(nextRoute);
   };
 
+  const goHome = () => {
+    restartScan();
+    router.push('/');
+  };
+
   const scanned = roomCode !== null;
+
+  useEffect(() => {
+    if (scanned) setScanError('');
+  }, [scanned]);
 
   return (
     <View style={layout.container}>
-      <Header title="IMT'ventaire" />
-
+      <Header title="IMT'ventaire" onHomePress={goHome} />
+      <Toast visible={!!scanError} message={scanError} onClose={() => setScanError('')} />
       <Scanner
-        message={scanned ? 'Code barre de la salle récupéré' + roomCode : 'Veuillez scanner le code barre de la salle'}
+        message={scanned ? 'Code barre de la salle récupéré': 'Veuillez scanner le code barre de la salle'}
         messageColor={scanned ? '#4caf50' : '#222'}
         frameColor={scanned ? '#4caf50' : '#222'}
         onScan={handleRoomScan}
         scanMode="single"
         resetTrigger={resetTrigger}
-        isActive={isScannerActive}
+        isActive={!scanned && isPageFocused}
         step="salle"
-      />
-
-      <Footer
-        isScanned={scanned}
         onCancel={handleAnnuler}
         onContinue={handleContinue}
-        showBackButton={true}
-        onBack={() => router.back()}
+        isLoading={isLoading}
+        scanned={scanned}
+        enableManualInput={true}
       />
     </View>
   );

@@ -7,6 +7,8 @@ import {
   sendInventoryToConfirm
 } from '@/services/ScannerService';
 
+
+// Méthode qui va grouper les items par type
 const groupByType = (items: Item[]) =>
   items.reduce((acc: Record<string, Item[]>, item) => {
     const typeName = item.itemType?.name || 'Inconnu';
@@ -15,6 +17,11 @@ const groupByType = (items: Item[]) =>
     return acc;
   }, {});
 
+/* Créé un mapping pour les inventaires de salles
+   Pour chaque type d'objet, nous récupérons les objets ajoutés
+   et retirés de la salle ayant ce type - servira pour la vue confirmation
+   inventaire
+*/
 const createMapping = (added: Item[], removed: Item[]) => {
   const groupAdded = groupByType(added);
   const groupRemoved = groupByType(removed);
@@ -34,8 +41,6 @@ export default function useScanner() {
     roomCode,
     setRoomCode,
     resetRoomCode,
-    isScannerActive,
-    setIsScannerActive,
     isLoading,
     setIsLoading,
     error,
@@ -139,8 +144,6 @@ export default function useScanner() {
     roomCode,
     setRoomCode,
     resetRoomCode,
-    isScannerActive,
-    setIsScannerActive,
     isLoading,
     setIsLoading,
     error,

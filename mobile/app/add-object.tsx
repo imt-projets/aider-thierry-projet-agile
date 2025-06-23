@@ -1,12 +1,12 @@
 // pages/scan-object.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View } from 'react-native';
 import Scanner from '@/components/Scanner';
 import useScanner from '@/hooks/useScanner';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { layout } from '@/styles/common';
 import { router } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function ScanObjectScreen() {
   const [lastScanned] = useState<string | null>(null);
@@ -14,29 +14,30 @@ export default function ScanObjectScreen() {
   const {
     scannedItems,
     addScannedCode,
-    isScannerActive,
     resetScannedCodes,
-    setIsScannerActive
+    isLoading,
+    restartScan
   } = useScanner();
+  const [isPageFocused, setIsPageFocused] = useState(true);
 
-  useEffect(() => {
-    setIsScannerActive(true);
-    return () => {
-      setIsScannerActive(false);
-    };
-  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsPageFocused(true);
+      return () => setIsPageFocused(false);
+    }, [])
+  );
 
   const handleScan = (code: string) => {
     addScannedCode(code);
   };
 
   const handleAnnuler = () => {
-    resetScannedCodes();
-    setResetTrigger(prev => prev + 1);
+    restartScan();
+    router.back();
   };
 
   const handleAdd = () => {
-    setIsScannerActive(false);
     router.push('/recap-inventory');
   };
 
@@ -45,7 +46,6 @@ export default function ScanObjectScreen() {
   return (
     <View style={layout.container}>
       <Header title="IMT'ventaire" />
-
       <Scanner
         message={isObjectScanned ? "Code barre de l'objet récupéré" : "Veuillez scanner le code barre de l'objet à ajouter"}
         messageColor={isObjectScanned ? '#4caf50' : '#222'}
@@ -53,16 +53,12 @@ export default function ScanObjectScreen() {
         onScan={handleScan}
         scanMode="single"
         resetTrigger={resetTrigger}
-        isActive={isScannerActive}
+        isActive={isPageFocused}
         step="object"
-      />
-
-      <Footer
-        isScanned={isObjectScanned}
         onCancel={handleAnnuler}
         onAdd={handleAdd}
-        showBackButton={true}
-        onBack={() => router.back()}
+        isLoading={isLoading}
+        scanned={isObjectScanned}
       />
     </View>
   );

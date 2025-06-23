@@ -1,5 +1,5 @@
 // pages/index.tsx
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
@@ -11,7 +11,11 @@ import { scannerContext } from '@/context/ScannerContext';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { setMode, restartScan } = scannerContext();
+  const { setMode, restartScan, setIsScannerActive } = scannerContext();
+
+  useEffect(() => {
+    setIsScannerActive(false);
+  }, []);
 
   const navigateTo = (mode: 'inventoryRoom' | 'addingObject') => {
     restartScan();
@@ -24,7 +28,7 @@ export default function HomeScreen() {
       <Header homePage />
 
       <View style={styles.hero}>
-        <Text style={styles.title}>IMT’ventaire</Text>
+        <Text style={styles.title}>IMT'ventaire</Text>
         <Image
           source={require('@/assets/logo-barcode.png')}
           style={styles.barcode}
