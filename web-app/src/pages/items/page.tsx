@@ -6,6 +6,7 @@ import { IoIosAdd } from "react-icons/io";
 import { IconButton } from "@/components";
 import { FaRegFileExcel } from "react-icons/fa";
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Items = () => {
 
@@ -41,11 +42,12 @@ const Items = () => {
                             export EXCEL des objets
                         </IconButton>
 
-
-                        <IconButton id="add">
-                            <IoIosAdd/>
-                            ajouter un objet
-                        </IconButton>
+                        <Link to="/add-item">
+                            <IconButton id="add">
+                                <IoIosAdd/>
+                                ajouter un objet
+                            </IconButton>
+                        </Link>
                     </div>
                 </div>
 
