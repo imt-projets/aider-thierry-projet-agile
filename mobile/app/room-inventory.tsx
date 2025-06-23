@@ -6,10 +6,11 @@ import useScanner from '@/hooks/useScanner';
 import Header from '@/components/Header';
 import { layout } from '@/styles/common';
 import { useRouter } from 'expo-router';
-import useManualInput from '@/hooks/useManualInput';
 import Toast from '@/components/Toast';
 import { scannerContext } from '@/context/ScannerContext';
 import { useFocusEffect } from '@react-navigation/native';
+import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
+import { getItemByInventoryNumber } from '@/services/ScannerService';
 
 export default function ScanObjectsScreen() {
   const [lastScanned, setLastScanned] = useState<string | null>(null);
@@ -18,13 +19,14 @@ export default function ScanObjectsScreen() {
   const {
     scannedItems,
     addScannedCode,
-    isLoading
+    isLoading,
+    removeScannedItem
   } = useScanner();
   const router = useRouter();
   const { restartScan } = scannerContext();
   const [isPageFocused, setIsPageFocused] = useState(true);
-
-  const manualInput = useManualInput(addScannedCode);
+  const [showScanToast, setShowScanToast] = useState(false);
+  const [lastScannedItem, setLastScannedItem] = useState<any>(null);
 
   useEffect(() => {
     if (scannedItems.length > 0) setScanError('');
@@ -37,14 +39,35 @@ export default function ScanObjectsScreen() {
     }, [])
   );
 
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (showScanToast) {
+      timer = setTimeout(() => setShowScanToast(false), 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [showScanToast]);
+
+  useEffect(() => {
+    if (!isPageFocused) setShowScanToast(false);
+  }, [isPageFocused]);
+
   const handleScan = async (code: string) => {
     setScanError('');
     try {
-      await addScannedCode(code);
-    setLastScanned(code);
-    setTimeout(() => setLastScanned(null), 2000);
-    } catch (e) {
-      setScanError('Objet non trouvé ou erreur serveur');
+      const itemResponse = await getItemByInventoryNumber(code);
+      addScannedCode(itemResponse.data);
+      setLastScanned(code);
+      setLastScannedItem(itemResponse.data);
+      setShowScanToast(true);
+      setTimeout(() => setLastScanned(null), 2000);
+    } catch (error) {
+      if (error instanceof ApiNotFoundError) {
+        setScanError('Salle inexistante ou code invalide');
+      } else if (error instanceof ApiServerError) {
+        setScanError('Une erreur est survenue');
+      } else if (error instanceof ApiTimeoutError) {
+        setScanError('Le serveur met trop de temps à répondre');
+      }
     }
   };
 
@@ -66,6 +89,18 @@ export default function ScanObjectsScreen() {
     <View style={layout.container}>
       <Header title="IMT'ventaire" onHomePress={handleHome} />
       <Toast visible={!!scanError} message={scanError} onClose={() => setScanError('')} />
+      <Toast
+        visible={showScanToast}
+        message={lastScannedItem ? `Objet scanné : ${lastScannedItem.name || lastScannedItem.inventoryNumber}` : 'Objet scanné'}
+        onClose={() => setShowScanToast(false)}
+        duration={5000}
+        actionLabel="Annuler"
+        onAction={() => {
+          if (lastScannedItem) removeScannedItem(lastScannedItem.inventoryNumber);
+          setShowScanToast(false);
+        }}
+        type="success"
+      />
       <Scanner
         message="Veuillez scanner les objets de la salle"
         messageColor="#222"

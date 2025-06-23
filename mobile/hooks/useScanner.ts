@@ -62,15 +62,9 @@ export default function useScanner() {
     }
   };
 
-  const addScannedCode = async (code: string) => {
-    const { ok, data, error } = await getItemByInventoryNumber(code);
-    if (!ok || !data) {
-    throw new Error(error || 'Item non trouvé');
-    }
-
-    const newItem = data as Item;
+  const addScannedCode = (item: Item) => {
     setScannedItems(prev =>
-    prev.some(item => item.id === newItem.id) ? prev : [...prev, newItem]
+    prev.some(i => i.id === item.id) ? prev : [...prev, item]
     );
   };
 
@@ -138,6 +132,10 @@ export default function useScanner() {
     });
   };
 
+  const removeScannedItem = (inventoryNumber: string) => {
+    setScannedItems(prev => prev.filter(item => item.inventoryNumber !== inventoryNumber));
+  };
+
   return {
     scannedItems,
     setScannedItems,
@@ -153,6 +151,7 @@ export default function useScanner() {
     restartScan,
     addScannedCode,
     handleSendInventory,
-    handleSendObject
+    handleSendObject,
+    removeScannedItem,
   };
 }

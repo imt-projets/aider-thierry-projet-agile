@@ -7,10 +7,11 @@ import useScanner from '@/hooks/useScanner';
 import Header from '@/components/Header';
 import { layout } from '@/styles/common';
 import { scannerContext } from '@/context/ScannerContext';
-import { checkRoomExists } from '@/services/ScannerService';
+import { getRoomByCode } from '@/services/ScannerService';
 import useManualInput from '@/hooks/useManualInput';
 import Toast from '@/components/Toast';
 import { useFocusEffect } from '@react-navigation/native';
+import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
 
 export default function ScanRoomScreen() {
   const router = useRouter();
@@ -36,15 +37,22 @@ export default function ScanRoomScreen() {
 
   const handleRoomScan = async (code: string) => {
     setScanError('');
-    const exists = await checkRoomExists(code);
-    if (exists) {
-      setRoomCode(code);
-    } else {
-      setScanError('Salle inexistante ou code invalide');
+    try {
+      const roomResponse = await getRoomByCode(code);
+      if (roomResponse.ok && roomResponse.data && roomResponse.data.id) {
+        setRoomCode(code);
+      }
+    } catch (error) {
+      if (error instanceof ApiNotFoundError) {
+        setScanError('Salle inexistante ou code invalide');
+      } else if (error instanceof ApiServerError) {
+        setScanError('Une erreur est survenue');
+      } else if (error instanceof ApiTimeoutError) {
+        setScanError('Le serveur met trop de temps à répondre');
+      }
     }
   };
 
-  const manualInput = useManualInput(handleRoomScan);
 
   const handleAnnuler = () => {
     resetRoomCode();

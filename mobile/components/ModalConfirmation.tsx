@@ -7,25 +7,26 @@ import useScanner from '@/hooks/useScanner';
 interface ModalConfirmationProps {
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
-  setIsScannerActive: (active: boolean) => void;
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  onConfirm: () => void;
 }
 
-const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ modalVisible, setModalVisible, setIsScannerActive }) => {
-  const { scannedItems, mode } = scannerContext();
-  const { handleSendInventory, handleSendObject } = useScanner();
-  const router = useRouter();
-
-  const handleModalClosed = async (confirmed: boolean) => {
+const ModalConfirmation: React.FC<ModalConfirmationProps> = ({
+  modalVisible,
+  setModalVisible,
+  title,
+  message,
+  confirmText = 'Confirmer',
+  cancelText = 'Annuler',
+  onConfirm,
+}) => {
+  const handleModalClosed = (confirmed: boolean) => {
     setModalVisible(false);
-    console.log(mode);
-    
     if (confirmed) {
-      if (mode == 'inventoryRoom') {
-        handleSendInventory();
-      } else {
-        handleSendObject();
-      }
-      router.push('/');
+      onConfirm();
     }
   };
 
@@ -33,16 +34,14 @@ const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ modalVisible, set
     <Modal visible={modalVisible} transparent animationType="fade" onRequestClose={() => setModalVisible(false)}>
       <View style={styles.overlay}>
         <View style={styles.content}>
-          <Text style={styles.title}>Confirmer l'envoi de l'inventaire</Text>
-          <Text style={styles.subtitle}>Êtes-vous sûr de vouloir envoyer cet inventaire ?</Text>
-          <Text style={styles.subtitle}>Nombre d'objets : {scannedItems.length}</Text>
-
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.subtitle}>{message}</Text>
           <View style={styles.buttonRow}>
             <Pressable style={styles.noButton} onPress={() => handleModalClosed(false)}>
-              <Text style={styles.noText}>Annuler</Text>
+              <Text style={styles.noText}>{cancelText}</Text>
             </Pressable>
             <Pressable style={styles.yesButton} onPress={() => handleModalClosed(true)}>
-              <Text style={styles.yesText}>Envoyer</Text>
+              <Text style={styles.yesText}>{confirmText}</Text>
             </Pressable>
           </View>
         </View>
