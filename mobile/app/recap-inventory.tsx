@@ -5,11 +5,14 @@ import { scannerContext } from "@/context/ScannerContext";
 import ModalConfirmation from '@/components/ModalConfirmation';
 import Header from '@/components/Header';
 import { layout } from '@/styles/common';
+import useScanner from '@/hooks/useScanner';
 
 export default function RecapInventoryScreen() {
-    const { scannedItems, restartScan, isLoading } = scannerContext();
+    const { scannedItems, restartScan, isLoading, mode } = scannerContext();
     const router = useRouter();
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalCancelVisible, setModalCancelVisible] = useState(false);
+    const { handleSendInventory, handleSendObject } = useScanner();
 
     const handleConfirm = () => {
         setModalVisible(true);
@@ -26,7 +29,16 @@ export default function RecapInventoryScreen() {
     const goHome = () => {
         restartScan();
         router.push('/');
-      };
+    };
+
+    const handleModalClosed = async () => {
+        if (mode == 'inventoryRoom') {
+            handleSendInventory();
+        } else {
+            handleSendObject();
+        }
+        router.push('/');
+    };
     
     return (
         <View style={layout.container}>
@@ -63,7 +75,7 @@ export default function RecapInventoryScreen() {
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
                         style={styles.cancelButton}
-                        onPress={handleCancel}
+                        onPress={() => setModalCancelVisible(true)}
                         disabled={isLoading}
                     >
                         <Text style={styles.cancelButtonText}>Annuler</Text>
@@ -89,7 +101,20 @@ export default function RecapInventoryScreen() {
             <ModalConfirmation
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
-                setIsScannerActive={() => {}}
+                title="Confirmer l'envoi de l'inventaire"
+                message={`Êtes-vous sûr de vouloir envoyer cet inventaire ?\nNombre d'objets : ${scannedItems.length}`}
+                confirmText="Envoyer"
+                cancelText="Annuler"
+                onConfirm={handleModalClosed}
+            />
+            <ModalConfirmation
+                modalVisible={modalCancelVisible}
+                setModalVisible={setModalCancelVisible}
+                title="Annuler l'inventaire ?"
+                message="Êtes-vous sûr de vouloir supprimer l'inventaire en cours ? Cette action est irréversible."
+                confirmText="Oui"
+                cancelText="Non"
+                onConfirm={handleCancel}
             />
         </View>
     );
