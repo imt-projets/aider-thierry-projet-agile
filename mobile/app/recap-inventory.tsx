@@ -21,12 +21,16 @@ export default function RecapInventoryScreen() {
     };
 
     const handleContinueScan = () => {
-        router.push('/room-inventory');
+        router.back();
     };
+    const goHome = () => {
+        restartScan();
+        router.push('/');
+      };
     
     return (
         <View style={layout.container}>
-            <Header title="IMT'ventaire" />
+            <Header title="IMT'ventaire" onHomePress={goHome} />
             
             <View style={styles.content}>
                 <Text style={styles.title}>Récapitulatif de l'inventaire</Text>
@@ -46,6 +50,15 @@ export default function RecapInventoryScreen() {
                         </View>
                     ))}
                 </ScrollView>
+                <View style={styles.continueInventaireButtonContainer}>
+                    <TouchableOpacity
+                        style={styles.continueInventaireButton}
+                        onPress={handleContinueScan}
+                        disabled={isLoading}
+                    >
+                        <Text style={styles.continueInventaireText}>Continuer l'inventaire</Text>
+                    </TouchableOpacity>
+                </View>
 
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
@@ -146,6 +159,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         gap: 12,
+        marginBottom: 32,
     },
     cancelButton: {
         flex: 1,
@@ -167,6 +181,27 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     confirmButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    continueInventaireButtonContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    continueInventaireButton: {
+        backgroundColor: '#007AFF',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 24,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    continueInventaireText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
