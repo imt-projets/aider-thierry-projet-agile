@@ -1,5 +1,5 @@
 // pages/scan-object.tsx
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import Scanner from '@/components/Scanner';
 import useScanner from '@/hooks/useScanner';
@@ -21,9 +21,12 @@ export default function ScanObjectScreen() {
     addScannedCode,
     resetScannedCodes,
     isLoading,
-    restartScan
+    restartScan,
+    removeScannedItem
   } = useScanner();
   const [isPageFocused, setIsPageFocused] = useState(true);
+  const [showScanToast, setShowScanToast] = useState(false);
+  const [lastScannedItem, setLastScannedItem] = useState<any>(null);
 
 
   useFocusEffect(
@@ -33,12 +36,26 @@ export default function ScanObjectScreen() {
     }, [])
   );
 
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (showScanToast) {
+      timer = setTimeout(() => setShowScanToast(false), 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [showScanToast]);
+
+  useEffect(() => {
+    if (!isPageFocused) setShowScanToast(false);
+  }, [isPageFocused]);
+
 
   const handleScan = async (code: string) => {
     setScanError('');
     try {
       const itemResponse = await getItemByInventoryNumber(code);
       addScannedCode(itemResponse.data);
+      setLastScannedItem(itemResponse.data);
+      setShowScanToast(true);
     } catch (error) {
       if (error instanceof ApiNotFoundError) {
         setScanError('Salle inexistante ou code invalide');
@@ -65,6 +82,18 @@ export default function ScanObjectScreen() {
     <View style={layout.container}>
       <Header title="IMT'ventaire" />
       <Toast visible={!!scanError} message={scanError} onClose={() => setScanError('')} />
+      <Toast
+        visible={showScanToast}
+        message={lastScannedItem ? `Objet scanné : ${lastScannedItem.name || lastScannedItem.inventoryNumber}` : 'Objet scanné'}
+        onClose={() => setShowScanToast(false)}
+        duration={5000}
+        actionLabel="Annuler"
+        onAction={() => {
+          if (lastScannedItem) removeScannedItem(lastScannedItem.inventoryNumber);
+          setShowScanToast(false);
+        }}
+        type="success"
+      />
       <Scanner
         message={isObjectScanned ? "Code barre de l'objet récupéré" : "Veuillez scanner le code barre de l'objet à ajouter"}
         messageColor={isObjectScanned ? '#4caf50' : '#222'}
@@ -78,6 +107,7 @@ export default function ScanObjectScreen() {
         onAdd={handleAdd}
         isLoading={isLoading}
         scanned={isObjectScanned}
+        enableManualInput={true}
       />
     </View>
   );
