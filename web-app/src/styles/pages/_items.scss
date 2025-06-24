@@ -1,11 +1,48 @@
+@use '../theme/colors' as *;
+@use '../theme/fonts' as *;
+
 #item {
     .item--container {
         padding: 32px;
         width: 100%;
         display: inherit;
-        flex-direction: column;
-        
+        flex-direction: column;        
         gap: 32px;
+
+        #header {
+            justify-content: space-between;
+
+            .actions {
+                display: flex;
+                gap: 16px;
+                flex-direction: row;
+                button {
+                    height: 100%;
+                }
+            }
+            
+            button {
+                padding: 4px 8px 4px 8px;
+                color: $white;
+                font-family: $inter-font;
+                font-size: $size-14;
+                font-weight: 600;
+                border-radius: 12px;
+                text-transform: uppercase;
+            }
+
+            svg {
+                margin-right: 8px;
+            }
+
+            #add {
+                background-color: $blue;
+            }
+
+            #export {
+                background-color: #4F4F4F;
+            }
+        }
     
         .row {
             display: inherit;

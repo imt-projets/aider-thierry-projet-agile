@@ -1,40 +1,30 @@
+import type { JSX } from '@emotion/react/jsx-runtime';
 import { type ReactNode } from 'react';
+import { Loader } from '../Loader';
 
-export type Row = { [key: string]: unknown }
+export type Row = { [key: string]: unknown };
 export type Column = {
     field : string
     title : string 
-    renderCell?: (row: Row) => ReactNode
-    align? : FlexAlignment
-}
+    renderCell?: (row: Row, index: number) => ReactNode
+    align? : FlexAlignment,
+};
 
-type FlexAlignment = "flex-start" | "center" | "flex-end"
+type FlexAlignment = "flex-start" | "center" | "flex-end";
 
 interface TableProps {
     columns : Column[]
-    data : Row[]
-}
+    data : Row[],
+    columnsTemplate?: Map<string,number>
+    children?: JSX.Element | JSX.Element[]
+    loading?: boolean
+};
 
-const columnsMap = new Map<string, number>([
-    ["id", 0.5],
-    ["name", 2],
-    ["inventoryNumber", 1],
-    ["brand", 1],
-    ["model", 1],
-    ["state", 1],
-    ["warrantyEndDate", 1],
-    ["endOfLifeDate", 1],
-    ["price", 0.75],
-    ["description", 3],
-    ["actions", 0.75]
-])
-
-const Table = ({ columns, data } : TableProps) => {
+export const Table = ({ columns, data, columnsTemplate, children, loading } : TableProps) => {
 
     const getTemplateColumns = () => {
         return columns.reduce((template, column) => {
-            // Get width ratio from the map or default to 1
-            const widthRatio = columnsMap.get(column.field) || 1;
+            const widthRatio = columnsTemplate?.get(column.field) ?? 1;
             return template + widthRatio + 'fr '
         }, '');
     }
@@ -59,10 +49,10 @@ const Table = ({ columns, data } : TableProps) => {
                     )
                 }
             </div>
-        )
+        );
     }
 
-    const displayColumns = (row : Row) => {
+    const displayColumns = (row : Row, rowIndex: number) => {
         return columns.map(column => {
 
             const value = row[column.field];
@@ -75,22 +65,28 @@ const Table = ({ columns, data } : TableProps) => {
                 >
                     {
                         column.renderCell 
-                            ? column.renderCell(row)
+                            ? column.renderCell(row, rowIndex)
                             : <p>{String(value)}</p>
                     }
                 </div>
-            )   
+            );
         })
     }
 
     const displayRows = () => {
+        
+        if (loading) {
+            return <Loader/>
+        }
+
         return data.map((row,index) => 
             <div 
                 className="row"
                 key={index}
                 style={{ gridTemplateColumns: getTemplateColumns() }}>
-                {displayColumns(row)}
-            </div>)
+                {displayColumns(row, index)}
+            </div>
+        );
     }
 
     return (
@@ -101,8 +97,9 @@ const Table = ({ columns, data } : TableProps) => {
             >
                 {displayRows()}
             </div>
+            <div className="footer">
+                { children ?? null }
+            </div>
         </div>
-    )
+    );
 }
-
-export default Table;
