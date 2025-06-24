@@ -1,7 +1,7 @@
 import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
 
 
-const API_URL = "http://192.168.1.54:3056";
+const API_URL = "http://10.144.212.26:5432";
 const TIMEOUT_DURATION = 5000;
 
 interface ApiResponse<T> {
