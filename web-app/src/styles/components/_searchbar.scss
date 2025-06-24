@@ -1,0 +1,43 @@
+@use '../theme/fonts' as *;
+
+.search__container {
+    width: 100%;
+    border: 1px solid rgba(115, 115, 115, 1);
+    border-radius: 8px;
+    margin-bottom: 12px;
+
+    .component {
+        padding: 2px;
+        display: flex;
+        align-items: center;
+        height: inherit;
+
+        .logo {
+            width: 18px;
+            height: 18px;
+            margin-left: 8px;
+        }
+    }
+
+    .input__container {
+        width: 100%;
+        padding: 6px;
+        box-sizing: border-box;
+
+        input {
+            width: 100%;
+            border: none;
+            font-family: $inter-font;
+            font-size: $size-14;
+            outline: none;
+        
+
+        &:focus {
+            border: none;
+            outline: none;
+        }
+    }
+    }
+
+    
+}

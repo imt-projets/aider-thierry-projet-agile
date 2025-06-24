@@ -1,0 +1,33 @@
+FROM node:24-slim as builder
+
+WORKDIR /usr/src/app
+
+COPY backend/package*.json ./projet/
+RUN cd projet && npm install
+
+COPY .env .env
+COPY backend/. ./projet/
+
+RUN cd projet && npm run build
+
+FROM node:24-slim as production
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+RUN apt-get update && \
+    apt-get install -y busybox postgresql-client && \
+    ln -s /bin/busybox /bin/ping && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/app
+
+COPY backend/package*.json ./projet/
+RUN cd projet && npm install
+
+COPY --from=builder /usr/src/app/.env .env
+COPY --from=builder /usr/src/app/projet/dist ./projet/dist
+
+EXPOSE 3000
+
+CMD ["node", "projet/dist/index.js"]

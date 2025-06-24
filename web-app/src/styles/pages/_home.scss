@@ -1,0 +1,68 @@
+@use '../theme/colors' as *;
+
+#home {
+    
+    .container--inventory-view {
+        width: 22%;
+        padding-right: 6px;        
+    }
+
+    .container--object-view {
+        width: 100%;
+        padding-left: 6px;
+        gap: 8px;
+        display: flex;
+        flex-direction: column;
+
+        .container--left {
+            display: inherit;
+            flex-direction: row;
+            width: 100%;
+        }
+
+        .container--right {
+            display: inherit;
+            flex-direction: row;
+        }
+
+
+        .container--form-view {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            gap: 1px;
+        }
+    }
+
+    .default--view {
+        background-color: $white;
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 10px;
+
+        .container-logos {
+            display: flex;
+            gap: 36px;
+
+            img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .imt-logo {
+                width: 180px;
+                height: 100px;
+            }
+        }           
+    }
+}

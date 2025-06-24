@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "mobile",
+    "slug": "mobile",
+    "version": "1.0.0",
+    "scheme": "thiernogn",
+    "extra": { 
+      "eas": {
+        "projectId": "a9e6933d-1659-4618-83ea-432f1fef20cd"
+      },
+      "deepLinking": true
+    },
+    "android": {
+      "package": "com.thiernogn.mobile"
+    },
+    "owner": "thiernogn",
+    "plugins": [
+      "expo-router",
+      "expo-web-browser"
+    ]
+  }
+}

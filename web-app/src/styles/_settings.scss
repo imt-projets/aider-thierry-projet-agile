@@ -1,0 +1,71 @@
+@use "theme/colors" as *;
+@use "theme/fonts" as *;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+ul {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    color: $white;
+}
+
+button {
+    cursor: pointer;
+    border: unset;
+    background-color: unset;
+    font-family: $inter-font;
+    font-size: $size-14;
+}
+
+
+h1,h2 {
+    font-family: $roboto-font;
+    font-weight: bold;
+}
+
+label {
+    font-family: $inter-font;
+}
+
+h1 {
+    font-size: $size-32;
+}
+
+h2 {
+    font-size: $size-24;
+}
+
+
+li {
+    font-family: $roboto-font;
+    font-size: $size-24;
+    font-weight: 400;
+}
+
+
+body {
+    overflow-x: hidden;
+    min-height: 100vh;
+    background: $gray;
+}
+
+p {
+    font-family: $inter-font;
+}
+
+#root {
+    min-height: 100vh;
+    height: 100%;
+    width: 100%;
+}
