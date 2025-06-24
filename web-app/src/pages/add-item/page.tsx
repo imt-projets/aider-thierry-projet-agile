@@ -1,4 +1,4 @@
-import { FormField, FormSelectField, FormTextArea, IconButton } from "@/components";
+import { Card, FormField, FormSelectField, FormTextArea, IconButton } from "@/components";
 import PageLayout from "@/layouts/PageLayout"
 import { Link } from "react-router-dom";
 import { GiConfirmed } from "react-icons/gi";
@@ -17,7 +17,7 @@ const defaultItem : ItemFormValues["item"] = {
     orderNumber : '',
     price: 0,
     serialNumber: '',
-    state: "NEUF",
+    state: "Neuf",
     warrantyEndDate: new Date().toISOString().replace('T', ' ').slice(0, 23)
 };
 
@@ -88,7 +88,8 @@ const AddItem = () => {
                         <h1>Ajouter un objet</h1>
                         <p>TEXTE A RAJOUTER</p>
                     </div>
-                     <div className="form">
+                </div>
+                <div className="form">
                     <div className="column">
                         <h2>Propriété</h2>
                         <div className="row">
@@ -101,8 +102,10 @@ const AddItem = () => {
                         </div>
                     </div>
 
-                    <div className="column">
-                        <h2>Identité de l'objet</h2>
+                    <Card
+                        title="Identité de l'objet"
+                        subTitle="Renseignez les informations principales de l'objet à ajouter"
+                    >
                         <div className="row" id="object-identity">
                             <FormField
                                 label="Numéro d'inventaire"
@@ -117,10 +120,14 @@ const AddItem = () => {
                                 value={form.item.name}
                             />
                         </div>
-                    </div>
+                    </Card>
 
-                    <div className="column">
-                        <h2>Partie Fournisseur</h2>
+
+
+                    <Card
+                        title="Partie Fournisseur"
+                        subTitle="Les informations relatives au fournisseur ainsi que les détails sur l'objet"
+                    >
                         <div className="row">
                             <FormField
                                 label="Marque"
@@ -151,7 +158,8 @@ const AddItem = () => {
                                 }
                             />
                         </div>
-        
+
+
                         <div className="row" id="object-description">
                             <FormTextArea
                                 label="Description"
@@ -160,34 +168,33 @@ const AddItem = () => {
                                 onChange={handleChangeItem}
                             />
                         </div>
+                    </Card>
+                    
+    
+                    <div className="row">
 
-                        <div className="row">
+                        <FormField
+                            label="Date de fin de garantie"
+                            name="warrantyEndDate"
+                            value={formatDateForInput(form.item.warrantyEndDate)}
+                            onChange={handleChangeItem}
+                            type="date"
+                        />
+                        <FormField
+                            label="Date de fin de vie"
+                            name="endOfLifeDate"
+                            value={formatDateForInput(form.item.endOfLifeDate)}
+                            onChange={handleChangeItem}
+                            type="date"
+                        />
 
-                            <FormField
-                                label="Date de fin de garantie"
-                                name="warrantyEndDate"
-                                value={formatDateForInput(form.item.warrantyEndDate)}
-                                onChange={handleChangeItem}
-                                type="date"
-                            />
-                            <FormField
-                                label="Date de fin de vie"
-                                name="endOfLifeDate"
-                                value={formatDateForInput(form.item.endOfLifeDate)}
-                                onChange={handleChangeItem}
-                                type="date"
-                            />
-
-                            <FormField
-                                label="Prix"
-                                name="price"
-                                value={form.item.price + " €"}
-                                onChange={handleChangeItem}
-                            />
-                        </div>        
-                    </div>
-
-                </div>
+                        <FormField
+                            label="Prix"
+                            name="price"
+                            value={form.item.price + " €"}
+                            onChange={handleChangeItem}
+                        />
+                    </div>        
                 </div>
 
                 <div className="row">

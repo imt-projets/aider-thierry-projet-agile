@@ -8,3 +8,4 @@ export * from './Notification';
 export * from './ConfirmationModal';
 export * from './Pagination';
 export * from './Loader';
+export * from './Card';
