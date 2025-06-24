@@ -4,7 +4,7 @@
     "slug": "mobile",
     "version": "1.0.0",
     "scheme": "thiernogn",
-    "extra": {
+    "extra": { 
       "eas": {
         "projectId": "a9e6933d-1659-4618-83ea-432f1fef20cd"
       },
