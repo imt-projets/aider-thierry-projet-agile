@@ -5,6 +5,7 @@ import { GiConfirmed } from "react-icons/gi";
 import { MdCancel } from "react-icons/md";
 import { useState } from "react";
 import { ItemFormSchema, type ItemFormValues} from "@/types";
+import { RequestHelper } from "@/api";
 
 const defaultItem : ItemFormValues["item"] = {
     brand: '',
@@ -29,6 +30,9 @@ const defaultForm : ItemFormValues = {
     item: defaultItem
 }
 
+const numberFields = ["price"];
+const numberPropertiesFields = ["nb_occurance"];
+
 const AddItem = () => {
 
     const [form, setForm] = useState<ItemFormValues>(defaultForm);
@@ -44,26 +48,34 @@ const AddItem = () => {
         }
     };
 
+    const handleSave = async () => {
+        console.log(form);
+
+
+        const parsedItem = ItemFormSchema.safeParse(form);
+        if (parsedItem.success) {
+            console.log(parsedItem);
+            await RequestHelper.post('/item', form);
+        }
+        // Handle error
+    }
+
     const handleChangeItem = (name: string, value: string | number) => {
         setForm(prev => ({
             ...prev,
             item: {
                 ...prev.item,
-                [name]: value
+                [name]: numberFields.includes(name) ? Number(value) : value
             }
         }));
     };
-
-    const handleSave = () => {
-        console.log(form);
-    }
 
     const handleChangeProperties = (name: string, value: string | number) => {
         setForm(prev => ({
             ...prev,
             properties: {
                 ...prev.properties,
-                [name]: value
+                [name]: numberPropertiesFields.includes(name) ? Number(value) : value
             }
         }));
     };

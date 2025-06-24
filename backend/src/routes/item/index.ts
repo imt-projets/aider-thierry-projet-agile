@@ -42,6 +42,11 @@ const item = createRouterConfig({
             url: '/:inventoryNumber/room'
         },
         {
+            handlerName: 'createItem',
+            method: 'POST',
+            url: ''
+        },
+        {
             handlerName: 'getItemsRoomStats',
             method: 'GET',
             url: '/statistics'

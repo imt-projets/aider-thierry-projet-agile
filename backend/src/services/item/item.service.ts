@@ -195,3 +195,41 @@ export const getItemsRoomStats = async (
         no_rooms: nb_items_no_rooms
     });
 }
+
+
+
+export interface createItemRequestBody {
+    item : entities.Item,
+    properties : {
+        nb_occurance: number;
+    }
+}
+
+
+export const createItem = async (
+    request: FastifyRequest<{Body: createItemRequestBody}>,
+    reply: FastifyReply,
+    repositories: {
+        primary: Repository<entities.Item>
+    }
+) => {
+    const itemRepository = repositories.primary;
+
+    const { item, properties } = request.body;
+
+    const from = parseInt(item.inventoryNumber);
+    const to = from+properties.nb_occurance;
+
+    const itemsToSave : entities.Item[] = []
+
+    for (let i = from; i < to; i++) {
+        const { id, ...itemData } = item as entities.Item;
+        itemData.inventoryNumber = i.toString();
+        const newItem = itemRepository.create(itemData);
+        itemsToSave.push(newItem);
+    }
+
+    const savedItems = await itemRepository.save(itemsToSave);
+
+    return ReplyHelper.send(reply, enums.StatusCode.CREATED, savedItems);
+}
