@@ -79,6 +79,14 @@ export const Table = ({ columns, data, columnsTemplate, children, loading } : Ta
             return <Loader/>
         }
 
+        if (data.length === 0) {
+            return (
+                <div className="no-content">
+                    <span>Ce tableau est vide</span>
+                </div>
+            )
+        }
+
         return data.map((row,index) => 
             <div 
                 className="row"

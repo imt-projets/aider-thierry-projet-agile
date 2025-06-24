@@ -159,7 +159,9 @@ export const InventoryToConfirm = () => {
 			<PageLayout id="inventaireToConfirm">
 				<div className="inventory-container">
 					<h1 className="inventory-title">Inventaires à confirmer</h1>
-					<p>Aucun inventaire à confirmer</p>
+					<div className="content">
+						<p>Il n'y a pour le moment aucun inventaire à confirmer.</p>
+					</div>
 				</div>
 			</PageLayout>
 		);
