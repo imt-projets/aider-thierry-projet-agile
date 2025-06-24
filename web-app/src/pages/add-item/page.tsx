@@ -3,27 +3,69 @@ import PageLayout from "@/layouts/PageLayout"
 import { Link } from "react-router-dom";
 import { GiConfirmed } from "react-icons/gi";
 import { MdCancel } from "react-icons/md";
-// import { useState } from "react";
+import { useState } from "react";
+import { ItemFormSchema, type ItemFormValues} from "@/types";
 
-// interface ItemToAddForm {
-//     item : {
+const defaultItem : ItemFormValues["item"] = {
+    brand: '',
+    description: '',
+    endOfLifeDate: new Date().toISOString().replace('T', ' ').slice(0, 23),
+    inventoryNumber: '',
+    model: '',
+    name: '',
+    orderNumber : '',
+    price: 0,
+    serialNumber: '',
+    state: "NEUF",
+    warrantyEndDate: new Date().toISOString().replace('T', ' ').slice(0, 23)
+};
 
-//     }
-// }
+const defaultProperties : ItemFormValues["properties"] = {
+    nb_occurance: 1
+};
+
+const defaultForm : ItemFormValues = {
+    properties: defaultProperties,
+    item: defaultItem
+}
 
 const AddItem = () => {
 
-    // const [form, setForm] = useState();
+    const [form, setForm] = useState<ItemFormValues>(defaultForm);
 
     const formatDateForInput = (dateString: string | undefined): string => {
         if (!dateString) return '';
         try {
             const date = new Date(dateString);
-            return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+            return date.toISOString().split('T')[0];
         } catch (error) {
             console.error("Invalid date format:", error);
             return '';
         }
+    };
+
+    const handleChangeItem = (name: string, value: string | number) => {
+        setForm(prev => ({
+            ...prev,
+            item: {
+                ...prev.item,
+                [name]: value
+            }
+        }));
+    };
+
+    const handleSave = () => {
+        console.log(form);
+    }
+
+    const handleChangeProperties = (name: string, value: string | number) => {
+        setForm(prev => ({
+            ...prev,
+            properties: {
+                ...prev.properties,
+                [name]: value
+            }
+        }));
     };
 
     return (
@@ -40,9 +82,9 @@ const AddItem = () => {
                         <div className="row">
                             <FormField
                                 label="Nombre d'occurrences de l'objet à créer"
-                                name="inventoryNumber"
-                                onChange={() => {}}
-                                value=""
+                                name="nb_occurance"
+                                onChange={handleChangeProperties}
+                                value={form.properties.nb_occurance.toString()}
                             />
                         </div>
                     </div>
@@ -53,14 +95,14 @@ const AddItem = () => {
                             <FormField
                                 label="Numéro d'inventaire"
                                 name="inventoryNumber"
-                                onChange={() => {}}
-                                value=""
+                                onChange={handleChangeItem}
+                                value={form.item.inventoryNumber}
                             />
                             <FormField
                                 label="Nom de l'objet"
-                                name="inventoryNumber"
-                                onChange={() => {}}
-                                value=""
+                                name="name"
+                                onChange={handleChangeItem}
+                                value={form.item.name}
                             />
                         </div>
                     </div>
@@ -71,19 +113,19 @@ const AddItem = () => {
                             <FormField
                                 label="Marque"
                                 name="brand"
-                                value={''}
-                                onChange={() => {}}
+                                value={form.item.brand}
+                                onChange={handleChangeItem}
                             />
                             <FormField
                                 label="Modèle"
                                 name="model"
-                                value={''}
-                                onChange={() => {}}
+                                value={form.item.model}
+                                onChange={handleChangeItem}
                             />
                             <FormSelectField
                                 label="État de l'objet"
-                                value={''}
-                                onChange={() => {}}
+                                value={form.item.state}
+                                onChange={handleChangeItem}
                                 name="state"
                                 options={
                                     [
@@ -102,8 +144,8 @@ const AddItem = () => {
                             <FormTextArea
                                 label="Description"
                                 name="description"
-                                value={''}
-                                onChange={() => {}}
+                                value={form.item.description}
+                                onChange={handleChangeItem}
                             />
                         </div>
 
@@ -112,23 +154,23 @@ const AddItem = () => {
                             <FormField
                                 label="Date de fin de garantie"
                                 name="warrantyEndDate"
-                                value={formatDateForInput('')}
-                                onChange={() => {}}
+                                value={formatDateForInput(form.item.warrantyEndDate)}
+                                onChange={handleChangeItem}
                                 type="date"
                             />
                             <FormField
                                 label="Date de fin de vie"
                                 name="endOfLifeDate"
-                                value={formatDateForInput('')}
-                                onChange={() => {}}
+                                value={formatDateForInput(form.item.endOfLifeDate)}
+                                onChange={handleChangeItem}
                                 type="date"
                             />
 
                             <FormField
                                 label="Prix"
                                 name="price"
-                                value={('0') + " €"}
-                                onChange={() => {}}
+                                value={form.item.price + " €"}
+                                onChange={handleChangeItem}
                             />
                         </div>        
                     </div>
@@ -146,7 +188,7 @@ const AddItem = () => {
                         </Link>
 
                         <Link to="/">
-                            <IconButton id="add">
+                            <IconButton onClick={handleSave} id="add">
                                 <GiConfirmed />
                                 VALIDER
                             </IconButton>
