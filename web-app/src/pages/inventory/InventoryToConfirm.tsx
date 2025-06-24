@@ -156,10 +156,12 @@ export const InventoryToConfirm = () => {
 
 	if (inventories.length === 0) {
 		return (
-			<div className="inventory-container">
-				<h1 className="inventory-title">Inventaires à confirmer</h1>
-				<p>Aucun inventaire à confirmer</p>
-			</div>
+			<PageLayout id="inventaireToConfirm">
+				<div className="inventory-container">
+					<h1 className="inventory-title">Inventaires à confirmer</h1>
+					<p>Aucun inventaire à confirmer</p>
+				</div>
+			</PageLayout>
 		);
 	}
 
