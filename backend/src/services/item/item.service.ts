@@ -2,7 +2,7 @@ import { entities } from "@/entities";
 import { enums } from "@/enums";
 import { ReplyHelper } from "@/helpers";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { FindOptionsWhere, Repository } from "typeorm";
+import { FindOptionsWhere, IsNull, Not, Repository } from "typeorm";
 
 
 export interface ItemByIdParams {
@@ -97,6 +97,38 @@ export const getItemById = async (
     ReplyHelper.send(reply, enums.StatusCode.OK, item);
 }
 
+export interface ItemByInventoryNumberParams {
+    inventoryNumber : entities.Item["inventoryNumber"];
+}
+
+export const getItemByInventoryNumber = async (
+    request: FastifyRequest<{ Params : ItemByInventoryNumberParams }>,
+    reply: FastifyReply,
+    repositories: {
+        primary: Repository<entities.Item>,
+    }
+) => {
+    const itemRepository = repositories.primary;
+    const { inventoryNumber } = request.params;
+
+    if (!inventoryNumber) 
+        return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Inventory number is required to find an item")
+
+    const item = await itemRepository.findOne({ 
+        where: { inventoryNumber },
+        relations: ['room', 'itemType']
+    });
+
+    if (!item) 
+        return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "Item not found" );
+    
+    ReplyHelper.send(reply, enums.StatusCode.OK, item);
+}
+
+export interface UpdateItemRoomBody {
+    id: entities.Structure["id"];
+}
+
 export const updateItemRoomFromInventoryId = async (
     request: FastifyRequest<{ 
         Params : ItemByInventoryNumberParams,
@@ -139,4 +171,27 @@ export const updateItemRoomFromInventoryId = async (
 
     return ReplyHelper.send(reply, enums.StatusCode.OK, updatedItem);
 
+}
+
+export const getItemsRoomStats = async (
+    _: FastifyRequest,
+    reply: FastifyReply,
+    repositories: {
+        primary: Repository<entities.Item>
+    }
+) => {
+    const itemRepository = repositories.primary;
+
+    const nb_items_ok = await itemRepository.count({
+        where: { room: { id: Not(IsNull()) } }
+    });
+
+    const nb_items_no_rooms = await itemRepository.count({
+        where: { room: IsNull() }
+    });
+
+    return ReplyHelper.send(reply, enums.StatusCode.OK, {
+        ok: nb_items_ok,
+        no_rooms: nb_items_no_rooms
+    });
 }

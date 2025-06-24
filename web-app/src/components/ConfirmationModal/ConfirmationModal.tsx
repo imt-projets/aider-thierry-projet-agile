@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface ConfirmationModalProps {
 	isOpen: boolean;
 	title: string;
@@ -10,7 +8,7 @@ interface ConfirmationModalProps {
 	cancelText?: string;
 }
 
-export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+export const ConfirmationModal = ({
 	isOpen,
 	title,
 	message,
@@ -18,7 +16,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	onCancel,
 	confirmText = 'Confirmer',
 	cancelText = 'Annuler'
-}) => {
+} : ConfirmationModalProps) => {
 	if (!isOpen) return null;
 
 	return (

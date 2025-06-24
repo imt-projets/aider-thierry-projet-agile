@@ -174,7 +174,6 @@ export const ObjectForm = () => {
                         readonly={!isEditing}
                         type="date"
                     />
-                    {/* TODO: FIX */}
                     <FormField
                         label="Prix"
                         name="price"

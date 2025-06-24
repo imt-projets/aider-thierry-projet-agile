@@ -129,3 +129,28 @@ export const validateInventoryToConfirm = async (
         ReplyHelper.error(reply, enums.StatusCode.INTERNAL_SERVER_ERROR, "Error validating inventory");
     }
 };
+
+export const createInventoryToConfirm = async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+    repositories: Pick<Repositories, 'primary'>
+) => {
+    try {
+        const { type, room, roomName, date, mapping } = request.body as any;
+        if (!type || !room || !roomName || !date || !mapping) {
+            return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Champs manquants pour la création de l'inventaire à confirmer");
+        }
+        const inventory = repositories.primary.create({
+            type,
+            room,
+            roomName,
+            date: new Date(date),
+            mapping
+        });
+        await repositories.primary.save(inventory);
+        ReplyHelper.send(reply, enums.StatusCode.CREATED, inventory);
+    } catch (error) {
+        console.error("Erreur lors de la création de l'inventaire à confirmer:", error);
+        ReplyHelper.error(reply, enums.StatusCode.INTERNAL_SERVER_ERROR, "Erreur lors de la création de l'inventaire à confirmer");
+    }
+};

@@ -9,11 +9,12 @@ interface ItemsTableProps {
     items : ItemDTO[];
     page : number;
     count: number;
+    loading: boolean,
     handleClickOnPagination: (page : number) => void;
 }
 const ITEMS_PER_PAGE = 8;
 
-export const ItemsTable = ({ items, count, page, handleClickOnPagination } : ItemsTableProps) => {
+export const ItemsTable = ({ items, count, page, handleClickOnPagination, loading } : ItemsTableProps) => {
 
     const { selectItem } = useContext(SelectionContext);
 
@@ -97,9 +98,14 @@ export const ItemsTable = ({ items, count, page, handleClickOnPagination } : Ite
                 columns={columns}
                 data={items}
                 columnsTemplate={columnsItemsTemplate}
+                loading={loading}
             >
                 <div className="pagination--informations">
-                    <p>{(page*ITEMS_PER_PAGE)-ITEMS_PER_PAGE+1}-{page*ITEMS_PER_PAGE} of {count}</p>
+                    <p>
+                        {count === 0
+                            ? "0"
+                            : `${(page - 1) * ITEMS_PER_PAGE + 1}-${Math.min(page * ITEMS_PER_PAGE, count)} of ${count}`}
+                    </p>
                 </div>
                 <Pagination
                     page={page}

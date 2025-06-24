@@ -54,7 +54,12 @@ export class HierarchySeeder extends Seeder {
             type: entities.StructureTypeEnum.ROOM,
             parent: buildingB,
         });
-        await structureRepository.save([roomJ142, roomJ144, roomJ145, roomB110]);
+        const roomTest = structureRepository.create({
+            name: "65833254",
+            type: entities.StructureTypeEnum.ROOM,
+            parent: buildingB,
+        });
+        await structureRepository.save([roomJ142, roomJ144, roomJ145, roomB110, roomTest]);
 
         const chairType = itemTypeRepository.create({ name: "Chaise", description: "Objet pour s’asseoir" });
         const tableType = itemTypeRepository.create({ name: "Table", description: "Surface pour poser des choses" });
@@ -217,9 +222,22 @@ export class HierarchySeeder extends Seeder {
                 model: "AR119",
                 state: ItemStateTypeEnum.GOOD
             }),
-
-
-
+            itemRepository.create({
+                name: "Test",
+                description: "La borne wifi de la J142",
+                price: 300,
+                warrantyEndDate: addYears(2),
+                endOfLifeDate: addYears(15),
+                brand: "Epson",
+                room: roomTest,
+                itemType: wifiAccess,
+                suppliers: [],
+                serialNumber: "12346589",
+                inventoryNumber: "65833254",
+                orderNumber: "3498113242",
+                model: "AR119",
+                state: ItemStateTypeEnum.GOOD
+            }),
             itemRepository.create({
                 name: "OBJET FANTOME",
                 description: "UN OBJET DETRUIT POUR DES TESTS",

@@ -1,10 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import type { InventoryToConfirmDTO, InventoryMappingDTO } from '@/dto';
-import type { NotificationType } from "@/components/Notification/Notification";
 import { InventoryCard } from '.';
 import { RequestHelper } from "@/api";
-import { ConfirmationModal } from "@/components/ConfirmationModal/ConfirmationModal";
-import { Notification } from "@/components/Notification/Notification";
+import { ConfirmationModal, Notification, type NotificationType } from "@/components";
 import PageLayout from "@/layouts/PageLayout";
 
 interface NotificationState {
@@ -33,10 +31,10 @@ export const InventoryToConfirm = () => {
 	const fetchInventories = async () => {
 		try {
 			const response = await RequestHelper.get("/inventoryToConfirm");
-		if (response.ok && response.data) {
-			const result = response.data as InventoryToConfirmDTO[];
-			setInventories(result);
-		}
+			if (response.ok && response.data) {
+				const result = response.data as InventoryToConfirmDTO[];
+				setInventories(result);
+			}
 		} catch (error) {
 			console.error("Erreur lors du chargement des inventaires:", error);
 			showNotification("Erreur lors du chargement des inventaires", "error");
@@ -57,28 +55,27 @@ export const InventoryToConfirm = () => {
 
 	const updateInventoryMapping = useCallback(
 		(invIndex: number, updater: (mapping: InventoryMappingDTO[]) => InventoryMappingDTO[]) => {
-		setInventories((prev) => {
-			const updated = [...prev];
-			const current = { ...updated[invIndex] };
-			current.mapping = updater(current.mapping);
-			updated[invIndex] = current;
-			return updated;
-		});
+			setInventories((prev) => {
+				const updated = [...prev];
+				const current = { ...updated[invIndex] };
+				current.mapping = updater(current.mapping);
+				updated[invIndex] = current;
+				return updated;
+			});
 		},
 		[]
 	);
 
 	const moveToRemoved = useCallback((item: string, invIndex: number, type: string) => {
 		updateInventoryMapping(invIndex, (mapping) =>
-		mapping
-			.map((m) =>
-			m.itemType !== type
-				? m
-				: {
-					...m,
-					itemsList: m.itemsList?.filter((i: string) => i !== item),
-					removedItem: [...(m.removedItem || []), item],
-				}
+			mapping.map((m) =>
+				m.itemType !== type
+					? m
+					: {
+						...m,
+						itemsList: m.itemsList?.filter((i: string) => i !== item),
+						removedItem: [...(m.removedItem || []), item],
+					}
 			)
 			.filter((m) => (m.itemsList?.length || 0) > 0 || (m.removedItem?.length || 0) > 0)
 		);
@@ -86,24 +83,24 @@ export const InventoryToConfirm = () => {
 
 	const moveToAdded = useCallback((item: string, invIndex: number, type: string) => {
 		updateInventoryMapping(invIndex, (mapping) => {
-		let found = false;
-		const updatedMapping = mapping
-			.map((m) => {
-				if (m.itemType !== type) return m;
-				found = true;
-				return {
-					...m,
-					removedItem: m.removedItem?.filter((i: string) => i !== item),
-					itemsList: [...(m.itemsList || []), item],
-				};
-			})
-			.filter((m) => (m.itemsList?.length || 0) > 0 || (m.removedItem?.length || 0) > 0);
+			let found = false;
+			const updatedMapping = mapping
+				.map((m) => {
+					if (m.itemType !== type) return m;
+					found = true;
+					return {
+						...m,
+						removedItem: m.removedItem?.filter((i: string) => i !== item),
+						itemsList: [...(m.itemsList || []), item],
+					};
+				})
+				.filter((m) => (m.itemsList?.length || 0) > 0 || (m.removedItem?.length || 0) > 0);
 
-		if (!found) {
-			updatedMapping.push({ itemType: type, itemsList: [item] });
-		}
+			if (!found) {
+				updatedMapping.push({ itemType: type, itemsList: [item] });
+			}
 
-		return updatedMapping;
+			return updatedMapping;
 		});
 	}, [updateInventoryMapping]);
 
@@ -130,7 +127,7 @@ export const InventoryToConfirm = () => {
 			const response = action === 'validate'
 				? await RequestHelper.post(endpoint, {
 					ids: inventory.mapping.reduce((acc, mapping) => {
-					return [...acc, ...(mapping.itemsList || [])];
+						return [...acc, ...(mapping.itemsList || [])];
 					}, [] as string[])
 				})
 				: await RequestHelper.delete(endpoint, {});
@@ -138,10 +135,10 @@ export const InventoryToConfirm = () => {
 			if (response.ok) {
 				setInventories(prev => prev.filter(inv => inv.id !== inventoryId));
 				showNotification(
-				action === 'validate' 
-					? "Inventaire validé avec succès" 
-					: "Inventaire supprimé avec succès",
-				"success"
+					action === 'validate' 
+						? "Inventaire validé avec succès" 
+						: "Inventaire supprimé avec succès",
+					"success"
 				);
 			} else {
 				throw new Error("Erreur lors de l'opération");
@@ -197,9 +194,9 @@ export const InventoryToConfirm = () => {
 
 				{notification.show && (
 					<Notification
-					message={notification.message}
-					type={notification.type}
-					onClose={hideNotification}
+						message={notification.message}
+						type={notification.type}
+						onClose={hideNotification}
 					/>
 				)}
 			</div>
