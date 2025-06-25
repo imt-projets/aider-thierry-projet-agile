@@ -120,13 +120,13 @@ export const validateInventoryToConfirm = async (
 
         if (isSuccessful) {
             await repositories.primary.remove(inventory);
-            ReplyHelper.send(reply, enums.StatusCode.OK, { message: "Inventory validated successfully" });
+            return ReplyHelper.send(reply, enums.StatusCode.OK, { message: "Inventory validated successfully" });
         } else {
-            ReplyHelper.error(reply, enums.StatusCode.INTERNAL_SERVER_ERROR, "Some operations failed during inventory validation");
+            return ReplyHelper.error(reply, enums.StatusCode.INTERNAL_SERVER_ERROR, "Some operations failed during inventory validation");
         }
     } catch (error) {
         console.error("Error validating inventory:", error);
-        ReplyHelper.error(reply, enums.StatusCode.INTERNAL_SERVER_ERROR, "Error validating inventory");
+        return ReplyHelper.error(reply, enums.StatusCode.INTERNAL_SERVER_ERROR, "Error validating inventory");
     }
 };
 

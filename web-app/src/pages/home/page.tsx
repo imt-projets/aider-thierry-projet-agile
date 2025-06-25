@@ -1,6 +1,6 @@
 import { TreeView } from "@/pages/home/components/TreeView";
 import {  useContext } from "react";
-import { ObjectDetails, PathBarView, ObjectTabs, ObjectForm } from "./components";
+import { ObjectDetails, ObjectTabs, ObjectForm } from "./components";
 import SelectionContext from "@/context/SelectionContext";
 import PageLayout from "@/layouts/PageLayout";
 
@@ -16,7 +16,6 @@ const Home = () => {
             <div className="container--object-view">
                 {selectedItem ? (
                     <>
-                        <PathBarView />
                         <div className="container--form-view">
                             <div className="container--left">
                                 <ObjectTabs />

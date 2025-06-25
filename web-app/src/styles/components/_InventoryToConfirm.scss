@@ -1,232 +1,79 @@
-// Variables
-$font-family-base: 'Segoe UI', sans-serif;
-$color-primary: #0284c7;
-$color-success: #15803d;
-$color-danger: #ef4444;
-$color-text: #222;
-$color-text-light: #6b7280;
-$color-border: #e5e7eb;
-$color-background: #fff;
-$color-background-light: #f9fafb;
-$color-background-success: #ecfdf5;
-$color-background-danger: #fef2f2;
-$color-background-info: #e0f2fe;
-$color-background-success-light: #dcfce7;
+@use "../theme/colors" as *;
+@use "../theme/fonts" as *;
 
-// Mixins
-@mixin flex-center {
-	display: flex;
-	align-items: center;
-}
-
-@mixin flex-between {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-@mixin flex-end {
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-}
-
-@mixin button-base {
-	padding: 0.5rem 1.25rem;
-	border-radius: 0.5rem;
-	font-weight: 600;
-	font-size: 0.875rem;
-	cursor: pointer;
-	transition: all 0.2s ease-in-out;
-}
-
-// Styles
 .inventory-container {
-	padding: 2rem 1rem;
-	max-width: none;
+	padding: 32px;
 	width: 100%;
-	font-family: $font-family-base;
-}
+	font-family: $inter-font;
 
-.inventory-card {
-	max-width: 900px;
-	margin: 0 auto 2.5rem auto;
-	background-color: $color-background;
-	border-radius: 1rem;
-	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-	padding: 2rem;
-	border: 1px solid $color-border;
-	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	.title {
+		margin-bottom: 2rem;
+		.inventory-title {
+			text-transform: uppercase;
+		}
 
-	&:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-	}
-}
+		strong {
+			font-size: $size-20;
 
-.inventory-title {
-	font-size: 2.25rem;
-	font-weight: 700;
-	margin-bottom: 2rem;
-	text-align: center;
-	color: $color-text;
-}
-
-.inventory-header {
-	@include flex-between;
-	margin-bottom: 1.25rem;
-}
-
-.inventory-room {
-	font-size: 1.5rem;
-	font-weight: 600;
-	margin: 0;
-	color: #111827;
-}
-
-.inventory-date {
-	color: $color-text-light;
-	font-size: 0.875rem;
-	margin-top: 0.25rem;
-}
-
-.inventory-type {
-	padding: 0.375rem 0.75rem;
-	border-radius: 9999px;
-	font-size: 0.875rem;
-	font-weight: 500;
-	display: inline-block;
-}
-
-.type-inventory {
-	background-color: $color-background-info;
-	color: $color-primary;
-}
-
-.type-move {
-	background-color: $color-background-success-light;
-	color: $color-success;
-}
-
-.inventory-content {
-	margin-top: 1rem;
-}
-
-.mapping-section {
-	border-top: 1px solid #f3f4f6;
-	padding-top: 1rem;
-	margin-top: 1rem;
-
-	&:first-child {
-		border-top: none;
-		padding-top: 0;
-		margin-top: 0;
-	}
-}
-
-.mapping-type {
-	font-weight: 600;
-	font-size: 1rem;
-	margin-bottom: 0.75rem;
-	color: #1f2937;
-}
-
-.items-section {
-	margin-bottom: 1.25rem;
-}
-
-.items-title {
-	font-size: 0.875rem;
-	color: $color-text-light;
-	margin-bottom: 0.5rem;
-}
-
-.items-grid {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-}
-
-.item {
-	@include flex-center;
-	padding: 0.375rem 0.75rem;
-	border-radius: 9999px;
-	font-size: 0.875rem;
-	font-weight: 500;
-	background-color: $color-background-light;
-
-	&.present {
-		background-color: $color-background-success;
-		color: #065f46;
-	}
-
-	&.removed {
-		background-color: $color-background-danger;
-		color: #991b1b;
-	}
-}
-
-.item-icon {
-	font-weight: bold;
-	margin-right: 0.25rem;
-}
-
-.move-content {
-	@include flex-center;
-	gap: 1rem;
-	font-weight: 500;
-	color: #374151;
-	padding: 0.5rem 0.75rem;
-	background-color: $color-background-light;
-	border-radius: 0.5rem;
-}
-
-.move-arrow {
-	color: #9ca3af;
-	font-weight: bold;
-	}
-
-.inventory-actions {
-	@include flex-end;
-	gap: 1rem;
-	margin-top: 2rem;
-}
-
-.btn {
-	@include button-base;
-
-	&-cancel {
-		border: 1px solid $color-danger;
-		color: $color-danger;
-		background-color: transparent;
-
-		&:hover {
-		background-color: #fee2e2;
+			color: $blue;
 		}
 	}
 
-	&-validate {
-		background-color: #22c55e;
-		color: white;
-		border: none;
 
-		&:hover {
-		background-color: #16a34a;
+	.inventory-card {
+		background-color: $white;
+		border-radius: 0.8rem;
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+		padding: 1rem;
+		border: 1px solid $card-border;
+
+		.inventory-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1.25rem;
+
+			.inventory-room {
+				font-size: $size-24;
+				color: $black;
+			}
+
+			.inventory-date {
+				color: $black;
+				opacity: 0.6;
+				font-size: $size-14;
+				margin-top: 0.25rem;
+			}
+
+			.inventory-type {
+				padding: 0.375rem 0.75rem;
+				border-radius: 9999px;
+				font-size: 0.875rem;
+				font-weight: 500;
+				display: inline-block;
+			}
+
+			.type-inventory {
+				background-color:#e0f2fe;
+				color: #0284c7;
+			}
+
+			.type-move {
+				background-color: #dcfce7;
+				color:  #15803d;
+			}
+		}
+
+		.inventory-content {
+			margin-top: 1rem;
+		}
+
+		.inventory-actions {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			gap: 1rem;
+			margin-top: 2rem;
 		}
 	}
-
-	&-icon {
-		background: none;
-		border: none;
-		color: inherit;
-		font-size: 1.25rem;
-		margin-left: 0.5rem;
-		cursor: pointer;
-		line-height: 1;
-		padding: 0;
-
-		&:hover {
-		opacity: 0.8;
-		}
-	}
-} 
+}

@@ -75,25 +75,21 @@ export const ItemsContent = ({
 
   return (
 		<div className="inventory-tables">
-			{addedItems.length > 0 && (
-				<div className="items-table">
-					<h3 className="table-title">Objets ajoutés</h3>
-					<Table
-						columns={columns}
-						data={addedItems}
-					/>
-				</div>
-			)}
+			<div className="inventory-table">
+				<h3 className="table-title">Objets ajoutés</h3>
+				<Table
+					columns={columns}
+					data={addedItems}
+				/>
+			</div>
 
-			{removedItems.length > 0 && (
-				<div className="items-table">
-					<h3 className="table-title">Objets supprimés</h3>
-					<Table
-						columns={columns}
-						data={removedItems}
-					/>
-				</div>
-			)}
+			<div className="inventory-table">
+				<h3 className="table-title">Objets supprimés</h3>
+				<Table
+					columns={columns}
+					data={removedItems}
+				/>
+			</div>
 		</div>
   	);
 }; 
