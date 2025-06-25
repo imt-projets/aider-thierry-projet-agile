@@ -1,9 +1,7 @@
-import { FormField, FormSelectField, FormTextArea, IconButton } from "@/components";
+import { Card, FormField, FormSelectField, FormTextArea, IconButton } from "@/components";
 import PageLayout from "@/layouts/PageLayout"
 import { Link } from "react-router-dom";
-import { GiConfirmed } from "react-icons/gi";
-import { MdCancel } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ItemFormSchema, type ItemFormValues} from "@/types";
 import { RequestHelper } from "@/api";
 
@@ -17,7 +15,7 @@ const defaultItem : ItemFormValues["item"] = {
     orderNumber : '',
     price: 0,
     serialNumber: '',
-    state: "NEUF",
+    state: "Neuf",
     warrantyEndDate: new Date().toISOString().replace('T', ' ').slice(0, 23)
 };
 
@@ -36,6 +34,13 @@ const numberPropertiesFields = ["nb_occurance"];
 const AddItem = () => {
 
     const [form, setForm] = useState<ItemFormValues>(defaultForm);
+    const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+    const [hasErrors, setHasErrors] = useState(false);
+
+    useEffect(() => {
+        setHasErrors(Object.values(fieldErrors).some(Boolean));
+    }, [fieldErrors]);
+
 
     const formatDateForInput = (dateString: string | undefined): string => {
         if (!dateString) return '';
@@ -49,15 +54,11 @@ const AddItem = () => {
     };
 
     const handleSave = async () => {
-        console.log(form);
-
-
         const parsedItem = ItemFormSchema.safeParse(form);
         if (parsedItem.success) {
-            console.log(parsedItem);
             await RequestHelper.post('/item', form);
         }
-        // Handle error
+        // TODO : Handle error
     }
 
     const handleChangeItem = (name: string, value: string | number) => {
@@ -71,11 +72,21 @@ const AddItem = () => {
     };
 
     const handleChangeProperties = (name: string, value: string | number) => {
+        let finalValue: string | number = value;
+
+        if (numberPropertiesFields.includes(name)) {
+            if (/^\d*$/.test(String(value))) {
+                finalValue = value === '' ? '' : Number(value);
+            } else {
+                finalValue = value;
+            }
+        }
+
         setForm(prev => ({
             ...prev,
             properties: {
                 ...prev.properties,
-                [name]: numberPropertiesFields.includes(name) ? Number(value) : value
+                [name]: finalValue
             }
         }));
     };
@@ -86,54 +97,91 @@ const AddItem = () => {
                 <div className="column" id="title">
                     <div className="column" id="sub-title">
                         <h1>Ajouter un objet</h1>
-                        <p>TEXTE A RAJOUTER</p>
+                        <p>Processus d'ajout d'un objet, vous pouvez créer plusieurs objets simultanément</p>
                     </div>
-                     <div className="form">
-                    <div className="column">
-                        <h2>Propriété</h2>
+                </div>
+                <div className="form">
+                    <Card title="Propriétés" subTitle="Cette rubrique concerne les paramètres globaux de votre création (nombre d'objets, ...)">
                         <div className="row">
                             <FormField
                                 label="Nombre d'occurrences de l'objet à créer"
                                 name="nb_occurance"
                                 onChange={handleChangeProperties}
                                 value={form.properties.nb_occurance.toString()}
+                                onValidationChange={(hasError) => {
+                                    setFieldErrors(prev => ({ ...prev, nb_occurance: hasError }));
+                                }}
                             />
                         </div>
-                    </div>
-
-                    <div className="column">
-                        <h2>Identité de l'objet</h2>
+                    </Card>
+                
+                    <Card
+                        title="Identité de l'objet"
+                        subTitle="Renseignez les informations principales de l'objet à ajouter"
+                    >
                         <div className="row" id="object-identity">
                             <FormField
                                 label="Numéro d'inventaire"
                                 name="inventoryNumber"
                                 onChange={handleChangeItem}
                                 value={form.item.inventoryNumber}
+                                required
+                                onValidationChange={(hasError) => {
+                                    setFieldErrors(prev => ({ ...prev, inventoryNumber: hasError }));
+                                }}
                             />
                             <FormField
                                 label="Nom de l'objet"
                                 name="name"
+                                placeholder="Par exemple Table, ..."
                                 onChange={handleChangeItem}
                                 value={form.item.name}
+                                required
+                                onValidationChange={(hasError) => {
+                                    setFieldErrors(prev => ({ ...prev, name: hasError }));
+                                }}
                             />
                         </div>
-                    </div>
+                    </Card>
 
-                    <div className="column">
-                        <h2>Partie Fournisseur</h2>
+                    <Card
+                        title="Partie Fournisseur"
+                        subTitle="Les informations relatives au fournisseur ainsi que les détails sur l'objet"
+                    >
                         <div className="row">
                             <FormField
                                 label="Marque"
                                 name="brand"
+                                placeholder="Par exemple Dell, ..."
                                 value={form.item.brand}
                                 onChange={handleChangeItem}
+                                required
+                                onValidationChange={(hasError) => {
+                                    setFieldErrors(prev => ({ ...prev, brand: hasError }));
+                                }}
                             />
                             <FormField
                                 label="Modèle"
                                 name="model"
                                 value={form.item.model}
                                 onChange={handleChangeItem}
+                                required
+                                onValidationChange={(hasError) => {
+                                    setFieldErrors(prev => ({ ...prev, model: hasError }));
+                                }}
                             />
+
+                            <div className="row">
+                                <FormField
+                                    label="Prix (en €)"
+                                    name="price"
+                                    value={form.item.price.toString()}
+                                    onChange={handleChangeItem}
+                                    onValidationChange={(hasError) => {
+                                        setFieldErrors(prev => ({ ...prev, price: hasError }));
+                                    }}
+                                />
+                            </div>
                             <FormSelectField
                                 label="État de l'objet"
                                 value={form.item.state}
@@ -151,18 +199,21 @@ const AddItem = () => {
                                 }
                             />
                         </div>
-        
+
+
                         <div className="row" id="object-description">
                             <FormTextArea
                                 label="Description"
                                 name="description"
                                 value={form.item.description}
                                 onChange={handleChangeItem}
+                                placeholder="Vous pouvez ajouter une petite description pour décrire l'objet"
                             />
                         </div>
-
+                    </Card>
+                    
+                    <Card title="Garantie">
                         <div className="row">
-
                             <FormField
                                 label="Date de fin de garantie"
                                 name="warrantyEndDate"
@@ -177,35 +228,25 @@ const AddItem = () => {
                                 onChange={handleChangeItem}
                                 type="date"
                             />
-
-                            <FormField
-                                label="Prix"
-                                name="price"
-                                value={form.item.price + " €"}
-                                onChange={handleChangeItem}
-                            />
-                        </div>        
-                    </div>
-
-                </div>
+                        </div>
+                    </Card>
                 </div>
 
-                <div className="row">
-                    <div className="actions">
-                        <Link to="/items">
-                            <IconButton id="cancel">
-                                <MdCancel/>
-                                ANNULER
-                            </IconButton>
-                        </Link>
+                <div className="actions">
+                    <Link to="/items">
+                        <IconButton className="btn btn-cancel">
+                            Annuler
+                        </IconButton>
+                    </Link>
 
-                        <Link to="/">
-                            <IconButton onClick={handleSave} id="add">
-                                <GiConfirmed />
-                                VALIDER
-                            </IconButton>
-                        </Link>
-                    </div>
+                    <Link
+                        to={hasErrors ? "#" : "/"}
+                        className={hasErrors ? "disabled-link" : ""}
+                    >
+                        <IconButton onClick={handleSave} className="btn btn-validate" disabled={hasErrors}>
+                            Valider
+                        </IconButton>
+                    </Link>
                 </div>
             </div>
         </PageLayout>
