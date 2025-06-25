@@ -27,13 +27,6 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
     return (
       <>
         <Button
-          title="Saisir le code"
-          onPress={onManualInput ? onManualInput : () => {}}
-          type="outline"
-          icon={<Entypo name="pencil" size={24} color="black" />}
-          disabled={isLoading}
-        />
-        <Button
           title="Annuler"
           onPress={onCancel}
           type="danger"

@@ -12,10 +12,10 @@ import useManualInput from '@/hooks/useManualInput';
 import Toast from '@/components/Toast';
 import { useFocusEffect } from '@react-navigation/native';
 import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
+import ModalConfirmation from '@/components/ModalConfirmation';
 
 export default function ScanRoomScreen() {
   const router = useRouter();
-  const [resetTrigger, setResetTrigger] = useState(0);
   const [scanError, setScanError] = useState('');
   const {
     roomCode,
@@ -27,6 +27,7 @@ export default function ScanRoomScreen() {
   const { mode, restartScan } = scannerContext();
 
   const [isPageFocused, setIsPageFocused] = useState(true);
+  const [isModalCancelShown, setIsModalCancelShwon] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -51,12 +52,6 @@ export default function ScanRoomScreen() {
         setScanError('Le serveur met trop de temps à répondre');
       }
     }
-  };
-
-
-  const handleAnnuler = () => {
-    resetRoomCode();
-    setResetTrigger(prev => prev + 1);
   };
 
   const handleContinue = () => {
@@ -85,14 +80,22 @@ export default function ScanRoomScreen() {
         frameColor={scanned ? '#4caf50' : '#222'}
         onScan={handleRoomScan}
         scanMode="single"
-        resetTrigger={resetTrigger}
         isActive={!scanned && isPageFocused}
         step="salle"
-        onCancel={handleAnnuler}
+        onCancel={ ()=> setIsModalCancelShwon(true) }
         onContinue={handleContinue}
         isLoading={isLoading}
         scanned={scanned}
         enableManualInput={true}
+      />
+      <ModalConfirmation
+        modalVisible={isModalCancelShown}
+        setModalVisible={setIsModalCancelShwon}
+        title="Êtes vous sûr de retourner au menu principal ?"
+        message={`L'action en cours sera abandonée`}
+        confirmText="Confirmer"
+        cancelText="Annuler"
+        onConfirm={goHome}
       />
     </View>
   );
