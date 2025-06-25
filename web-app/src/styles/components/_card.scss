@@ -4,7 +4,9 @@
 .card {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
     padding: 2rem;
+    border: 1px solid $card-border;
     width: 100%;
+    border-radius: 0.8rem;
 
     .card-header {
         margin-bottom: 1.5rem;
