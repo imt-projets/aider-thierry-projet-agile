@@ -15,10 +15,13 @@ interface ScannerContextType {
   mode: 'inventoryRoom' | 'addingObject' | null;
   setMode: (mode: 'inventoryRoom' | 'addingObject' | null) => void;
   isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: (val : boolean) => void;
   error: string | null;
-  setError: React.Dispatch<React.SetStateAction<string | null>>;
+  setError: (err : string) => void;
   clearError: () => void;
+  setManualError : (err : string) => void;
+  manualError : string | null;
+
 }
 
 export const ScannerContext = createContext<ScannerContextType | undefined>(undefined);
@@ -30,8 +33,12 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState<'inventoryRoom' | 'addingObject' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [manualError, setManualError] = useState<string | null>(null);
 
-  const clearError = () => setError(null);
+  const clearError = () => {
+    setError(null);
+    setManualError(null);
+  }
 
   const resetScannedCodes = () => setScannedItems([]);
   const setRoomCode = (code: string) => setRoomCodeState(code);
@@ -63,6 +70,8 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
         error,
         setError,
         clearError,
+        manualError,
+        setManualError
       }}
     >
       {children}

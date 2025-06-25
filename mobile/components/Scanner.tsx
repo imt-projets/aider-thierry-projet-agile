@@ -9,12 +9,13 @@ import { Entypo } from '@expo/vector-icons';
 import ScannerCamera from './ScannerCamera';
 import ScannerManualInput from './ScannerManualInput';
 import useManualInput from '@/hooks/useManualInput';
+import { scannerContext } from '@/context/ScannerContext';
 
 interface ScannerProps {
   message: string;
   messageColor?: string;
   frameColor?: string;
-  onScan: (code: string) => void | Promise<void>;
+  onScan: (code: string, isManual : boolean) => void | Promise<void>;
   scanMode?: 'single' | 'multiple';
   scannedCount?: number;
   resetTrigger?: any;
@@ -53,7 +54,8 @@ const Scanner: React.FC<ScannerProps> = ({
   const scannerSound = require('../assets/scanner-sound.mp3');
   const player = useAudioPlayer(scannerSound);
 
-  const manualInput = useManualInput(async (code) => { await onScan(code); });
+  const manualInput = useManualInput(async (code) => { await onScan(code, true); });
+  const { manualError } = scannerContext();
 
   useEffect(() => {
     setScanned(false);
@@ -66,49 +68,21 @@ const Scanner: React.FC<ScannerProps> = ({
       }
   }, [])
 
- const handleBarCodeScanned = async ({ data }: { data: string }) => {
-    if (scanLock.current) return;
-    scanLock.current = true;
-    setScanned(true);
-    Vibration.vibrate(200);
-
-    try {
-      await player.seekTo(0);
-      player.play();
-    } catch (e) {
-      console.warn("Impossible de (re)jouer le son :", e);
-    }
-
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    await onScan(data);
-
-    if (scanMode === 'multiple') {
-      setTimeout(() => {
-        setScanned(false);
-        scanLock.current = false;
-      }, 2000);
-    }
-  };
-
-  const handleScan = async (code: string) => {
-    await onScan(code);
-  };
-
   return (
     <View style={styles.container}>
       <Text style={[styles.title, { color: messageColor }]}>{message}</Text>
       <View>
         <ScannerCamera
-          isActive={isActive && !manualInput.show}
-          frameColor={frameColor}
-          onScan={onScan}
-          resetTrigger={resetTrigger}
+          isActive = {isActive && !manualInput.show}
+          frameColor = {frameColor}
+          onScan = {onScan}
+          resetTrigger = {resetTrigger}
         />
         {enableManualInput && (
           <TouchableOpacity
-            style={styles.fab}
-            onPress={manualInput.open}
-            activeOpacity={0.7}
+            style = {styles.fab}
+            onPress = {manualInput.open}
+            activeOpacity = {0.7}
           >
             <Entypo name="pencil" size={28} color="#fff" />
           </TouchableOpacity>
@@ -134,9 +108,10 @@ const Scanner: React.FC<ScannerProps> = ({
         code={manualInput.code}
         setCode={manualInput.setCode}
         loading={manualInput.loading}
-        error={manualInput.error}
+        error={manualError ?? ''}
         onSubmit={manualInput.submit}
         onClose={manualInput.close}
+        step = {step}
       />
     </View>
   );
