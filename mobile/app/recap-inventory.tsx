@@ -160,6 +160,7 @@ export default function RecapInventoryScreen() {
         confirmText="Envoyer"
         cancelText="Annuler"
         onConfirm={handleModalClosed}
+        isImportant = {false}
       />
 
       <ModalConfirmation
@@ -170,6 +171,7 @@ export default function RecapInventoryScreen() {
         confirmText="Oui"
         cancelText="Non"
         onConfirm={handleCancel}
+        isImportant = {false}
       />
 
       <ModalConfirmation
@@ -180,6 +182,7 @@ export default function RecapInventoryScreen() {
         confirmText="Retirer"
         cancelText="Annuler"
         onConfirm={handleRemoveConfirm}
+        isImportant = {false}
       />
     </View>
   );

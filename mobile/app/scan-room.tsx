@@ -13,10 +13,11 @@ import Toast from '@/components/Toast';
 import { useFocusEffect } from '@react-navigation/native';
 import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
 import ModalConfirmation from '@/components/ModalConfirmation';
+import  { MESSAGE_GO_BACK_TITLE, MESSAGE_GO_BACK_HOME_BODY, MESSAGE_HEADER_GO_HOME_TITLE, MESSAGE_HEADER_GO_HOME_BODY} from '@/constants/Messages/MessagesModales'
 
 export default function ScanRoomScreen() {
   const router = useRouter();
-  const [scanError, setScanError] = useState('');
+  const { setManualError, error : scanError, setError : setScanError } = scannerContext();
   const {
     roomCode,
     setRoomCode,
@@ -27,7 +28,8 @@ export default function ScanRoomScreen() {
   const { mode, restartScan } = scannerContext();
 
   const [isPageFocused, setIsPageFocused] = useState(true);
-  const [isModalCancelShown, setIsModalCancelShwon] = useState(false);
+
+  const [currentModal, setCurrentModal] = useState("");
 
   useFocusEffect(
     useCallback(() => {
@@ -36,21 +38,23 @@ export default function ScanRoomScreen() {
     }, [])
   );
 
-  const handleRoomScan = async (code: string) => {
-    setScanError('');
+  const handleRoomScan = async (code: string, isManual : boolean) => {
+    setManualError('');
     try {
       const roomResponse = await getRoomByCode(code);
       if (roomResponse.ok && roomResponse.data && roomResponse.data.id) {
         setRoomCode(code);
       }
     } catch (error) {
+      let errorMessage = '';     
       if (error instanceof ApiNotFoundError) {
-        setScanError('Salle inexistante ou code invalide');
+        errorMessage = 'Salle inexistante ou code invalide';
       } else if (error instanceof ApiServerError) {
-        setScanError('Une erreur est survenue');
+        errorMessage = 'Erreur interne';
       } else if (error instanceof ApiTimeoutError) {
-        setScanError('Le serveur met trop de temps à répondre');
+        errorMessage = 'Le serveur ne répond pas';
       }
+      isManual ? setManualError(errorMessage) : setScanError(errorMessage)
     }
   };
 
@@ -67,13 +71,13 @@ export default function ScanRoomScreen() {
   const scanned = roomCode !== null;
 
   useEffect(() => {
-    if (scanned) setScanError('');
+    if (scanned) setManualError('');
   }, [scanned]);
 
   return (
     <View style={layout.container}>
-      <Header title="IMT'ventaire" onHomePress={goHome} />
-      <Toast visible={!!scanError} message={scanError} onClose={() => setScanError('')} />
+      <Header title="IMT'ventaire" onHomePress={()=> setCurrentModal('AFTER_HOME_CLICKED')} />
+      <Toast visible={!!scanError} message={scanError ?? ""} onClose={() => setScanError('')} />
       <Scanner
         message={scanned ? 'Code barre de la salle récupéré': 'Veuillez scanner le code barre de la salle'}
         messageColor={scanned ? '#4caf50' : '#222'}
@@ -82,17 +86,18 @@ export default function ScanRoomScreen() {
         scanMode="single"
         isActive={!scanned && isPageFocused}
         step="salle"
-        onCancel={ ()=> setIsModalCancelShwon(true) }
+        onCancel={ ()=> setCurrentModal('AFTER_GO_BACK_CLICKED') }
         onContinue={handleContinue}
         isLoading={isLoading}
         scanned={scanned}
         enableManualInput={true}
       />
       <ModalConfirmation
-        modalVisible={isModalCancelShown}
-        setModalVisible={setIsModalCancelShwon}
-        title="Êtes vous sûr de retourner au menu principal ?"
-        message={`L'action en cours sera abandonée`}
+        modalVisible={currentModal != ''}
+        setModalVisible={() => setCurrentModal('')}
+        title= { currentModal == 'AFTER_GO_BACK_CLICKED' ? MESSAGE_GO_BACK_TITLE : MESSAGE_HEADER_GO_HOME_TITLE}
+        message = {currentModal === 'AFTER_GO_BACK_CLICKED' ? MESSAGE_GO_BACK_HOME_BODY: MESSAGE_HEADER_GO_HOME_BODY}
+        isImportant = {currentModal == 'AFTER_HOME_CLICKED'}
         confirmText="Confirmer"
         cancelText="Annuler"
         onConfirm={goHome}
