@@ -37,6 +37,15 @@
 
             &.input-error {
                 border-color: red;
+                color: red;
+                &::placeholder {
+                    color: red;
+                    opacity: 0.6;
+                }
+                
+                &:focus{
+                    outline-color: red;
+                }
             }
         }
     }
