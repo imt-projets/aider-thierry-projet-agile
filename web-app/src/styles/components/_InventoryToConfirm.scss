@@ -6,10 +6,19 @@
 	width: 100%;
 	font-family: $inter-font;
 
-	.inventory-title {
+	.title {
 		margin-bottom: 2rem;
-		text-transform: uppercase;
+		.inventory-title {
+			text-transform: uppercase;
+		}
+
+		strong {
+			font-size: $size-20;
+
+			color: $blue;
+		}
 	}
+
 
 	.inventory-card {
 		background-color: $white;

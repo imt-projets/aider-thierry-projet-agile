@@ -172,8 +172,11 @@ export const InventoryToConfirm = () => {
 	return (
 		<PageLayout id="inventaireToConfirm">
 			<div className="inventory-container">
-				<h1 className="inventory-title">Inventaires à confirmer</h1>
-
+				<div className="title">
+					<h1 className="inventory-title">Inventaires à confirmer</h1>
+					<p>Il reste <strong>{inventories.length}</strong> inventaires à confirmer</p>
+				</div>
+				
 				<InventoryCard
 					key={currentInventory.id}
 					inventory={currentInventory}
