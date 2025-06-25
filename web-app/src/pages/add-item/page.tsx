@@ -54,7 +54,9 @@ const AddItem = () => {
     };
 
     const handleSave = async () => {
+        console.log("oui")
         const parsedItem = ItemFormSchema.safeParse(form);
+        console.log(parsedItem);
         if (parsedItem.success) {
             await RequestHelper.post('/item', form);
         }
@@ -62,11 +64,21 @@ const AddItem = () => {
     }
 
     const handleChangeItem = (name: string, value: string | number) => {
+        let finalValue: string | number = value;
+
+        if (numberFields.includes(name)) {
+            if (/^\d*$/.test(String(value))) {
+                finalValue = value === '' ? '' : Number(value);
+            } else {
+                finalValue = value;
+            }
+        }
+
         setForm(prev => ({
             ...prev,
             item: {
                 ...prev.item,
-                [name]: numberFields.includes(name) ? Number(value) : value
+                [name]: finalValue
             }
         }));
     };

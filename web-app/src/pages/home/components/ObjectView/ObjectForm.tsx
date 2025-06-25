@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { FaPen, FaSave } from "react-icons/fa";
 import type { ItemDTO } from "@/dto";
 import SelectionContext from "../../../../context/SelectionContext";
-import { FormField, FormSelectField, FormTextArea, Item } from "@/components";
+import { Card, FormField, FormSelectField, FormTextArea, IconButton, Item } from "@/components";
 
 export const ObjectForm = () => {
     const { selectedItem, error } = useContext(SelectionContext);
@@ -52,6 +52,7 @@ export const ObjectForm = () => {
     const handleSave = () => {
         setIsEditing(false);
         // TODO: Save the form
+        // Also Check if the current form is updated
     };
 
     return (
@@ -61,32 +62,45 @@ export const ObjectForm = () => {
                     <Item style={{ width: 28, height: 28, verticalAlign: "middle" }} />
                 </div>
                 <div className="object-view-header-actions">
-                    <button
-                        className="object-view-btn"
-                        onClick={handleEdit}
-                        disabled={isEditing}
-                    >
-                        <FaPen style={{ fontSize: 18 }} />
-                        MODIFIER
-                    </button>
-                    <button
-                        className="object-view-btn save"
-                        onClick={handleSave}
-                        disabled={!isEditing}
-                    >
-                        <FaSave style={{ fontSize: 18 }} />
-                        SAUVEGARDER
-                    </button>
+                     {isEditing ? (
+                        <>
+                            <IconButton
+                                className="btn btn-cancel"
+                                onClick={() => {
+                                    setIsEditing(false);
+                                    setForm(selectedItem);
+                                }}
+                            >
+                                <FaSave />
+                                ANNULER
+                            </IconButton>
+
+                            <IconButton
+                                className="btn btn-validate"
+                                onClick={handleSave}
+                            >
+                                <FaSave />
+                                SAUVEGARDER
+                            </IconButton>
+                        </>
+                        ) : (
+                            <IconButton 
+                                onClick={handleEdit}
+                                className="btn btn-edit"
+                            >
+                                <FaPen />
+                                MODIFIER
+                            </IconButton>
+                        )}
                 </div>
             </div>
 
 
-            <div className="object--row">
-                <div className="title">
-                    <p className="object-view-title">Résumé de l'objet</p>
-                </div>
-                <div className="content">
-                    <FormField
+            <Card 
+                title="Résumé de l'objet"
+                subTitle="Informations sur l'objet"
+            >
+                <FormField
                         label="Numéro d'inventaire"
                         name="inventoryNumber"
                         onChange={handleChangesForm}
@@ -100,11 +114,12 @@ export const ObjectForm = () => {
                         onChange={handleChangesForm} 
                         readonly={!isEditing}
                     />
-                </div>
-            </div>
+            </Card>
 
-            <div className="object--row">
-                <div className="content">
+            <Card 
+                title="Onglet Fournisseur" 
+                subTitle="Informations relatives au fournisseur"
+            >
                     <FormField
                         label="Marque"
                         name="brand"
@@ -120,6 +135,13 @@ export const ObjectForm = () => {
                         readonly={!isEditing}
                     />
 
+                    <FormField
+                        label="Prix (en €)"
+                        name="price"
+                        value={form?.price.toString() || ''}
+                        onChange={handleChangesForm}
+                        readonly={!isEditing}
+                    />
 
                     <FormSelectField
                         label="État de l'objet"
@@ -138,51 +160,36 @@ export const ObjectForm = () => {
                             ]
                         }
                     />
-                </div>
 
-                <div className="content" id="object-description">
                     <FormTextArea
-                        label="Description"
                         name="description"
+                        onChange={handleChangesForm}
                         value={form?.description || ''}
                         readonly={!isEditing}
-                        onChange={handleChangesForm}
                     />
-                </div>
+            </Card>
 
-            </div>
-    
-
-            <div className="object--row">
-                <div className="title">
-                    <p className="object-view-title">Résumé de l'objet</p>
-                </div>
-                <div className="content">
-                    <FormField
-                        label="Date de fin de garantie"
-                        name="warrantyEndDate"
-                        value={formatDateForInput(form?.warrantyEndDate || '')}
-                        onChange={handleChangesForm}
-                        readonly={!isEditing}
-                        type="date"
-                    />
-                    <FormField
-                        label="Date de fin de vie"
-                        name="endOfLifeDate"
-                        value={formatDateForInput(form?.endOfLifeDate || '')}
-                        onChange={handleChangesForm}
-                        readonly={!isEditing}
-                        type="date"
-                    />
-                    <FormField
-                        label="Prix"
-                        name="price"
-                        value={(form?.price || '0') + " €"}
-                        onChange={handleChangesForm}
-                        readonly={!isEditing}
-                    />
-                </div>
-            </div>
+            <Card 
+                title="Garantie & Fin de Vie"
+                subTitle="Informations relatives à la durée de vie de l'objet"
+            >
+                <FormField
+                    label="Date de fin de garantie"
+                    name="warrantyEndDate"
+                    value={formatDateForInput(form?.warrantyEndDate || '')}
+                    onChange={handleChangesForm}
+                    readonly={!isEditing}
+                    type="date"
+                />
+                <FormField
+                    label="Date de fin de vie"
+                    name="endOfLifeDate"
+                    value={formatDateForInput(form?.endOfLifeDate || '')}
+                    onChange={handleChangesForm}
+                    readonly={!isEditing}
+                    type="date"
+                />
+            </Card>
         </div>
     );
 };

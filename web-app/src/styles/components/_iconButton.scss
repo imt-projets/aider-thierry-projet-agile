@@ -6,6 +6,7 @@
     justify-content: center;
     align-items: center;
     color: black;
+    gap: 12px;
 
     svg {
         width: 22px;
@@ -33,6 +34,18 @@
         &:hover {
             background-color: #16a34a;
         }
+    }
+
+    &-edit {
+        background-color: $white;
+        color: #fd9c1d;
+        border: 1px solid #ec8602;
+
+        &:hover{
+            color: $white;
+            background-color: #fabd6d;
+        }
+
     }
 
     &-icon {
