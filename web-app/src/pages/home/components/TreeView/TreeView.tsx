@@ -2,6 +2,7 @@ import { TreeViewSchema, type TreeViewBuilding, type TreeViewDTO, type TreeViewR
 import { useCallback, useEffect, useState } from "react";
 import { SearchBar, TreeList } from "./components";
 import { useFetch } from "@/hooks";
+import { Loader } from "@/components";
 
 export const TreeView = () => {
     const [openNodes, setOpenNodes] = useState<Record<string, boolean>>({});
@@ -17,6 +18,7 @@ export const TreeView = () => {
     const handleSearch = (value :string) => {
         setSearchTerm(value);
     }
+
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -90,7 +92,13 @@ export const TreeView = () => {
     return (
         <div id="treeView--container">
             <SearchBar onChanges={handleSearch}/>
-            { treeView && <TreeList nodes={treeView} depth={0} openNodes={openNodes} toggleNode={toggleNode} />}
+            {response.loading ? (
+                <div className="treeView--loader">
+                    <Loader/>
+                </div>
+            ) : (
+                treeView && <TreeList nodes={treeView} depth={0} openNodes={openNodes} toggleNode={toggleNode} />
+            )}
         </div>
     );
 };

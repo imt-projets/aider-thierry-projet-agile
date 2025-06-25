@@ -12,9 +12,15 @@
     align-items: center;
     padding: 12px;
 
+    .treeView--loader {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+
     .treeList--container{
         width: 100%;
-        margin-top: 18px;
         ul {
             width: inherit;
             max-width: 300px;
@@ -26,16 +32,19 @@
                 line-height: 16px;
 
                 div {
-                    margin-top: 2px;
-                    display: flex;
                     align-items: center;
                     cursor: pointer;
+                    margin-top: 3px;
                 }
 
                 span {
                     vertical-align: middle;
                 }
                 
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
             }
 
             .room > li {

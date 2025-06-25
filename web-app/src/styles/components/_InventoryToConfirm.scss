@@ -1,0 +1,79 @@
+@use "../theme/colors" as *;
+@use "../theme/fonts" as *;
+
+.inventory-container {
+	padding: 32px;
+	width: 100%;
+	font-family: $inter-font;
+
+	.title {
+		margin-bottom: 2rem;
+		.inventory-title {
+			text-transform: uppercase;
+		}
+
+		strong {
+			font-size: $size-20;
+
+			color: $blue;
+		}
+	}
+
+
+	.inventory-card {
+		background-color: $white;
+		border-radius: 0.8rem;
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+		padding: 1rem;
+		border: 1px solid $card-border;
+
+		.inventory-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1.25rem;
+
+			.inventory-room {
+				font-size: $size-24;
+				color: $black;
+			}
+
+			.inventory-date {
+				color: $black;
+				opacity: 0.6;
+				font-size: $size-14;
+				margin-top: 0.25rem;
+			}
+
+			.inventory-type {
+				padding: 0.375rem 0.75rem;
+				border-radius: 9999px;
+				font-size: 0.875rem;
+				font-weight: 500;
+				display: inline-block;
+			}
+
+			.type-inventory {
+				background-color:#e0f2fe;
+				color: #0284c7;
+			}
+
+			.type-move {
+				background-color: #dcfce7;
+				color:  #15803d;
+			}
+		}
+
+		.inventory-content {
+			margin-top: 1rem;
+		}
+
+		.inventory-actions {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			gap: 1rem;
+			margin-top: 2rem;
+		}
+	}
+}

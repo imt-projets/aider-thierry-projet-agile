@@ -1,31 +1,5 @@
-import { Tabs, Tab, Typography } from '@mui/material';
+import { Tabs, Tab } from '@mui/material';
 import { useState } from 'react';
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-const TabPanel = (props: TabPanelProps) => {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      	role="tabpanel"
-		hidden={value !== index}
-		id={`vertical-tabpanel-${index}`}
-		aria-labelledby={`vertical-tab-${index}`}
-		{...other}
-    >
-      	{value === index && (
-			<div className="tab-panel">
-				<Typography>{children}</Typography>
-			</div>	
-      	)}
-    </div>
-  );
-}
 
 interface TabProperties {
 	name : string
@@ -40,7 +14,7 @@ const tabs : TabProperties[] = [
 export const ObjectTabs = () => {
   	const [value, setValue] = useState(0);
 
-	const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+	const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
 		setValue(newValue);
 	};
 

@@ -26,7 +26,7 @@ const defineOptions = (method: RequestMethod, data? : unknown, options = default
         },
     }
 
-    return data ? AllOptions : {
+    return !data ? AllOptions : {
         ...AllOptions,
         body: JSON.stringify(data)
     }

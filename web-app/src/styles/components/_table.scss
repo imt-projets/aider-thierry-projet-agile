@@ -1,0 +1,42 @@
+@use '../theme/colors.scss' as *;
+@use '../theme/fonts' as *;
+
+.table{
+    display: flex;
+    flex-direction: column;
+    font-family: $inter-font;
+
+    .table-header {
+        display: grid;
+    }
+
+    .rows {
+        display: grid;
+
+        .row {
+            display: grid;
+            background: $white;
+
+            .column {
+                display: flex;
+                align-items: center;
+            }        
+        }
+    }
+
+    .no-content {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
+    .footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        background-color: #F4F7FC;
+        padding: 0px 10px 0px 0px;
+        font-size: $size-12;
+    }
+}

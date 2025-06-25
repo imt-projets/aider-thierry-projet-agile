@@ -16,15 +16,40 @@ const item = createRouterConfig({
             schema: schema.swagger.items.getAll
         },
         {
+            handlerName: "getItemsWithRooms",
+            method: "GET",
+            url: '/room'
+        },
+        {
+            handlerName: "getItemsPaginationTable",
+            method: "GET",
+            url: '/page/:page'
+        },
+        {
             handlerName: "getItemById",
             method: "GET",
             url: '/:id',
             schema: schema.swagger.items.getById
         },
         {
+            handlerName: "getItemByInventoryNumber",
+            method: "GET",
+            url: '/inventory/:inventoryNumber'
+        },
+        {
             handlerName: 'updateItemRoomFromInventoryId',
             method: 'PUT',
             url: '/:inventoryNumber/room'
+        },
+        {
+            handlerName: 'createItem',
+            method: 'POST',
+            url: ''
+        },
+        {
+            handlerName: 'getItemsRoomStats',
+            method: 'GET',
+            url: '/statistics'
         }
     ],
     service: services.Item
