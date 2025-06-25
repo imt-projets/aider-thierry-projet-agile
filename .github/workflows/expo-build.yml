@@ -27,11 +27,14 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Log in to Expo
-        run: eas whoami || eas login --token ${{ secrets.EXPO_TOKEN }}
-
-      - name: Build APK
-        run: eas build --platform android --non-interactive --profile preview
+      - name: Build APK (production)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas build --platform android --non-interactive --profile production
 
       - name: Upload build URL
-        run: echo "APK URL:" && eas build:list --platform android --limit 1 --json | jq -r '.[0].artifacts.buildUrl'
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          echo "APK URL:"
+          eas build:list --platform android --limit 1 --json | jq -r '.[0].artifacts.buildUrl'
