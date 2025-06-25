@@ -54,9 +54,7 @@ const AddItem = () => {
     };
 
     const handleSave = async () => {
-        console.log("oui")
         const parsedItem = ItemFormSchema.safeParse(form);
-        console.log(parsedItem);
         if (parsedItem.success) {
             await RequestHelper.post('/item', form);
         }
@@ -201,7 +199,6 @@ const AddItem = () => {
                                 name="state"
                                 options={
                                     [
-                                        {value:"",child: "Champs"},
                                         {value:"Neuf",child: "Neuf"},
                                         {value:"Bon",child: "Bon"},
                                         {value:"Moyen",child: "Moyen"},

@@ -9,6 +9,14 @@ export const ObjectForm = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [form, setForm] = useState<ItemDTO | null>(selectedItem);
 
+
+    const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+    const [hasErrors, setHasErrors] = useState(false);
+
+    useEffect(() => {
+        setHasErrors(Object.values(fieldErrors).some(Boolean));
+    }, [fieldErrors]);
+
     useEffect(() => {
         setForm(selectedItem);
     }, [selectedItem]);
@@ -39,6 +47,11 @@ export const ObjectForm = () => {
             </div>
         );
     }
+
+    const isFormModified = () => {
+        if (!form || !selectedItem) return false;
+        return JSON.stringify(form) !== JSON.stringify(selectedItem);
+    };
 
     const handleChangesForm = (name: string, value: string) => {
         if (!form) return;
@@ -78,6 +91,7 @@ export const ObjectForm = () => {
                             <IconButton
                                 className="btn btn-validate"
                                 onClick={handleSave}
+                                disabled={hasErrors || !isFormModified()}
                             >
                                 <FaSave />
                                 SAUVEGARDER
@@ -104,8 +118,12 @@ export const ObjectForm = () => {
                         label="Numéro d'inventaire"
                         name="inventoryNumber"
                         onChange={handleChangesForm}
-                        readonly={!isEditing} 
-                        value={form?.inventoryNumber || ''} 
+                        readonly={!isEditing}
+                        required 
+                        value={form?.inventoryNumber || ''}
+                        onValidationChange={(hasError) => {
+                            setFieldErrors(prev => ({ ...prev, inventoryNumber: hasError }));
+                        }} 
                     />
                     <FormField
                         label="Nom de l'objet"
@@ -113,6 +131,10 @@ export const ObjectForm = () => {
                         value={form?.name || ''}
                         onChange={handleChangesForm} 
                         readonly={!isEditing}
+                        required
+                        onValidationChange={(hasError) => {
+                            setFieldErrors(prev => ({ ...prev, name: hasError }));
+                        }}
                     />
             </Card>
 
@@ -126,6 +148,7 @@ export const ObjectForm = () => {
                         value={form?.brand || ''}
                         onChange={handleChangesForm}
                         readonly={!isEditing}
+                        required
                     />
                     <FormField
                         label="Modèle"
@@ -133,6 +156,7 @@ export const ObjectForm = () => {
                         value={form?.model || ''}
                         onChange={handleChangesForm}
                         readonly={!isEditing}
+                        required
                     />
 
                     <FormField
@@ -141,6 +165,10 @@ export const ObjectForm = () => {
                         value={form?.price.toString() || ''}
                         onChange={handleChangesForm}
                         readonly={!isEditing}
+                        required
+                        onValidationChange={(hasError) => {
+                            setFieldErrors(prev => ({ ...prev, price: hasError }));
+                        }}
                     />
 
                     <FormSelectField
@@ -151,7 +179,6 @@ export const ObjectForm = () => {
                         disabled={!isEditing}
                         options={
                             [
-                                {value:"",child: "Champs"},
                                 {value:"Neuf",child: "Neuf"},
                                 {value:"Bon",child: "Bon"},
                                 {value:"Moyen",child: "Moyen"},
