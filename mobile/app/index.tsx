@@ -6,12 +6,12 @@ import { MaterialIcons, Octicons } from '@expo/vector-icons';
 
 import Header from '@/components/Header';
 import Button from '@/components/Button';
-import { layout } from '@/styles/common';
-import { scannerContext } from '@/context/ScannerContext';
+import {layout} from '@/styles/common';
+import {scannerContext} from '@/context/ScannerContext';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { setMode, restartScan, setIsScannerActive } = scannerContext();
+  const {setMode, restartScan, setIsScannerActive} = scannerContext();
 
   useEffect(() => {
     setIsScannerActive(false);

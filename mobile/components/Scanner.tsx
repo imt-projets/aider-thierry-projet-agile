@@ -21,7 +21,7 @@ interface ScannerProps {
   resetTrigger?: any;
   isActive: boolean;
   step: 'salle' | 'object';
-  onCancel: () => void;
+  onGoBack: () => void;
   onContinue?: () => void;
   onAdd?: () => void;
   onFinish?: () => void;
@@ -40,7 +40,7 @@ const Scanner: React.FC<ScannerProps> = ({
   resetTrigger,
   isActive,
   step,
-  onCancel,
+  onGoBack,
   onContinue,
   onAdd,
   onFinish,
@@ -95,7 +95,7 @@ const Scanner: React.FC<ScannerProps> = ({
         <ScannerFooter
           scanned={scanned}
           scanMode={scanMode}
-          onCancel={onCancel}
+          onGoBack={onGoBack}
           onContinue={onContinue}
           onAdd={onAdd}
           onFinish={onFinish}

@@ -1,6 +1,6 @@
 export class ApiTimeoutError extends Error {
     constructor() {
-      super("La requête a expiré (délai dépassé)");
+      super("Le serveur ne répond pas");
       this.name = "ApiTimeoutError";
     }
   }

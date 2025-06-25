@@ -15,52 +15,76 @@ import { layout } from '@/styles/common';
 import useScanner from '@/hooks/useScanner';
 import { Entypo } from '@expo/vector-icons';
 import Item from '@/interfaces/Item';
+import {MESSAGE_HEADER_GO_HOME_BODY, MESSAGE_HEADER_GO_HOME_TITLE} from '@/constants/Messages/MessagesModales';
 
 export default function RecapInventoryScreen() {
   const { scannedItems, restartScan, isLoading, mode } = scannerContext();
   const { handleSendInventory, handleSendObject, removeScannedItem } = useScanner();
   const router = useRouter();
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalCancelVisible, setModalCancelVisible] = useState(false);
-  const [modalRemoveVisible, setModalRemoveVisible] = useState(false);
+  const [currentModal, setCurrentModal] = useState('');
   const [itemToRemove, setItemToRemove] = useState<Item | null>(null);
-
-  const handleConfirm = () => setModalVisible(true);
-
-  const handleCancel = () => {
-    restartScan();
-    router.push('/');
-  };
-
-  const handleContinueScan = () => router.back();
-
-  const goHome = () => {
-    restartScan();
-    router.push('/');
-  };
-
-  const handleModalClosed = async () => {
-    if (mode === 'inventoryRoom') {
-      await handleSendInventory();
-    } else {
-      await handleSendObject();
-    }
-    router.push('/');
-  };
-
-  const handleRemoveConfirm = () => {
-    if (itemToRemove) {
-      removeScannedItem(itemToRemove.inventoryNumber);
-    }
-    setItemToRemove(null);
-  };
 
   const disableConfirm = isLoading || scannedItems.length === 0;
 
+  const openModal = (type: string, item?: Item) => {
+    if (type === 'CONFIRM_REMOVE' && item) setItemToRemove(item);
+    setCurrentModal(type);
+  };
+
+  const getModalProps = () => {
+    switch (currentModal) {
+      case 'CONFIRM_SEND':
+        return {
+          title: "Confirmer l'envoi de l'inventaire",
+          message: `Êtes-vous sûr de vouloir envoyer cet inventaire ?\nNombre d'objets : ${scannedItems.length}`,
+          onConfirm: async () => {
+            if (mode === 'inventoryRoom') await handleSendInventory();
+            else await handleSendObject();
+            router.push('/');
+          }
+        };
+      case 'CONFIRM_CANCEL':
+        return {
+          title: "Annuler l'inventaire ?",
+          message: "Êtes-vous sûr de vouloir supprimer l'inventaire en cours ? Cette action est irréversible.",
+          onConfirm: () => {
+            restartScan();
+            router.push('/');
+          }
+        };
+      case 'CONFIRM_REMOVE':
+        return {
+          title: "Retirer l'objet ?",
+          message: `Voulez-vous vraiment retirer l'objet ${itemToRemove?.name ?? ''} (#${itemToRemove?.inventoryNumber ?? ''}) de l'inventaire ?`,
+          onConfirm: () => {
+            if (itemToRemove) {
+              removeScannedItem(itemToRemove.inventoryNumber);
+              setItemToRemove(null);
+            }
+          }
+        };
+      case 'AFTER_HOME_CLICKED':
+        return {
+          title: MESSAGE_HEADER_GO_HOME_TITLE,
+          message: MESSAGE_HEADER_GO_HOME_BODY,
+          onConfirm: () => {
+            restartScan();
+            router.push('/');
+          },
+          isImportant: true
+        };
+      default:
+        return null;
+    }
+  };
+
+  const continueScan = () => {
+    router.back();
+  }
   return (
     <View style={layout.container}>
-      <Header title="IMT'ventaire" onHomePress={goHome} />
+      <Header title="IMT'ventaire" onHomePress={() => openModal('AFTER_HOME_CLICKED')} />
 
       <View style={styles.content}>
         <Text style={styles.title}>Récapitulatif de l'inventaire</Text>
@@ -89,10 +113,7 @@ export default function RecapInventoryScreen() {
               <View style={styles.removeIconWrapper}>
                 <TouchableOpacity
                   style={styles.removeIcon}
-                  onPress={() => {
-                    setItemToRemove(item);
-                    setModalRemoveVisible(true);
-                  }}
+                  onPress={() => openModal('CONFIRM_REMOVE', item)}
                   activeOpacity={0.7}
                   accessibilityLabel={`Retirer ${item.name}`}
                 >
@@ -103,23 +124,13 @@ export default function RecapInventoryScreen() {
           ))}
         </ScrollView>
 
-        <View style={styles.continueInventaireButtonContainer}>
-          <TouchableOpacity
-            style={styles.continueInventaireButton}
-            onPress={handleContinueScan}
-            disabled={isLoading}
-          >
-            <Text style={styles.continueInventaireText}>Continuer l'inventaire</Text>
-          </TouchableOpacity>
-        </View>
-
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => setModalCancelVisible(true)}
+            style={styles.continueScan}
+            onPress={continueScan}
             disabled={isLoading}
           >
-            <Text style={styles.cancelButtonText}>Annuler</Text>
+            <Text style={styles.continueScanText}>Continuer</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -127,7 +138,7 @@ export default function RecapInventoryScreen() {
               styles.confirmButton,
               disableConfirm && styles.confirmButtonDisabled,
             ]}
-            onPress={handleConfirm}
+            onPress={() => openModal('CONFIRM_SEND')}
             disabled={disableConfirm}
           >
             {isLoading ? (
@@ -152,38 +163,21 @@ export default function RecapInventoryScreen() {
         )}
       </View>
 
-      <ModalConfirmation
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        title="Confirmer l'envoi de l'inventaire"
-        message={`Êtes-vous sûr de vouloir envoyer cet inventaire ?\nNombre d'objets : ${scannedItems.length}`}
-        confirmText="Envoyer"
-        cancelText="Annuler"
-        onConfirm={handleModalClosed}
-        isImportant = {false}
-      />
-
-      <ModalConfirmation
-        modalVisible={modalCancelVisible}
-        setModalVisible={setModalCancelVisible}
-        title="Annuler l'inventaire ?"
-        message="Êtes-vous sûr de vouloir supprimer l'inventaire en cours ? Cette action est irréversible."
-        confirmText="Oui"
-        cancelText="Non"
-        onConfirm={handleCancel}
-        isImportant = {false}
-      />
-
-      <ModalConfirmation
-        modalVisible={modalRemoveVisible}
-        setModalVisible={setModalRemoveVisible}
-        title="Retirer l'objet ?"
-        message={`Voulez-vous vraiment retirer l'objet ${itemToRemove?.name ?? ''} (#${itemToRemove?.inventoryNumber ?? ''}) de l'inventaire ?`}
-        confirmText="Retirer"
-        cancelText="Annuler"
-        onConfirm={handleRemoveConfirm}
-        isImportant = {false}
-      />
+      {currentModal !== '' && (
+        <ModalConfirmation
+          modalVisible={true}
+          setModalVisible={() => setCurrentModal('')}
+          title={getModalProps()?.title || ''}
+          message={getModalProps()?.message || ''}
+          confirmText="Confirmer"
+          cancelText="Annuler"
+          isImportant={getModalProps()?.isImportant || false}
+          onConfirm={() => {
+            getModalProps()?.onConfirm?.();
+            setCurrentModal('');
+          }}
+        />
+      )}
     </View>
   );
 }
@@ -271,9 +265,9 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 32,
   },
-  cancelButton: {
+  continueScan: {
     flex: 1,
-    backgroundColor: '#F44336',
+    backgroundColor: '#007AFF',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
@@ -289,7 +283,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#bdbdbd',
     opacity: 0.6,
   },
-  cancelButtonText: {
+  continueScanText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
@@ -301,27 +295,6 @@ const styles = StyleSheet.create({
   },
   confirmButtonTextDisabled: {
     color: '#eee',
-  },
-  continueInventaireButtonContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  continueInventaireButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 24,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  continueInventaireText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
   loaderOverlay: {
     position: 'absolute',

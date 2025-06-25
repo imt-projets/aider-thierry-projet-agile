@@ -1,5 +1,5 @@
 import { scannerContext } from '@/context/ScannerContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export interface UseManualInput {
   show: boolean;
@@ -17,7 +17,11 @@ export default function useManualInput(onScan: (code: string, isManual : boolean
   const [loading, setLoading] = useState(false);
   const {manualError, setManualError} = scannerContext();
 
-  const open = () => { setShow(true); setManualError(''); setCode(''); };
+  const open = () => { 
+    setShow(true);
+    setManualError('');
+    setCode('');
+  };
   const close = () => { 
     setShow(false);
     setManualError('');
@@ -30,14 +34,20 @@ export default function useManualInput(onScan: (code: string, isManual : boolean
     setManualError('');
     try {
       await onScan(code.trim(), true);
-      manualError && setShow(true);
       setCode('');
+      setShow(false)
     } catch (e) {
       setManualError('Code non trouvé ou erreur serveur');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (manualError) {
+      setShow(true)
+    }
+  }, [manualError, setManualError]);
 
   return {
     show,

@@ -11,26 +11,21 @@ import { scannerContext } from '@/context/ScannerContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
 import { getItemByInventoryNumber } from '@/services/ScannerService';
+import ModalConfirmation from '@/components/ModalConfirmation';
+import  { MESSAGE_GO_BACK_TITLE, MESSAGE_HEADER_GO_HOME_TITLE, MESSAGE_HEADER_GO_HOME_BODY, MESSAGE_GO_BACK_SCAN_ITEM_BODY } from '@/constants/Messages/MessagesModales';
+import { ROOM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
 
 export default function ScanObjectsScreen() {
-  const [lastScanned, setLastScanned] = useState<string | null>(null);
-  const [resetTrigger, setResetTrigger] = useState(0);
-  const [scanError, setScanError] = useState('');
   const {
-    scannedItems,
     addScannedCode,
-    isLoading,
-    removeScannedItem
+    removeScannedItem,
   } = useScanner();
-  const router = useRouter();
-  const { restartScan } = scannerContext();
-  const [isPageFocused, setIsPageFocused] = useState(true);
-  const [showScanToast, setShowScanToast] = useState(false);
-  const [lastScannedItem, setLastScannedItem] = useState<any>(null);
 
-  useEffect(() => {
-    if (scannedItems.length > 0) setScanError('');
-  }, [scannedItems.length]);
+  const { setManualError, error : scanError, setError : setScanError, isLoading, resetScannedCodes, restartScan, scannedItems } = scannerContext();
+  const router = useRouter();
+  const [isPageFocused, setIsPageFocused] = useState(true);
+  const [lastScannedItem, setLastScannedItem] = useState<any>(null);
+  const [currentModal, setCurrentModal] = useState("");
 
   useFocusEffect(
     useCallback(() => {
@@ -39,83 +34,74 @@ export default function ScanObjectsScreen() {
     }, [])
   );
 
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    if (showScanToast) {
-      timer = setTimeout(() => setShowScanToast(false), 5000);
-    }
-    return () => clearTimeout(timer);
-  }, [showScanToast]);
-
-  useEffect(() => {
-    if (!isPageFocused) setShowScanToast(false);
-  }, [isPageFocused]);
-
-  const handleScan = async (code: string) => {
-    setScanError('');
+  const handleItemScan = async (code: string, isManual : boolean) => {
     try {
       const itemResponse = await getItemByInventoryNumber(code);
       addScannedCode(itemResponse.data);
-      setLastScanned(code);
       setLastScannedItem(itemResponse.data);
-      setShowScanToast(true);
-      setTimeout(() => setLastScanned(null), 2000);
+      setTimeout(() => setLastScannedItem(null), 2000);
     } catch (error) {
+      let errorMessage = '';     
       if (error instanceof ApiNotFoundError) {
-        setScanError('Salle inexistante ou code invalide');
-      } else if (error instanceof ApiServerError) {
-        setScanError('Une erreur est survenue');
-      } else if (error instanceof ApiTimeoutError) {
-        setScanError('Le serveur met trop de temps à répondre');
+        errorMessage = ROOM_NOT_FOUND_MESSAGE;
+      } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
+        errorMessage = error.message;
       }
+      isManual ? setManualError(errorMessage) : setScanError(errorMessage)
     }
   };
 
-  const handleFinish = () => {
+
+  const goToRecap = () => {
     router.push('/recap-inventory');
   };
 
-  const handleCancel = () => {
-    restartScan();
+  const goBack = () => {
+    resetScannedCodes();
     router.back();
   };
 
-  const handleHome = () => {
+  const goHome = () => {
     restartScan();
     router.push('/');
   };
 
   return (
     <View style={layout.container}>
-      <Header title="IMT'ventaire" onHomePress={handleHome} />
-      <Toast visible={!!scanError} message={scanError} onClose={() => setScanError('')} />
+      <Header title="IMT'ventaire" onHomePress={()=> setCurrentModal('AFTER_HOME_CLICKED')}  />
+      <Toast visible={!!scanError} message={scanError ?? ""} onClose={() => setScanError('')} />
       <Toast
-        visible={showScanToast}
-        message={lastScannedItem ? `Objet scanné : ${lastScannedItem.name || lastScannedItem.inventoryNumber}` : 'Objet scanné'}
-        onClose={() => setShowScanToast(false)}
-        duration={5000}
+        visible={!!lastScannedItem}
+        message={`Objet scanné : ${lastScannedItem?.name || lastScannedItem?.inventoryNumber}`}
+        onClose={() => setLastScannedItem(null)}
         actionLabel="Annuler"
-        onAction={() => {
-          if (lastScannedItem) removeScannedItem(lastScannedItem.inventoryNumber);
-          setShowScanToast(false);
-        }}
+        onAction={() => lastScannedItem && removeScannedItem(lastScannedItem.inventoryNumber)}
         type="success"
       />
       <Scanner
         message="Veuillez scanner les objets de la salle"
         messageColor="#222"
-        frameColor={lastScanned ? '#4caf50' : '#222'}
-        onScan={handleScan}
+        frameColor={lastScannedItem ? '#4caf50' : '#222'}
+        onScan={handleItemScan}
         scanMode="multiple"
         scannedCount={scannedItems.length}
-        resetTrigger={resetTrigger}
         isActive={isPageFocused}
         step="object"
-        onCancel={handleCancel}
-        onFinish={handleFinish}
+        onGoBack={()=> setCurrentModal('AFTER_GO_BACK_CLICKED')}
+        onFinish={goToRecap}
         isLoading={isLoading}
         scanned={scannedItems.length > 0}
         enableManualInput={true}
+      />
+      <ModalConfirmation
+          modalVisible={currentModal != ''}
+          setModalVisible={() => setCurrentModal('')}
+          title= { currentModal == 'AFTER_GO_BACK_CLICKED' ? MESSAGE_GO_BACK_TITLE : MESSAGE_HEADER_GO_HOME_TITLE}
+          message = {currentModal === 'AFTER_GO_BACK_CLICKED' ? MESSAGE_GO_BACK_SCAN_ITEM_BODY: MESSAGE_HEADER_GO_HOME_BODY}
+          isImportant = {currentModal == 'AFTER_HOME_CLICKED'}
+          confirmText="Confirmer"
+          cancelText="Annuler"
+          onConfirm={currentModal === 'AFTER_GO_BACK_CLICKED' ? goBack : goHome}
       />
     </View>
   );

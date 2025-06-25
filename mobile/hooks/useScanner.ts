@@ -7,7 +7,6 @@ import {
   sendInventoryToConfirm
 } from '@/services/ScannerService';
 
-
 // Méthode qui va grouper les items par type
 const groupByType = (items: Item[]) =>
   items.reduce((acc: Record<string, Item[]>, item) => {
@@ -39,20 +38,15 @@ export default function useScanner() {
     scannedItems,
     setScannedItems,
     roomCode,
-    setRoomCode,
-    resetRoomCode,
     isLoading,
     setIsLoading,
-    error,
     setError,
-    clearError,
-    resetScannedCodes,
     restartScan,
   } = scannerContext();
 
   const withLoading = async (fn: () => Promise<void>) => {
     setIsLoading(true);
-    setError(null);
+    setError('');
     try {
       await fn();
     } catch (err: any) {
@@ -137,21 +131,9 @@ export default function useScanner() {
   };
 
   return {
-    scannedItems,
-    setScannedItems,
-    roomCode,
-    setRoomCode,
-    resetRoomCode,
-    isLoading,
-    setIsLoading,
-    error,
-    setError,
-    clearError,
-    resetScannedCodes,
-    restartScan,
-    addScannedCode,
     handleSendInventory,
     handleSendObject,
     removeScannedItem,
+    addScannedCode
   };
 }

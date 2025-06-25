@@ -7,28 +7,19 @@ import useScanner from '@/hooks/useScanner';
 import Header from '@/components/Header';
 import { layout } from '@/styles/common';
 import { scannerContext } from '@/context/ScannerContext';
-import { getRoomByCode } from '@/services/ScannerService';
-import useManualInput from '@/hooks/useManualInput';
 import Toast from '@/components/Toast';
 import { useFocusEffect } from '@react-navigation/native';
-import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
 import ModalConfirmation from '@/components/ModalConfirmation';
-import  { MESSAGE_GO_BACK_TITLE, MESSAGE_GO_BACK_HOME_BODY, MESSAGE_HEADER_GO_HOME_TITLE, MESSAGE_HEADER_GO_HOME_BODY} from '@/constants/Messages/MessagesModales'
+import  { MESSAGE_GO_BACK_TITLE, MESSAGE_GO_BACK_HOME_BODY, MESSAGE_HEADER_GO_HOME_TITLE, MESSAGE_HEADER_GO_HOME_BODY, MESSAGE_GO_BACK_SCAN_ROOM_BODY } from '@/constants/Messages/MessagesModales'
+import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from '@/interfaces/Item/ApiErrors';
+import { ROOM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
+import { getRoomByCode } from '@/services/ScannerService';
 
 export default function ScanRoomScreen() {
   const router = useRouter();
-  const { setManualError, error : scanError, setError : setScanError } = scannerContext();
-  const {
-    roomCode,
-    setRoomCode,
-    resetRoomCode,
-    isLoading
-  } = useScanner();
-
-  const { mode, restartScan } = scannerContext();
+  const {setManualError, error : scanError, setError : setScanError,roomCode, setRoomCode, isLoading, mode, restartScan} = scannerContext();
 
   const [isPageFocused, setIsPageFocused] = useState(true);
-
   const [currentModal, setCurrentModal] = useState("");
 
   useFocusEffect(
@@ -38,8 +29,14 @@ export default function ScanRoomScreen() {
     }, [])
   );
 
+  const handleContinue = () => {
+    const nextRoute = mode === 'addingObject' ? '/add-object' : '/room-inventory';
+    router.push(nextRoute);
+  };
+
+  const scanned = roomCode !== null;
+
   const handleRoomScan = async (code: string, isManual : boolean) => {
-    setManualError('');
     try {
       const roomResponse = await getRoomByCode(code);
       if (roomResponse.ok && roomResponse.data && roomResponse.data.id) {
@@ -48,32 +45,26 @@ export default function ScanRoomScreen() {
     } catch (error) {
       let errorMessage = '';     
       if (error instanceof ApiNotFoundError) {
-        errorMessage = 'Salle inexistante ou code invalide';
-      } else if (error instanceof ApiServerError) {
-        errorMessage = 'Erreur interne';
-      } else if (error instanceof ApiTimeoutError) {
-        errorMessage = 'Le serveur ne répond pas';
+        errorMessage = ROOM_NOT_FOUND_MESSAGE;
+      } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
+        errorMessage = error.message;
       }
       isManual ? setManualError(errorMessage) : setScanError(errorMessage)
     }
   };
 
-  const handleContinue = () => {
-    const nextRoute = mode === 'addingObject' ? '/add-object' : '/room-inventory';
-    router.push(nextRoute);
-  };
-
   const goHome = () => {
     restartScan();
-    router.push('/');
-  };
+    router.push('/')
+  }
 
-  const scanned = roomCode !== null;
-
-  useEffect(() => {
-    if (scanned) setManualError('');
-  }, [scanned]);
-
+  const goBack = () => {
+    if (scanned) {
+      restartScan();
+    } else {
+      goHome();
+    }
+  }
   return (
     <View style={layout.container}>
       <Header title="IMT'ventaire" onHomePress={()=> setCurrentModal('AFTER_HOME_CLICKED')} />
@@ -86,7 +77,7 @@ export default function ScanRoomScreen() {
         scanMode="single"
         isActive={!scanned && isPageFocused}
         step="salle"
-        onCancel={ ()=> setCurrentModal('AFTER_GO_BACK_CLICKED') }
+        onGoBack={ ()=> setCurrentModal('AFTER_GO_BACK_CLICKED') }
         onContinue={handleContinue}
         isLoading={isLoading}
         scanned={scanned}
@@ -95,12 +86,16 @@ export default function ScanRoomScreen() {
       <ModalConfirmation
         modalVisible={currentModal != ''}
         setModalVisible={() => setCurrentModal('')}
-        title= { currentModal == 'AFTER_GO_BACK_CLICKED' ? MESSAGE_GO_BACK_TITLE : MESSAGE_HEADER_GO_HOME_TITLE}
-        message = {currentModal === 'AFTER_GO_BACK_CLICKED' ? MESSAGE_GO_BACK_HOME_BODY: MESSAGE_HEADER_GO_HOME_BODY}
-        isImportant = {currentModal == 'AFTER_HOME_CLICKED'}
+        title={currentModal == 'AFTER_GO_BACK_CLICKED' ? MESSAGE_GO_BACK_TITLE : MESSAGE_HEADER_GO_HOME_TITLE}
+        message={
+          currentModal === 'AFTER_GO_BACK_CLICKED'
+            ? (scanned ? MESSAGE_GO_BACK_SCAN_ROOM_BODY : MESSAGE_GO_BACK_HOME_BODY)
+            : MESSAGE_HEADER_GO_HOME_BODY
+        }
+        isImportant={currentModal == 'AFTER_HOME_CLICKED'}
         confirmText="Confirmer"
         cancelText="Annuler"
-        onConfirm={goHome}
+        onConfirm={currentModal === 'AFTER_GO_BACK_CLICKED' ? goBack : goHome}
       />
     </View>
   );

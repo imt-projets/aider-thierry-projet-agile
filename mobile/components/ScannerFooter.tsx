@@ -5,30 +5,28 @@ import { Entypo, Octicons } from '@expo/vector-icons';
 interface ScannerFooterProps {
   scanned: boolean;
   scanMode: 'single' | 'multiple';
-  onCancel: () => void;
+  onGoBack: () => void;
   onContinue?: () => void;
   onAdd?: () => void;
   onFinish?: () => void;
   isLoading?: boolean;
-  onManualInput?: () => void;
 }
 
 const ScannerFooter: React.FC<ScannerFooterProps> = ({
   scanned,
   scanMode,
-  onCancel,
+  onGoBack,
   onContinue,
   onAdd,
   onFinish,
   isLoading = false,
-  onManualInput
 }) => {
   if (!scanned) {
     return (
       <>
         <Button
-          title="Annuler"
-          onPress={onCancel}
+          title="Retour"
+          onPress={onGoBack}
           type="danger"
           icon={<Entypo name="circle-with-cross" size={24} color="white" />}
           disabled={isLoading}
@@ -36,7 +34,7 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
       </>
     );
   }
-  if (scanMode === 'single' && onContinue) {
+  if (scanMode === 'single' && onContinue) { // Scan d'une salle
     return (
       <>
         <Button
@@ -47,8 +45,8 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           disabled={isLoading}
         />
         <Button
-          title="Annuler"
-          onPress={onCancel}
+          title="Retour"
+          onPress={onGoBack}
           type="danger"
           icon={<Entypo name="circle-with-cross" size={24} color="white" />}
           disabled={isLoading}
@@ -56,19 +54,19 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
       </>
     );
   }
-  if (scanMode === 'multiple' && onFinish) {
+  if (scanMode === 'multiple' && onFinish) { // Inventaire d'une salle 
     return (
       <>
         <Button
-          title="Terminer"
+          title="Récapitulatif"
           onPress={onFinish}
           type="primary"
           icon={<Entypo name="check" size={24} color="white" />}
           disabled={isLoading}
         />
         <Button
-          title="Annuler"
-          onPress={onCancel}
+          title="Retour"
+          onPress={onGoBack}
           type="danger"
           icon={<Entypo name="circle-with-cross" size={24} color="white" />}
           disabled={isLoading}
@@ -76,7 +74,7 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
       </>
     );
   }
-  if (scanMode === 'single' && onAdd) {
+  if (scanMode === 'single' && onAdd) { // Scan d'un seul objet dans une salle
     return (
       <>
         <Button
@@ -87,8 +85,8 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           disabled={isLoading}
         />
         <Button
-          title="Annuler"
-          onPress={onCancel}
+          title="Retour"
+          onPress={onGoBack}
           type="danger"
           icon={<Entypo name="circle-with-cross" size={24} color="white" />}
           disabled={isLoading}
