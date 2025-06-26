@@ -6,12 +6,20 @@ import { MaterialIcons, Octicons } from '@expo/vector-icons';
 
 import Header from '@/components/Header';
 import Button from '@/components/Button';
+import Toast from '@/components/Toast';
 import {layout} from '@/styles/common';
 import {scannerContext} from '@/context/ScannerContext';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const {setMode, restartScan, setIsScannerActive} = scannerContext();
+  const {
+    setMode, 
+    restartScan, 
+    setIsScannerActive,
+    submissionMessage,
+    submissionMessageType,
+    clearSubmissionMessage
+  } = scannerContext();
 
   useEffect(() => {
     setIsScannerActive(false);
@@ -26,6 +34,13 @@ export default function HomeScreen() {
   return (
     <View style={[layout.container, styles.container]}>
       <Header homePage />
+      
+      <Toast 
+        visible={!!submissionMessage} 
+        message={submissionMessage ?? ""} 
+        onClose={clearSubmissionMessage}
+        type={submissionMessageType === 'success' ? 'success' : 'error'}
+      />
 
       <View style={styles.hero}>
         <Text style={styles.title}>IMT'ventaire</Text>

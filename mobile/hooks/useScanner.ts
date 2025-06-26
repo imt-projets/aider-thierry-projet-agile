@@ -42,6 +42,9 @@ export default function useScanner() {
     setIsLoading,
     setError,
     restartScan,
+    mode,
+    setSubmissionMessage,
+    setSubmissionMessageType,
   } = scannerContext();
 
   const withLoading = async (fn: () => Promise<void>) => {
@@ -51,6 +54,7 @@ export default function useScanner() {
       await fn();
     } catch (err: any) {
       setError(err.message || 'Erreur inconnue');
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +67,11 @@ export default function useScanner() {
   };
 
   const handleSendInventory = async () => {
-    if (!roomCode) return setError('Code de salle non défini');
+    if (!roomCode) {
+      const error = 'Code de salle non défini';
+      setError(error);
+      throw new Error(error);
+    }
 
     await withLoading(async () => {
       const roomRes = await getRoomByCode(roomCode);
@@ -85,6 +93,14 @@ export default function useScanner() {
 
       const res = await sendInventoryToConfirm(payload);
       if (res.status == 201) {
+        // Message de succès selon le mode
+        const successMessage = mode === 'inventoryRoom' 
+          ? "Inventaire de la salle envoyé avec succès !"
+          : "Objet ajouté avec succès !";
+        
+        setSubmissionMessage(successMessage);
+        setSubmissionMessageType('success');
+        
         restartScan();
         router.push('/');
       } else {
@@ -94,8 +110,16 @@ export default function useScanner() {
   };
 
   const handleSendObject = async () => {
-    if (!roomCode) return setError('Code de salle non défini');
-    if (scannedItems.length === 0) return setError('Aucun objet scanné');
+    if (!roomCode) {
+      const error = 'Code de salle non défini';
+      setError(error);
+      throw new Error(error);
+    }
+    if (scannedItems.length === 0) {
+      const error = 'Aucun objet scanné';
+      setError(error);
+      throw new Error(error);
+    }
 
     await withLoading(async () => {
       const roomRes = await getRoomByCode(roomCode);
@@ -118,6 +142,10 @@ export default function useScanner() {
 
       const res = await sendInventoryToConfirm(payload);
       if (res.ok) {
+        // Message de succès pour l'ajout d'objet
+        setSubmissionMessage("Objet ajouté avec succès !");
+        setSubmissionMessageType('success');
+        
         restartScan();
         router.push('/');
       } else {

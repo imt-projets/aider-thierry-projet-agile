@@ -100,7 +100,6 @@ const Scanner: React.FC<ScannerProps> = ({
           onAdd={onAdd}
           onFinish={onFinish}
           isLoading={isLoading}
-          onManualInput={enableManualInput ? manualInput.open : undefined}
         />
       </View>
       <ScannerManualInput

@@ -18,18 +18,40 @@ import Item from '@/interfaces/Item';
 import {MESSAGE_HEADER_GO_HOME_BODY, MESSAGE_HEADER_GO_HOME_TITLE} from '@/constants/Messages/MessagesModales';
 
 export default function RecapInventoryScreen() {
-  const { scannedItems, restartScan, isLoading, mode } = scannerContext();
+  const { scannedItems, restartScan, isLoading, mode, setSubmissionMessage, setSubmissionMessageType } = scannerContext();
   const { handleSendInventory, handleSendObject, removeScannedItem } = useScanner();
   const router = useRouter();
 
   const [currentModal, setCurrentModal] = useState('');
   const [itemToRemove, setItemToRemove] = useState<Item | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const disableConfirm = isLoading || scannedItems.length === 0;
+  const disableConfirm = isLoading || scannedItems.length === 0 || isSubmitting;
 
   const openModal = (type: string, item?: Item) => {
     if (type === 'CONFIRM_REMOVE' && item) setItemToRemove(item);
     setCurrentModal(type);
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      if (mode === 'inventoryRoom') {
+        await handleSendInventory();
+      } else {
+        await handleSendObject();
+      }
+    } catch (error) {
+      const errorMessage = mode === 'inventoryRoom' 
+        ? "Erreur lors de l'envoi de l'inventaire"
+        : "Erreur lors de l'ajout de l'objet";
+      
+      setSubmissionMessage(errorMessage);
+      setSubmissionMessageType('error');
+      router.push('/');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getModalProps = () => {
@@ -38,11 +60,7 @@ export default function RecapInventoryScreen() {
         return {
           title: "Confirmer l'envoi de l'inventaire",
           message: `Êtes-vous sûr de vouloir envoyer cet inventaire ?\nNombre d'objets : ${scannedItems.length}`,
-          onConfirm: async () => {
-            if (mode === 'inventoryRoom') await handleSendInventory();
-            else await handleSendObject();
-            router.push('/');
-          }
+          onConfirm: handleSubmit
         };
       case 'CONFIRM_CANCEL':
         return {
@@ -116,6 +134,7 @@ export default function RecapInventoryScreen() {
                   onPress={() => openModal('CONFIRM_REMOVE', item)}
                   activeOpacity={0.7}
                   accessibilityLabel={`Retirer ${item.name}`}
+                  disabled={isSubmitting}
                 >
                   <Entypo name="cross" size={26} color="#F44336" />
                 </TouchableOpacity>
@@ -128,7 +147,7 @@ export default function RecapInventoryScreen() {
           <TouchableOpacity
             style={styles.continueScan}
             onPress={continueScan}
-            disabled={isLoading}
+            disabled={isLoading || isSubmitting}
           >
             <Text style={styles.continueScanText}>Continuer</Text>
           </TouchableOpacity>
@@ -141,7 +160,7 @@ export default function RecapInventoryScreen() {
             onPress={() => openModal('CONFIRM_SEND')}
             disabled={disableConfirm}
           >
-            {isLoading ? (
+            {isSubmitting ? (
               <ActivityIndicator color="#fff" />
             ) : (
               <Text
@@ -156,9 +175,14 @@ export default function RecapInventoryScreen() {
           </TouchableOpacity>
         </View>
 
-        {isLoading && (
+        {(isLoading || isSubmitting) && (
           <View style={styles.loaderOverlay}>
             <ActivityIndicator size="large" color="#007AFF" />
+            {isSubmitting && (
+              <Text style={styles.loaderText}>
+                Envoi en cours...
+              </Text>
+            )}
           </View>
         )}
       </View>
@@ -313,5 +337,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginVertical: 20,
+  },
+  loaderText: {
+    color: '#007AFF',
+    fontSize: 16,
+    fontWeight: '600',
+    marginTop: 16,
   },
 });

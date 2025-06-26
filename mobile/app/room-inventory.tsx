@@ -41,7 +41,7 @@ export default function ScanObjectsScreen() {
       setLastScannedItem(itemResponse.data);
       setTimeout(() => setLastScannedItem(null), 2000);
     } catch (error) {
-      let errorMessage = '';     
+      let errorMessage = null;     
       if (error instanceof ApiNotFoundError) {
         errorMessage = ROOM_NOT_FOUND_MESSAGE;
       } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
@@ -58,6 +58,7 @@ export default function ScanObjectsScreen() {
 
   const goBack = () => {
     resetScannedCodes();
+    setManualError(null);
     router.back();
   };
 

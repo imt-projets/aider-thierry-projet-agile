@@ -19,19 +19,19 @@ export default function useManualInput(onScan: (code: string, isManual : boolean
 
   const open = () => { 
     setShow(true);
-    setManualError('');
+    setManualError(null);
     setCode('');
   };
   const close = () => { 
     setShow(false);
-    setManualError('');
+    setManualError(null);
     setCode('')
    };
 
   const submit = async () => {
     if (!code.trim()) return;
     setLoading(true);
-    setManualError('');
+    setManualError(null);
     try {
       await onScan(code.trim(), true);
       setCode('');
