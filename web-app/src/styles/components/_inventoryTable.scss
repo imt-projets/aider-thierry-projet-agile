@@ -6,6 +6,11 @@
     overflow: hidden;
     width: inherit;
 
+    .table-title {
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+    }
+
     .table {
         display: flex;
         flex-direction: column;
@@ -28,7 +33,7 @@
             overflow-y: auto;
             gap: 2px;
 
-            .row {
+            .table-row {
                 background-color: $white;
                 
                 &:nth-child(even) {

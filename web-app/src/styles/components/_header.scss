@@ -4,7 +4,7 @@
 .navigation--drawer {
     
     background-color: $blue;
-    width: 110px;
+    width: 200px;
     display: flex;
     flex-direction: column;
 
@@ -14,6 +14,7 @@
 
         img {
             width: 100%;
+            max-width: 120px;
             height: 100%;
         }
     }
@@ -26,7 +27,7 @@
         width: 100%;
 
         li.nav-link-wrapper {
-            padding: 4px;
+            padding: 0.3rem 1rem 0.3rem 1rem;
 
             a.nav-item {
                 width: 100%;

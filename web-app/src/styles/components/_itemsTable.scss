@@ -6,6 +6,9 @@
     overflow: hidden;
     width: inherit;
 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    border: 1px solid $card-border;
+
     .table {
         display: flex;
         flex-direction: column;
@@ -35,7 +38,7 @@
                 justify-content: center;
             }
 
-            .row {
+            .table-row {
                 background-color: $white;
                 
                 &:nth-child(even) {
