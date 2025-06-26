@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, OneToMany, ManyToMany} from "typeorm";
+import { Entity, Column, ManyToOne, OneToMany, ManyToMany } from "typeorm";
 import { ItemType } from "./itemType.entity";
 import { Comment } from "./comment.entity";
 import { Supplier } from "./supplier.entity";
@@ -21,7 +21,7 @@ export class Item extends EntityBase {
     @Column()
     serialNumber!: string;
 
-    @Column()
+    @Column({unique: true})
     inventoryNumber!: string;
 
     @Column()

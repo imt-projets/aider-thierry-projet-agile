@@ -1,8 +1,8 @@
 import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
 
 
-const API_URL = "http://192.168.1.54:3056";
-const TIMEOUT_DURATION = 5000;
+const API_URL = "http://10.144.195.110:3056";
+const TIMEOUT_DURATION = 2000;
 
 interface ApiResponse<T> {
   ok: boolean;
@@ -19,12 +19,14 @@ export const apiCall = async <T = any>(
   const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_DURATION);
 
   try {
+    
     const response = await fetch(url, {
       ...options,
       signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
+    
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -51,7 +53,7 @@ export const apiCall = async <T = any>(
   } catch (error: any) {
     clearTimeout(timeoutId);
 
-    if (error.name === "AbortError") {
+    if (error.name === "AbortError") {      
       throw new ApiTimeoutError();
     }
 
@@ -67,17 +69,17 @@ export const apiCall = async <T = any>(
 };
 
 export const getItemByInventoryNumber = async (code: string) => {
-    return await apiCall(`${API_URL}/item/inventory/${code}`);
-  };
-  
-  export const getRoomByCode = async (code: string) => {
-    return await apiCall(`${API_URL}/structure/room/${code}`);
-  };
-  
-  export const sendInventoryToConfirm = async (inventory: any) => {
-    return await apiCall(`${API_URL}/inventoryToConfirm`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(inventory)
-    });
-  };
+  return await apiCall(`${API_URL}/item/inventory/${code}`);
+};
+
+export const getRoomByCode = async (code: string) => {
+  return await apiCall(`${API_URL}/structure/room/${code}`);
+};
+
+export const sendInventoryToConfirm = async (inventory: any) => {
+  return await apiCall(`${API_URL}/inventoryToConfirm`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(inventory)
+  });
+};

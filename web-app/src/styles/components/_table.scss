@@ -24,6 +24,13 @@
         }
     }
 
+    .no-content {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
     .footer {
         display: flex;
         flex-direction: row;

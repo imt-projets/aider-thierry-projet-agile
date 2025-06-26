@@ -32,6 +32,11 @@ const item = createRouterConfig({
             schema: schema.swagger.items.getById
         },
         {
+            handlerName: "getCommentsByItemId",
+            method: "GET",
+            url: '/:id/comments',
+        },
+        {
             handlerName: "getItemByInventoryNumber",
             method: "GET",
             url: '/inventory/:inventoryNumber'
@@ -42,9 +47,19 @@ const item = createRouterConfig({
             url: '/:inventoryNumber/room'
         },
         {
+            handlerName: 'createItem',
+            method: 'POST',
+            url: ''
+        },
+        {
             handlerName: 'getItemsRoomStats',
             method: 'GET',
             url: '/statistics'
+        },
+        {
+            handlerName: 'updateItem',
+            method: 'PUT',
+            url: ''
         }
     ],
     service: services.Item

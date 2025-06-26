@@ -1,13 +1,84 @@
-@use '../theme/colors';
+@use '../theme/colors' as *;
+@use '../theme/fonts' as *;
 
 .icon-button {
     display: flex;
     justify-content: center;
     align-items: center;
     color: black;
+    gap: 12px;
 
     svg {
         width: 22px;
         height: 22px;
     }
+}
+
+
+.btn {
+    &-cancel {
+        border: 1px solid $danger;
+        color: $danger;
+        background-color: transparent;
+
+        &:hover {
+            background-color: #fee2e2;
+        }
+    }
+
+    &-validate {
+        background-color: #22c55e;
+        color: white;
+        border: none;
+
+        &:hover {
+            background-color: #16a34a;
+        }
+    }
+
+    &-edit {
+        background-color: $white;
+        color: #fd9c1d;
+        border: 1px solid #ec8602;
+
+        &:hover{
+            color: $white;
+            background-color: #fabd6d;
+        }
+
+    }
+
+    &-icon {
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 1.25rem;
+        margin-left: 0.5rem;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+.btn.btn-validate:disabled {
+    background-color: #ccc;
+    color: #888;
+    border: 1px solid #bbb;
+}
+
+.btn:disabled,
+.btn[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.disabled-link {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
 }

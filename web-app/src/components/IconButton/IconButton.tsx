@@ -1,8 +1,9 @@
 import React, { type DetailedHTMLProps, forwardRef } from "react";
 
 export const IconButton = forwardRef<HTMLButtonElement, ButtonProps>((props,ref) => {
+    const { className = "", ...rest } = props;
     return (
-        <button {...props} ref={ref} className="icon-button">
+        <button {...rest} ref={ref} className={`icon-button${className ? ` ${className}` : ""}`}>
             {props.children}
         </button>
     )

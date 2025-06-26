@@ -9,6 +9,7 @@ interface ModalConfirmationProps {
   setModalVisible: (visible: boolean) => void;
   title: string;
   message: string;
+  isImportant : boolean;
   confirmText?: string;
   cancelText?: string;
   onConfirm: () => void;
@@ -19,6 +20,7 @@ const ModalConfirmation: React.FC<ModalConfirmationProps> = ({
   setModalVisible,
   title,
   message,
+  isImportant,
   confirmText = 'Confirmer',
   cancelText = 'Annuler',
   onConfirm,
@@ -31,11 +33,11 @@ const ModalConfirmation: React.FC<ModalConfirmationProps> = ({
   };
 
   return (
-    <Modal visible={modalVisible} transparent animationType="fade" onRequestClose={() => setModalVisible(false)}>
+    <Modal visible={modalVisible} transparent  onRequestClose={() => setModalVisible(false)}>
       <View style={styles.overlay}>
         <View style={styles.content}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>{message}</Text>
+          <Text style={[styles.subtitle, isImportant && styles.subtitleImportant]}>{message}</Text>
           <View style={styles.buttonRow}>
             <Pressable style={styles.noButton} onPress={() => handleModalClosed(false)}>
               <Text style={styles.noText}>{cancelText}</Text>
@@ -77,30 +79,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     color: '#666',
   },
-  itemsList: {
-    maxHeight: 200,
-    width: '100%',
-    marginBottom: 20,
-  },
-  itemRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    marginBottom: 6,
-  },
-  itemName: {
-    fontSize: 14,
-    fontWeight: '500',
-    flex: 1,
-  },
-  itemNumber: {
-    fontSize: 12,
-    color: '#666',
-    fontWeight: '600',
+  subtitleImportant : {
+    color : 'red'
   },
   buttonRow: {
     flexDirection: 'row',

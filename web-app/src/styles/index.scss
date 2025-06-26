@@ -21,6 +21,7 @@
 @use './components/iconButton';
 @use './components/chip';
 @use './components/loader';
+@use './components/card';
 
 // Components
 @use './components/header';
@@ -32,6 +33,7 @@
 @use './components/objectTabs';
 @use './components/objectDetails';
 @use './components/itemsTable';
+@use './components/inventoryTable';
 @use './components/InventoryToConfirm';
 @use './components/ConfirmationModal';
 @use './components/Notification';

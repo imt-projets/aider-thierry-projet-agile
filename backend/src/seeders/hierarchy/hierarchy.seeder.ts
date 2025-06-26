@@ -8,6 +8,14 @@ export class HierarchySeeder extends Seeder {
         const structureRepository = dataSource.getRepository(entities.Structure);
         const itemTypeRepository = dataSource.getRepository(entities.ItemType);
         const itemRepository = dataSource.getRepository(entities.Item);
+        const commentRepository = dataSource.getRepository(entities.Comment);
+        const now = new Date();
+        
+        const addYears = (years: number) => {
+            const date = new Date(now);
+            date.setFullYear(date.getFullYear() + years);
+            return date;
+        };
 
         // SCHOOL
         const school = structureRepository.create({
@@ -69,12 +77,26 @@ export class HierarchySeeder extends Seeder {
         await itemTypeRepository.save([chairType, tableType, projectorType, wifiAccess]);
 
 
-        const now = new Date();
-        const addYears = (years: number) => {
-            const date = new Date(now);
-            date.setFullYear(date.getFullYear() + years);
-            return date;
-        };
+        // AMPHITHEATER
+        const amphitheater = structureRepository.create({
+            name: "Amphithéâtre",
+            type: entities.StructureTypeEnum.AMPHITHEATER,
+            parent: buildingJ,
+        });
+
+        await structureRepository.save(amphitheater);
+        // COMMENTS
+        const comment1 = commentRepository.create({
+            content: "C'est une salle très agréable pour les cours.",
+            date: new Date(),
+        });
+
+        const comment2 = commentRepository.create({
+            content: "C'est un 2ème commentaire dis donc!",
+            date: addYears(2),
+        });
+
+        await commentRepository.save([comment1, comment2]);
 
         // J142
         const items = [
@@ -93,6 +115,7 @@ export class HierarchySeeder extends Seeder {
                 inventoryNumber: "25520",
                 orderNumber: "349843",
                 model: "ADDE",
+                comments: [comment1, comment2],
                 state: ItemStateTypeEnum.NEW
             }),
             // première table J142
@@ -237,22 +260,7 @@ export class HierarchySeeder extends Seeder {
                 orderNumber: "3498113242",
                 model: "AR119",
                 state: ItemStateTypeEnum.GOOD
-            }),
-            itemRepository.create({
-                name: "OBJET FANTOME",
-                description: "UN OBJET DETRUIT POUR DES TESTS",
-                price: 43837,
-                warrantyEndDate: addYears(100),
-                endOfLifeDate: addYears(150),
-                brand: "Test",
-                itemType: wifiAccess,
-                suppliers: [],
-                serialNumber: "12346589",
-                inventoryNumber: "29627",
-                orderNumber: "3498113242",
-                model: "AR119",
-                state: ItemStateTypeEnum.DESTROYED
-            }),
+            })
         ];
 
         await itemRepository.save(items);

@@ -2,7 +2,7 @@ import { entities } from "@/entities";
 import { enums } from "@/enums";
 import { ReplyHelper } from "@/helpers";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { FindOptionsWhere, IsNull, Not, Repository } from "typeorm";
+import { IsNull, Not, Repository } from "typeorm";
 
 
 export interface ItemByIdParams {
@@ -194,4 +194,101 @@ export const getItemsRoomStats = async (
         ok: nb_items_ok,
         no_rooms: nb_items_no_rooms
     });
+}
+
+
+
+export interface createItemRequestBody {
+    item : entities.Item,
+    properties : {
+        nb_occurance: number;
+    }
+}
+
+
+export const createItem = async (
+    request: FastifyRequest<{Body: createItemRequestBody}>,
+    reply: FastifyReply,
+    repositories: {
+        primary: Repository<entities.Item>
+    }
+) => {
+    const itemRepository = repositories.primary;
+
+    const { item, properties } = request.body;
+
+    const from = parseInt(item.inventoryNumber);
+    const to = from+properties.nb_occurance;
+
+    const itemsToSave : entities.Item[] = []
+
+    for (let i = from; i < to; i++) {
+        const { id, ...itemData } = item as entities.Item;
+        itemData.inventoryNumber = i.toString();
+        const newItem = itemRepository.create(itemData);
+        itemsToSave.push(newItem);
+    }
+
+    const savedItems = await itemRepository.save(itemsToSave);
+
+    return ReplyHelper.send(reply, enums.StatusCode.CREATED, savedItems);
+}
+
+export const updateItem = async (
+    request: FastifyRequest<{ Body: entities.Item }>,
+    reply: FastifyReply,
+    repositories: {
+        primary: Repository<entities.Item>;
+    }
+) => {
+    const itemRepository = repositories.primary;
+    const updatedData = request.body;
+
+    if (!updatedData.id) {
+        return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Id is required to update an item");
+    }
+
+    const item = await itemRepository.findOne({ where : { id: updatedData.id }});
+
+    if (!item) {
+        return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "Item not found");
+    }
+
+    Object.assign(item, updatedData);
+
+    const updatedItem = await itemRepository.save(item);
+
+    return ReplyHelper.send(reply, enums.StatusCode.OK, updatedItem);
+};
+
+export const getCommentsByItemId = async (
+    request: FastifyRequest<{ Params: ItemByIdParams }>,
+    reply: FastifyReply,
+    repositories: {
+        primary: Repository<entities.Item>,
+    }
+) => {
+    const itemRepository = repositories.primary;
+    const { id } = request.params;
+
+    if (!id) 
+        return ReplyHelper.error(reply, enums.StatusCode.BAD_REQUEST, "Id is required to find comments");
+
+    const item = await itemRepository.findOne({ 
+        where: { id },
+        relations: {
+            comments: true,
+        
+        }
+    });
+
+    if (!item) 
+        return ReplyHelper.error(reply, enums.StatusCode.NOT_FOUND, "Item not found");
+    
+    // Trier les commentaires par date du plus récent au plus ancien
+    const sortedComments = item.comments.sort((a, b) => 
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    
+    ReplyHelper.send(reply, enums.StatusCode.OK, sortedComments);
 }

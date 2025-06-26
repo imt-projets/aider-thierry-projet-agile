@@ -7,7 +7,7 @@ import { useAudioPlayer } from 'expo-audio';
 interface ScannerCameraProps {
   isActive: boolean;
   frameColor?: string;
-  onScan: (code: string) => void | Promise<void>;
+  onScan: (code: string, isManual : boolean) => void | Promise<void>;
   resetTrigger?: any;
 }
 
@@ -41,7 +41,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
       console.warn('Impossible de (re)jouer le son :', e);
     }
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    await onScan(data);
+    await onScan(data, false);
     setTimeout(() => {
       setScanned(false);
       scanLock.current = false;

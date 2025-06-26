@@ -2,12 +2,25 @@ import { useState, useEffect, useContext } from "react";
 import { FaPen, FaSave } from "react-icons/fa";
 import type { ItemDTO } from "@/dto";
 import SelectionContext from "../../../../context/SelectionContext";
-import { FormField, FormSelectField, FormTextArea, Item } from "@/components";
+import { Card, FormField, FormSelectField, FormTextArea, IconButton, Item } from "@/components";
+import { RequestHelper } from "@/api";
 
-export const ObjectForm = () => {
+interface ObjectFormProps {
+    reloadHierarchy: () => Promise<void>
+}
+
+export const ObjectForm = ({ reloadHierarchy } : ObjectFormProps) => {
     const { selectedItem, error } = useContext(SelectionContext);
     const [isEditing, setIsEditing] = useState(false);
     const [form, setForm] = useState<ItemDTO | null>(selectedItem);
+
+
+    const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+    const [hasErrors, setHasErrors] = useState(false);
+
+    useEffect(() => {
+        setHasErrors(Object.values(fieldErrors).some(Boolean));
+    }, [fieldErrors]);
 
     useEffect(() => {
         setForm(selectedItem);
@@ -40,6 +53,11 @@ export const ObjectForm = () => {
         );
     }
 
+    const isFormModified = () => {
+        if (!form || !selectedItem) return false;
+        return JSON.stringify(form) !== JSON.stringify(selectedItem);
+    };
+
     const handleChangesForm = (name: string, value: string) => {
         if (!form) return;
         setForm({ 
@@ -49,9 +67,13 @@ export const ObjectForm = () => {
     };
 
     const handleEdit = () => setIsEditing(true);
-    const handleSave = () => {
+    const handleSave = async () => {
         setIsEditing(false);
-        // TODO: Save the form
+        const response = await RequestHelper.put(`/item`, form)
+
+        if (response.ok){
+            await reloadHierarchy();
+        };
     };
 
     return (
@@ -61,37 +83,55 @@ export const ObjectForm = () => {
                     <Item style={{ width: 28, height: 28, verticalAlign: "middle" }} />
                 </div>
                 <div className="object-view-header-actions">
-                    <button
-                        className="object-view-btn"
-                        onClick={handleEdit}
-                        disabled={isEditing}
-                    >
-                        <FaPen style={{ fontSize: 18 }} />
-                        MODIFIER
-                    </button>
-                    <button
-                        className="object-view-btn save"
-                        onClick={handleSave}
-                        disabled={!isEditing}
-                    >
-                        <FaSave style={{ fontSize: 18 }} />
-                        SAUVEGARDER
-                    </button>
+                     {isEditing ? (
+                        <>
+                            <IconButton
+                                className="btn btn-cancel"
+                                onClick={() => {
+                                    setIsEditing(false);
+                                    setForm(selectedItem);
+                                }}
+                            >
+                                <FaSave />
+                                ANNULER
+                            </IconButton>
+
+                            <IconButton
+                                className="btn btn-validate"
+                                onClick={handleSave}
+                                disabled={hasErrors || !isFormModified()}
+                            >
+                                <FaSave />
+                                SAUVEGARDER
+                            </IconButton>
+                        </>
+                        ) : (
+                            <IconButton 
+                                onClick={handleEdit}
+                                className="btn btn-edit"
+                            >
+                                <FaPen />
+                                MODIFIER
+                            </IconButton>
+                        )}
                 </div>
             </div>
 
 
-            <div className="object--row">
-                <div className="title">
-                    <p className="object-view-title">Résumé de l'objet</p>
-                </div>
-                <div className="content">
-                    <FormField
+            <Card 
+                title="Résumé de l'objet"
+                subTitle="Informations sur l'objet"
+            >
+                <FormField
                         label="Numéro d'inventaire"
                         name="inventoryNumber"
                         onChange={handleChangesForm}
-                        readonly={!isEditing} 
-                        value={form?.inventoryNumber || ''} 
+                        readonly={!isEditing}
+                        required 
+                        value={form?.inventoryNumber || ''}
+                        onValidationChange={(hasError) => {
+                            setFieldErrors(prev => ({ ...prev, inventoryNumber: hasError }));
+                        }} 
                     />
                     <FormField
                         label="Nom de l'objet"
@@ -99,18 +139,24 @@ export const ObjectForm = () => {
                         value={form?.name || ''}
                         onChange={handleChangesForm} 
                         readonly={!isEditing}
+                        required
+                        onValidationChange={(hasError) => {
+                            setFieldErrors(prev => ({ ...prev, name: hasError }));
+                        }}
                     />
-                </div>
-            </div>
+            </Card>
 
-            <div className="object--row">
-                <div className="content">
+            <Card 
+                title="Onglet Fournisseur" 
+                subTitle="Informations relatives au fournisseur"
+            >
                     <FormField
                         label="Marque"
                         name="brand"
                         value={form?.brand || ''}
                         onChange={handleChangesForm}
                         readonly={!isEditing}
+                        required
                     />
                     <FormField
                         label="Modèle"
@@ -118,8 +164,20 @@ export const ObjectForm = () => {
                         value={form?.model || ''}
                         onChange={handleChangesForm}
                         readonly={!isEditing}
+                        required
                     />
 
+                    <FormField
+                        label="Prix (en €)"
+                        name="price"
+                        value={form?.price.toString() || ''}
+                        onChange={handleChangesForm}
+                        readonly={!isEditing}
+                        required
+                        onValidationChange={(hasError) => {
+                            setFieldErrors(prev => ({ ...prev, price: hasError }));
+                        }}
+                    />
 
                     <FormSelectField
                         label="État de l'objet"
@@ -129,7 +187,6 @@ export const ObjectForm = () => {
                         disabled={!isEditing}
                         options={
                             [
-                                {value:"",child: "Champs"},
                                 {value:"Neuf",child: "Neuf"},
                                 {value:"Bon",child: "Bon"},
                                 {value:"Moyen",child: "Moyen"},
@@ -138,51 +195,36 @@ export const ObjectForm = () => {
                             ]
                         }
                     />
-                </div>
 
-                <div className="content" id="object-description">
                     <FormTextArea
-                        label="Description"
                         name="description"
+                        onChange={handleChangesForm}
                         value={form?.description || ''}
                         readonly={!isEditing}
-                        onChange={handleChangesForm}
                     />
-                </div>
+            </Card>
 
-            </div>
-    
-
-            <div className="object--row">
-                <div className="title">
-                    <p className="object-view-title">Résumé de l'objet</p>
-                </div>
-                <div className="content">
-                    <FormField
-                        label="Date de fin de garantie"
-                        name="warrantyEndDate"
-                        value={formatDateForInput(form?.warrantyEndDate || '')}
-                        onChange={handleChangesForm}
-                        readonly={!isEditing}
-                        type="date"
-                    />
-                    <FormField
-                        label="Date de fin de vie"
-                        name="endOfLifeDate"
-                        value={formatDateForInput(form?.endOfLifeDate || '')}
-                        onChange={handleChangesForm}
-                        readonly={!isEditing}
-                        type="date"
-                    />
-                    <FormField
-                        label="Prix"
-                        name="price"
-                        value={(form?.price || '0') + " €"}
-                        onChange={handleChangesForm}
-                        readonly={!isEditing}
-                    />
-                </div>
-            </div>
+            <Card 
+                title="Garantie & Fin de Vie"
+                subTitle="Informations relatives à la durée de vie de l'objet"
+            >
+                <FormField
+                    label="Date de fin de garantie"
+                    name="warrantyEndDate"
+                    value={formatDateForInput(form?.warrantyEndDate || '')}
+                    onChange={handleChangesForm}
+                    readonly={!isEditing}
+                    type="date"
+                />
+                <FormField
+                    label="Date de fin de vie"
+                    name="endOfLifeDate"
+                    value={formatDateForInput(form?.endOfLifeDate || '')}
+                    onChange={handleChangesForm}
+                    readonly={!isEditing}
+                    type="date"
+                />
+            </Card>
         </div>
     );
 };
