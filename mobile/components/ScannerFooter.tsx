@@ -28,7 +28,7 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           title="Retour"
           onPress={onGoBack}
           type="danger"
-          icon={<Entypo name="circle-with-cross" size={24} color="white" />}
+          icon={<Entypo name="arrow-left" size={24} color="white" />}
           disabled={isLoading}
         />
       </>
@@ -48,7 +48,7 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           title="Retour"
           onPress={onGoBack}
           type="danger"
-          icon={<Entypo name="circle-with-cross" size={24} color="white" />}
+          icon={<Entypo name="arrow-left" size={24} color="white" />}
           disabled={isLoading}
         />
       </>
@@ -68,7 +68,7 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           title="Retour"
           onPress={onGoBack}
           type="danger"
-          icon={<Entypo name="circle-with-cross" size={24} color="white" />}
+          icon={<Entypo name="arrow-left" size={24} color="white" />}
           disabled={isLoading}
         />
       </>
@@ -88,7 +88,7 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           title="Retour"
           onPress={onGoBack}
           type="danger"
-          icon={<Entypo name="circle-with-cross" size={24} color="white" />}
+          icon={<Entypo name="arrow-left" size={24} color="white" />}
           disabled={isLoading}
         />
       </>
