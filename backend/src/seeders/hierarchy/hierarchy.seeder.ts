@@ -9,6 +9,13 @@ export class HierarchySeeder extends Seeder {
         const itemTypeRepository = dataSource.getRepository(entities.ItemType);
         const itemRepository = dataSource.getRepository(entities.Item);
         const commentRepository = dataSource.getRepository(entities.Comment);
+        const now = new Date();
+        
+        const addYears = (years: number) => {
+            const date = new Date(now);
+            date.setFullYear(date.getFullYear() + years);
+            return date;
+        };
 
         // SCHOOL
         const school = structureRepository.create({
@@ -70,13 +77,6 @@ export class HierarchySeeder extends Seeder {
         await itemTypeRepository.save([chairType, tableType, projectorType, wifiAccess]);
 
 
-        const now = new Date();
-        const addYears = (years: number) => {
-            const date = new Date(now);
-            date.setFullYear(date.getFullYear() + years);
-            return date;
-        };
-
         // AMPHITHEATER
         const amphitheater = structureRepository.create({
             name: "Amphithéâtre",
@@ -93,7 +93,7 @@ export class HierarchySeeder extends Seeder {
 
         const comment2 = commentRepository.create({
             content: "C'est un 2ème commentaire dis donc!",
-            date: new Date(),
+            date: addYears(2),
         });
 
         await commentRepository.save([comment1, comment2]);
