@@ -76,6 +76,15 @@ export class HierarchySeeder extends Seeder {
             return date;
         };
 
+        // AMPHITHEATER
+        const amphitheater = structureRepository.create({
+            name: "Amphithéâtre",
+            type: entities.StructureTypeEnum.AMPHITHEATER,
+            parent: buildingJ,
+        });
+
+        await structureRepository.save(amphitheater);
+
         // J142
         const items = [
             // première chaise J142
