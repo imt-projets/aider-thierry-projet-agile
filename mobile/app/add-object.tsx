@@ -79,7 +79,7 @@ export default function ScanObjectScreen() {
   return (
     <View style={layout.container}>
       <Header title="IMT'ventaire" onHomePress={()=> setCurrentModal('AFTER_HOME_CLICKED')}/>
-      <Toast visible={!!scanError} message={scanError?.replace("{object}",lastScannedCode??"") ?? ""} onClose={() => setScanError('')} />
+      <Toast visible={!!scanError} message={scanError?.replace("{object}"," "+(lastScannedCode??"")) ?? ""} onClose={() => setScanError('')} />
       <Scanner
         message={
           isObjectScanned

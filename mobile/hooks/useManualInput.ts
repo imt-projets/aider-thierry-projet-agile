@@ -48,7 +48,7 @@ export default function useManualInput(
       } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
         errorMessage = error.message;
       }
-      setManualError(errorMessage);
+      setManualError(errorMessage.replace('{room}','').replace('{object}',''));
       setShow(true);
     } finally {
       setLoading(false);
