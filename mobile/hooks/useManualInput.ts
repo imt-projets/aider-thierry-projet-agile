@@ -1,7 +1,7 @@
 import { scannerContext } from '@/context/ScannerContext';
 import { useState, useEffect } from 'react';
 import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from '@/interfaces/Item/ApiErrors';
-import { ROOM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
+import { ROOM_NOT_FOUND_MESSAGE, ITEM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
 
 export interface UseManualInput {
   show: boolean;
@@ -13,7 +13,10 @@ export interface UseManualInput {
   submit: () => Promise<void>;
 }
 
-export default function useManualInput(onScan: (code: string, isManual : boolean) => Promise<void>): UseManualInput {
+export default function useManualInput(
+  onScan: (code: string, isManual : boolean) => Promise<void>,
+  step: 'object' | 'salle'
+): UseManualInput {
   const [show, setShow] = useState(false);
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -39,9 +42,9 @@ export default function useManualInput(onScan: (code: string, isManual : boolean
       await onScan(code.trim(), true);
       setShow(false);
     } catch (error) {
-      let errorMessage = '';     
+      let errorMessage = '';
       if (error instanceof ApiNotFoundError) {
-        errorMessage = ROOM_NOT_FOUND_MESSAGE;
+        errorMessage = step === 'object' ? ITEM_NOT_FOUND_MESSAGE : ROOM_NOT_FOUND_MESSAGE;
       } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
         errorMessage = error.message;
       }

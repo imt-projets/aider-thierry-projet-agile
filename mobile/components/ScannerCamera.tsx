@@ -4,7 +4,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Haptics from 'expo-haptics';
 import { useAudioPlayer } from 'expo-audio';
 import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from '@/interfaces/Item/ApiErrors';
-import { ROOM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
+import { ROOM_NOT_FOUND_MESSAGE, ITEM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
 import { scannerContext } from '@/context/ScannerContext';
 
 interface ScannerCameraProps {
@@ -12,9 +12,10 @@ interface ScannerCameraProps {
   frameColor?: string;
   onScan: (code: string, isManual : boolean) => void | Promise<void>;
   resetTrigger?: any;
+  step: 'object' | 'salle';
 }
 
-const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#222', onScan, resetTrigger }) => {
+const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#222', onScan, resetTrigger, step }) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [scannedError, setScannedError] = useState(false);
@@ -42,9 +43,9 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
   };
 
   const handleError = (error: any) => {
-    let errorMessage = '';     
+    let errorMessage = '';
     if (error instanceof ApiNotFoundError) {
-      errorMessage = ROOM_NOT_FOUND_MESSAGE;
+      errorMessage = step === 'object' ? ITEM_NOT_FOUND_MESSAGE : ROOM_NOT_FOUND_MESSAGE;
     } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
       errorMessage = error.message;
     }

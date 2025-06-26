@@ -50,7 +50,7 @@ const Scanner: React.FC<ScannerProps> = ({
 }) => {
   const [permission, requestPermission] = useCameraPermissions();
 
-  const manualInput = useManualInput(async (code) => { await onScan(code, true); });
+  const manualInput = useManualInput(async (code) => { await onScan(code, true); }, step);
   const { manualError } = scannerContext();
 
   useEffect(() => {
@@ -69,6 +69,7 @@ const Scanner: React.FC<ScannerProps> = ({
             frameColor={frameColor}
             onScan={onScan}
             resetTrigger={resetTrigger}
+            step={step}
           />
           {enableManualInput && (
             <TouchableOpacity
