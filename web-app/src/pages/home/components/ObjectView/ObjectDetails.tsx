@@ -1,6 +1,5 @@
 import SelectionContext from "@/context/SelectionContext";
 import type { CommentItemDTO } from "@/dto";
-import { CommentItemSchema } from "@/dto/comment";
 import { useFetch } from "@/hooks";
 import { useCallback, useContext, useEffect, useState } from "react";
 
