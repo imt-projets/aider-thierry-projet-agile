@@ -50,6 +50,11 @@ const item = createRouterConfig({
             handlerName: 'getItemsRoomStats',
             method: 'GET',
             url: '/statistics'
+        },
+        {
+            handlerName: 'updateItem',
+            method: 'PUT',
+            url: ''
         }
     ],
     service: services.Item
