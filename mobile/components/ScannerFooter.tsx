@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '@/components/Button';
-import { Entypo, Octicons } from '@expo/vector-icons';
+import { Entypo, Octicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface ScannerFooterProps {
   scanned: boolean;
@@ -28,7 +28,7 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           title="Retour"
           onPress={onGoBack}
           type="danger"
-          icon={<Entypo name="arrow-left" size={24} color="white" />}
+          icon={<Entypo name="arrow-left" size={30} color="white" />}
           disabled={isLoading}
         />
       </>
@@ -41,14 +41,14 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           title="Continuer"
           onPress={onContinue}
           type="success"
-          icon={<Entypo name="arrow-with-circle-right" size={24} color="white" />}
+          icon={<Entypo name="arrow-with-circle-right" size={30} color="white" />}
           disabled={isLoading}
         />
         <Button
           title="Retour"
           onPress={onGoBack}
           type="danger"
-          icon={<Entypo name="arrow-left" size={24} color="white" />}
+          icon={<Entypo name="arrow-left" size={30} color="white" />}
           disabled={isLoading}
         />
       </>
@@ -61,14 +61,14 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           title="Récapitulatif"
           onPress={onFinish}
           type="primary"
-          icon={<Entypo name="check" size={24} color="white" />}
+          icon={<MaterialCommunityIcons name="clipboard-list-outline" size={30} color="white" />}
           disabled={isLoading}
         />
         <Button
           title="Retour"
           onPress={onGoBack}
           type="danger"
-          icon={<Entypo name="arrow-left" size={24} color="white" />}
+          icon={<Entypo name="arrow-left" size={30} color="white" />}
           disabled={isLoading}
         />
       </>
@@ -81,14 +81,14 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           title="Ajouter"
           onPress={onAdd}
           type="success"
-          icon={<Octicons name="diff-added" size={24} color="white" />}
+          icon={<Octicons name="diff-added" size={30} color="white" />}
           disabled={isLoading}
         />
         <Button
           title="Retour"
           onPress={onGoBack}
           type="danger"
-          icon={<Entypo name="arrow-left" size={24} color="white" />}
+          icon={<Entypo name="arrow-left" size={30} color="white" />}
           disabled={isLoading}
         />
       </>
