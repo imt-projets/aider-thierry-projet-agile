@@ -49,18 +49,9 @@ const Scanner: React.FC<ScannerProps> = ({
   enableManualInput = false
 }) => {
   const [permission, requestPermission] = useCameraPermissions();
-  const [scannedState, setScanned] = useState(false);
-  const scanLock = useRef(false);
-  const scannerSound = require('../assets/scanner-sound.mp3');
-  const player = useAudioPlayer(scannerSound);
 
   const manualInput = useManualInput(async (code) => { await onScan(code, true); });
   const { manualError } = scannerContext();
-
-  useEffect(() => {
-    setScanned(false);
-    scanLock.current = false;
-  }, [resetTrigger]);
 
   useEffect(() => {
       if(!permission?.granted) {

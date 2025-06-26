@@ -34,12 +34,12 @@ export default function useManualInput(onScan: (code: string, isManual : boolean
     setManualError(null);
     try {
       await onScan(code.trim(), true);
-      setCode('');
       setShow(false)
     } catch (e) {
       setManualError('Code non trouvé ou erreur serveur');
     } finally {
       setLoading(false);
+      setCode('');
     }
   };
 

@@ -47,7 +47,8 @@ export default function ScanObjectsScreen() {
       } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
         errorMessage = error.message;
       }
-      isManual ? setManualError(errorMessage) : setScanError(errorMessage)
+      isManual ? setManualError(errorMessage) : setScanError(errorMessage);
+      throw error;
     }
   };
 

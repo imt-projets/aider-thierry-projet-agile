@@ -14,12 +14,14 @@ interface ScannerCameraProps {
 const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#222', onScan, resetTrigger }) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
+  const [scannedError, setScannedError] = useState(false);
   const scanLock = useRef(false);
   const scannerSound = require('../assets/scanner-sound.mp3');
   const player = useAudioPlayer(scannerSound);
 
   useEffect(() => {
     setScanned(false);
+    setScannedError(false);
     scanLock.current = false;
   }, [resetTrigger]);
 
@@ -28,6 +30,16 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
       requestPermission();
     }
   }, []);
+
+  const getBorderColor = () => {
+    if (scannedError) {
+      return '#f44336';
+    }
+    if (scanned) {
+      return '#4caf50';
+    }
+    return frameColor;
+  };
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
     if (scanLock.current) return;
@@ -41,19 +53,29 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
       console.warn('Impossible de (re)jouer le son :', e);
     }
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    await onScan(data, false);
-    setTimeout(() => {
+    
+    try {
+      await onScan(data, false);
+      setTimeout(() => {
+        setScanned(false);
+        scanLock.current = false;
+      }, 1000);
+    } catch (error) {
       setScanned(false);
-      scanLock.current = false;
-    }, 2000);
+      setScannedError(true);
+      setTimeout(() => {
+        setScannedError(false);
+        scanLock.current = false;
+      }, 1000);
+    }
   };
 
   return (
-    <View style={[styles.frame, { borderColor: scanned ? '#4caf50' : frameColor }]}> 
+    <View style={[styles.frame, { borderColor: getBorderColor() }]}> 
       <CameraView
         style={styles.camera}
         barcodeScannerSettings={{ barcodeTypes: ['qr', 'ean13', 'ean8', 'code128', 'code39'] }}
-        onBarcodeScanned={scanned || !isActive ? undefined : handleBarCodeScanned}
+        onBarcodeScanned={scanned || scannedError || !isActive ? undefined : handleBarCodeScanned}
       />
     </View>
   );
