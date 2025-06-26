@@ -12,7 +12,7 @@ interface ToastProps {
   type?: 'success' | 'error';
 }
 
-const Toast: React.FC<ToastProps> = ({ visible, message, onClose, duration = 3000, actionLabel, onAction, type = 'error' }) => {
+const Toast: React.FC<ToastProps> = ({ visible, message, onClose, duration = 4000, actionLabel, onAction, type = 'error' }) => {
   useEffect(() => {
     if (visible) {
       const timer = setTimeout(() => {
@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    marginTop: 70,
   },
   toastText: {
     color: '#fff',

@@ -19,7 +19,7 @@ import {MESSAGE_HEADER_GO_HOME_BODY, MESSAGE_HEADER_GO_HOME_TITLE} from '@/const
 
 export default function RecapInventoryScreen() {
   const { scannedItems, restartScan, isLoading, mode, setSubmissionMessage, setSubmissionMessageType } = scannerContext();
-  const { handleSendInventory, handleSendObject, removeScannedItem } = useScanner();
+  const { handleSendInventory, removeScannedItem } = useScanner();
   const router = useRouter();
 
   const [currentModal, setCurrentModal] = useState('');
@@ -38,14 +38,11 @@ export default function RecapInventoryScreen() {
     try {
       if (mode === 'inventoryRoom') {
         await handleSendInventory();
-      } else {
-        await handleSendObject();
       }
     } catch (error) {
       const errorMessage = mode === 'inventoryRoom' 
         ? "Erreur lors de l'envoi de l'inventaire"
-        : "Erreur lors de l'ajout de l'objet";
-      
+        : "Erreur inconnue";
       setSubmissionMessage(errorMessage);
       setSubmissionMessageType('error');
       router.push('/');
@@ -58,8 +55,8 @@ export default function RecapInventoryScreen() {
     switch (currentModal) {
       case 'CONFIRM_SEND':
         return {
-          title: "Confirmer l'envoi de l'inventaire",
-          message: `Êtes-vous sûr de vouloir envoyer cet inventaire ?\nNombre d'objets : ${scannedItems.length}`,
+          title: "Terminer l'inventaire ?",
+          message: `Vous êtes sur le point de terminer l'inventaire en cours.`,
           onConfirm: handleSubmit
         };
       case 'CONFIRM_CANCEL':
@@ -74,7 +71,7 @@ export default function RecapInventoryScreen() {
       case 'CONFIRM_REMOVE':
         return {
           title: "Retirer l'objet ?",
-          message: `Voulez-vous vraiment retirer l'objet ${itemToRemove?.name ?? ''} (#${itemToRemove?.inventoryNumber ?? ''}) de l'inventaire ?`,
+          message: `Vous êtes sur le point de retirer l'objet ${itemToRemove?.name || ''} (#${itemToRemove?.inventoryNumber}) de l'inventaire en cours.`,
           onConfirm: () => {
             if (itemToRemove) {
               removeScannedItem(itemToRemove.inventoryNumber);
@@ -169,7 +166,7 @@ export default function RecapInventoryScreen() {
                   disableConfirm && styles.confirmButtonTextDisabled,
                 ]}
               >
-                Confirmer
+                Terminer
               </Text>
             )}
           </TouchableOpacity>

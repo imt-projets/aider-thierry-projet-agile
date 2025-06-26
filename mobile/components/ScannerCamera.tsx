@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Vibration, StyleSheet } from 'react-native';
+import { View, Vibration, StyleSheet, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Haptics from 'expo-haptics';
 import { useAudioPlayer } from 'expo-audio';
@@ -23,6 +23,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
   const scannerSound = require('../assets/scanner-sound.mp3');
   const player = useAudioPlayer(scannerSound);
   const { setError } = scannerContext();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     setScannedError(false);
@@ -55,7 +56,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
     setTimeout(() => {
       setScannedError(false);
       scanLock.current = false;
-    }, 1000);
+    }, 4000);
   };
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
@@ -71,6 +72,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
     }
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     
+    setIsProcessing(true);
     try {
       await onScan(data, false);
       setScannedSuccess(true);
@@ -80,6 +82,8 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
       }, 1000);
     } catch (error) {
       handleError(error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -90,6 +94,11 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
         barcodeScannerSettings={{ barcodeTypes: ['qr', 'ean13', 'ean8', 'code128', 'code39'] }}
         onBarcodeScanned={scannedError || scannedSuccess || !isActive ? undefined : handleBarCodeScanned}
       />
+      {isProcessing && (
+        <View style={styles.spinnerContainer}>
+          <ActivityIndicator size="large" color="#4caf50" />
+        </View>
+      )}
     </View>
   );
 };
@@ -105,6 +114,13 @@ const styles = StyleSheet.create({
     marginTop: 16,  
   },
   camera: { flex: 1 },
+    spinnerContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
 });
 
 export default ScannerCamera; 

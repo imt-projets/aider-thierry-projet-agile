@@ -77,7 +77,7 @@ const Scanner: React.FC<ScannerProps> = ({
               onPress={manualInput.open}
               activeOpacity={0.7}
             >
-              <Entypo name="pencil" size={28} color="#fff" />
+              <Entypo name="pencil" size={28} color="#000" />
             </TouchableOpacity>
           )}
         </View>
@@ -120,10 +120,10 @@ const styles = StyleSheet.create({
   scanSection: {
     width: '100%',
     alignItems: 'center',
-    marginTop: 32,
+    marginTop: 16,
     marginBottom: 0,
   },
-  title: { fontSize: 27, fontWeight: 'bold', textAlign: 'center', width: 341, marginBottom: 24 },
+  title: { fontSize: 27, fontWeight: 'bold', textAlign: 'center', width: 341 },
   frame: {
     width: 335,
     height: 339,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     marginTop: 16,  
   },
   camera: { flex: 1 },
-  counter: { fontSize: 16, fontWeight: '500', color: '#222' },
+  counter: { fontSize: 16, fontWeight: '500', color: '#222', paddingTop: 10 },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.4)',
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16,
-    backgroundColor: '#1976D2',
+    backgroundColor: '#fff',
     borderRadius: 28,
     width: 56,
     height: 56,

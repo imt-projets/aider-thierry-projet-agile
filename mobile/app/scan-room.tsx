@@ -16,9 +16,9 @@ import { getRoomByCode } from '@/services/ScannerService';
 export default function ScanRoomScreen() {
   const router = useRouter();
   const {setManualError, error : scanError, setError : setScanError,roomCode, setRoomCode, isLoading, mode, restartScan} = scannerContext();
-
   const [isPageFocused, setIsPageFocused] = useState(true);
   const [currentModal, setCurrentModal] = useState("");
+  const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -35,6 +35,7 @@ export default function ScanRoomScreen() {
   const scanned = roomCode !== null;
 
   const handleRoomScan = async (code: string, isManual : boolean) => {
+    setLastScannedCode(code);
     const roomResponse = await getRoomByCode(code);
     if (roomResponse.ok && roomResponse.data && roomResponse.data.id) {
       setRoomCode(code);
@@ -56,9 +57,13 @@ export default function ScanRoomScreen() {
   return (
     <View style={layout.container}>
       <Header title="IMT'ventaire" onHomePress={()=> setCurrentModal('AFTER_HOME_CLICKED')} />
-      <Toast visible={!!scanError} message={scanError ?? ""} onClose={() => setScanError('')} />
+      <Toast visible={!!scanError} message={scanError?.replace("{room}",lastScannedCode??"") ?? ""} onClose={() => setScanError('')} />
       <Scanner
-        message={scanned ? 'Code barre de la salle récupéré': 'Veuillez scanner le code barre de la salle'}
+        message={
+          scanned
+            ? `Code barre de la salle récupéré : ${roomCode}`
+            : 'Veuillez scanner le code barre de la salle'
+        }
         messageColor={scanned ? '#4caf50' : '#222'}
         frameColor={scanned ? '#4caf50' : '#222'}
         onScan={handleRoomScan}

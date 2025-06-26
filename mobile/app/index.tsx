@@ -1,7 +1,7 @@
 // pages/index.tsx
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 
 import Header from '@/components/Header';
@@ -24,6 +24,12 @@ export default function HomeScreen() {
   useEffect(() => {
     setIsScannerActive(false);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setMode(null)
+    }, [])
+  );
 
   const navigateTo = (mode: 'inventoryRoom' | 'addingObject') => {
     restartScan();

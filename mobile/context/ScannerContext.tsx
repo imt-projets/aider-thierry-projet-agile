@@ -58,7 +58,6 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
   const restartScan = () => {
     resetRoomCode();
     resetScannedCodes();
-    setMode(null);
     clearError();
   };
 

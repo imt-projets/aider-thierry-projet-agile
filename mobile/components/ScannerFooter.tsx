@@ -1,4 +1,5 @@
 import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import Button from '@/components/Button';
 import { Entypo, Octicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -23,7 +24,7 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
 }) => {
   if (!scanned) {
     return (
-      <>
+      <View style={styles.footer}>
         <Button
           title="Retour"
           onPress={onGoBack}
@@ -31,12 +32,12 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           icon={<Entypo name="arrow-left" size={30} color="white" />}
           disabled={isLoading}
         />
-      </>
+      </View>
     );
   }
   if (scanMode === 'single' && onContinue) { // Scan d'une salle
     return (
-      <>
+      <View style={styles.footer}>
         <Button
           title="Continuer"
           onPress={onContinue}
@@ -51,12 +52,12 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           icon={<Entypo name="arrow-left" size={30} color="white" />}
           disabled={isLoading}
         />
-      </>
+      </View>
     );
   }
   if (scanMode === 'multiple' && onFinish) { // Inventaire d'une salle 
     return (
-      <>
+      <View style={styles.footer}>
         <Button
           title="Récapitulatif"
           onPress={onFinish}
@@ -71,12 +72,12 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           icon={<Entypo name="arrow-left" size={30} color="white" />}
           disabled={isLoading}
         />
-      </>
+      </View>
     );
   }
   if (scanMode === 'single' && onAdd) { // Scan d'un seul objet dans une salle
     return (
-      <>
+      <View style={styles.footer}>
         <Button
           title="Ajouter"
           onPress={onAdd}
@@ -91,10 +92,16 @@ const ScannerFooter: React.FC<ScannerFooterProps> = ({
           icon={<Entypo name="arrow-left" size={30} color="white" />}
           disabled={isLoading}
         />
-      </>
+      </View>
     );
   }
   return null;
 };
+
+const styles = StyleSheet.create({
+  footer: {
+    marginBottom: 24,
+  },
+});
 
 export default ScannerFooter; 

@@ -1,5 +1,5 @@
 // pages/scan-objects.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text } from 'react-native';
 import Scanner from '@/components/Scanner';
 import useScanner from '@/hooks/useScanner';
@@ -24,6 +24,8 @@ export default function ScanObjectsScreen() {
   const [isPageFocused, setIsPageFocused] = useState(true);
   const [lastScannedItem, setLastScannedItem] = useState<any>(null);
   const [currentModal, setCurrentModal] = useState("");
+  const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -33,10 +35,27 @@ export default function ScanObjectsScreen() {
   );
 
   const handleItemScan = async (code: string, isManual : boolean) => {
+    setLastScannedCode(code);
     const itemResponse = await getItemByInventoryNumber(code);
     addScannedCode(itemResponse.data);
     setLastScannedItem(itemResponse.data);
-    setTimeout(() => setLastScannedItem(null), 2000);
+    // Nettoie l'ancien timeout s'il existe
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      setLastScannedItem(null);
+      timeoutRef.current = null;
+    }, 4000);
+  };
+
+  // Nettoie le timeout si on ferme manuellement le toast
+  const handleCloseToast = () => {
+    setLastScannedItem(null);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
   };
 
   const goToRecap = () => {
@@ -57,13 +76,30 @@ export default function ScanObjectsScreen() {
   return (
     <View style={layout.container}>
       <Header title="IMT'ventaire" onHomePress={()=> setCurrentModal('AFTER_HOME_CLICKED')}  />
-      <Toast visible={!!scanError} message={scanError ?? ""} onClose={() => setScanError('')} />
+      <Toast
+        visible={!!scanError}
+        message={
+          scanError && lastScannedCode
+            ? `Objet ${lastScannedCode} non enregistré`
+            : scanError ?? ""
+        }
+        onClose={() => setScanError('')}
+      />
       <Toast
         visible={!!lastScannedItem}
-        message={`Objet scanné : ${lastScannedItem?.name || lastScannedItem?.inventoryNumber}`}
+        message={
+          lastScannedItem
+            ? `Objet scanné : ${lastScannedItem?.name || ''} (N° ${lastScannedItem?.inventoryNumber || ''})`
+            : ''
+        }
         onClose={() => setLastScannedItem(null)}
         actionLabel="Annuler"
-        onAction={() => lastScannedItem && removeScannedItem(lastScannedItem.inventoryNumber)}
+          onAction={() => {
+          if (lastScannedItem) {
+            removeScannedItem(lastScannedItem.inventoryNumber);
+            handleCloseToast();
+          }
+        }}
         type="success"
       />
       <Scanner
