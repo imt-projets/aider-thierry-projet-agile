@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { RoomSchema } from "../structure";
+import { CommentItemSchema } from "../comment";
 
-// TODO: Add ItemType, Comments, ...
+// TODO: Add ItemType...
 export const ItemSchema = z.object({
 	id: z.string(),
 	name: z.string(),
@@ -15,7 +16,8 @@ export const ItemSchema = z.object({
 	state: z.string(),
 	serialNumber: z.string(),
 	orderNumber: z.string(),
-	room: RoomSchema.nullable().optional()
+	room: RoomSchema.nullable().optional(),
+	comments: z.array(CommentItemSchema).optional()
 });
 
 export const ItemsSchema = z.array(ItemSchema)

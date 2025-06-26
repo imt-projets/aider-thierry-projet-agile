@@ -3,8 +3,13 @@ import { FaPen, FaSave } from "react-icons/fa";
 import type { ItemDTO } from "@/dto";
 import SelectionContext from "../../../../context/SelectionContext";
 import { Card, FormField, FormSelectField, FormTextArea, IconButton, Item } from "@/components";
+import { RequestHelper } from "@/api";
 
-export const ObjectForm = () => {
+interface ObjectFormProps {
+    reloadHierarchy: () => Promise<void>
+}
+
+export const ObjectForm = ({ reloadHierarchy } : ObjectFormProps) => {
     const { selectedItem, error } = useContext(SelectionContext);
     const [isEditing, setIsEditing] = useState(false);
     const [form, setForm] = useState<ItemDTO | null>(selectedItem);
@@ -19,6 +24,9 @@ export const ObjectForm = () => {
 
     useEffect(() => {
         setForm(selectedItem);
+        setIsEditing(false);
+        setFieldErrors({});
+        setHasErrors(false);
     }, [selectedItem]);
 
     const formatDateForInput = (dateString: string | undefined): string => {
@@ -62,10 +70,13 @@ export const ObjectForm = () => {
     };
 
     const handleEdit = () => setIsEditing(true);
-    const handleSave = () => {
+    const handleSave = async () => {
         setIsEditing(false);
-        // TODO: Save the form
-        // Also Check if the current form is updated
+        const response = await RequestHelper.put(`/item`, form)
+
+        if (response.ok){
+            await reloadHierarchy();
+        };
     };
 
     return (

@@ -6,6 +6,7 @@ export enum StructureTypeEnum {
     SCHOOL = "school",
     BUILDING = "building",
     ROOM = "room",
+    AMPHITHEATER = "amphitheater",
 }
 
 @Entity()
