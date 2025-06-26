@@ -11,8 +11,6 @@ import Toast from '@/components/Toast';
 import { useFocusEffect } from '@react-navigation/native';
 import ModalConfirmation from '@/components/ModalConfirmation';
 import  { MESSAGE_GO_BACK_TITLE, MESSAGE_GO_BACK_HOME_BODY, MESSAGE_HEADER_GO_HOME_TITLE, MESSAGE_HEADER_GO_HOME_BODY, MESSAGE_GO_BACK_SCAN_ROOM_BODY } from '@/constants/Messages/MessagesModales'
-import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from '@/interfaces/Item/ApiErrors';
-import { ROOM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
 import { getRoomByCode } from '@/services/ScannerService';
 
 export default function ScanRoomScreen() {
@@ -37,20 +35,9 @@ export default function ScanRoomScreen() {
   const scanned = roomCode !== null;
 
   const handleRoomScan = async (code: string, isManual : boolean) => {
-    try {
-      const roomResponse = await getRoomByCode(code);
-      if (roomResponse.ok && roomResponse.data && roomResponse.data.id) {
-        setRoomCode(code);
-      }
-    } catch (error) {
-      let errorMessage = '';     
-      if (error instanceof ApiNotFoundError) {
-        errorMessage = ROOM_NOT_FOUND_MESSAGE;
-      } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
-        errorMessage = error.message;
-      }
-      isManual ? setManualError(errorMessage) : setScanError(errorMessage);
-      throw error;
+    const roomResponse = await getRoomByCode(code);
+    if (roomResponse.ok && roomResponse.data && roomResponse.data.id) {
+      setRoomCode(code);
     }
   };
 

@@ -9,11 +9,9 @@ import { useRouter } from 'expo-router';
 import Toast from '@/components/Toast';
 import { scannerContext } from '@/context/ScannerContext';
 import { useFocusEffect } from '@react-navigation/native';
-import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
 import { getItemByInventoryNumber } from '@/services/ScannerService';
 import ModalConfirmation from '@/components/ModalConfirmation';
 import  { MESSAGE_GO_BACK_TITLE, MESSAGE_HEADER_GO_HOME_TITLE, MESSAGE_HEADER_GO_HOME_BODY, MESSAGE_GO_BACK_SCAN_ITEM_BODY } from '@/constants/Messages/MessagesModales';
-import { ROOM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
 
 export default function ScanObjectsScreen() {
   const {
@@ -35,23 +33,11 @@ export default function ScanObjectsScreen() {
   );
 
   const handleItemScan = async (code: string, isManual : boolean) => {
-    try {
-      const itemResponse = await getItemByInventoryNumber(code);
-      addScannedCode(itemResponse.data);
-      setLastScannedItem(itemResponse.data);
-      setTimeout(() => setLastScannedItem(null), 2000);
-    } catch (error) {
-      let errorMessage = null;     
-      if (error instanceof ApiNotFoundError) {
-        errorMessage = ROOM_NOT_FOUND_MESSAGE;
-      } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
-        errorMessage = error.message;
-      }
-      isManual ? setManualError(errorMessage) : setScanError(errorMessage);
-      throw error;
-    }
+    const itemResponse = await getItemByInventoryNumber(code);
+    addScannedCode(itemResponse.data);
+    setLastScannedItem(itemResponse.data);
+    setTimeout(() => setLastScannedItem(null), 2000);
   };
-
 
   const goToRecap = () => {
     router.push('/recap-inventory');

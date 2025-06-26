@@ -8,13 +8,10 @@ import { layout } from '@/styles/common';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import Toast from '@/components/Toast';
-import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
 import { getItemByInventoryNumber } from '@/services/ScannerService';
 import ModalConfirmation from '@/components/ModalConfirmation';
 import  {MESSAGE_GO_BACK_TITLE, MESSAGE_GO_BACK_HOME_BODY, MESSAGE_HEADER_GO_HOME_TITLE, MESSAGE_HEADER_GO_HOME_BODY} from '@/constants/Messages/MessagesModales';
-import {ROOM_NOT_FOUND_MESSAGE} from '@/constants/Messages/Errors/ScanErrors';
 import {scannerContext} from '@/context/ScannerContext';
-
 
 export default function ScanObjectScreen() {
   const {
@@ -27,7 +24,6 @@ export default function ScanObjectScreen() {
   const [currentModal, setCurrentModal] = useState("");
   const { setManualError, error : scanError, setError : setScanError, restartScan, scannedItems, isLoading, resetScannedCodes } = scannerContext();
 
-
   useFocusEffect(
     useCallback(() => {
       setIsPageFocused(true);
@@ -37,20 +33,9 @@ export default function ScanObjectScreen() {
 
   const handleScan = async (code: string, isManual : boolean) => {
     setScanError('');
-    try {
-      const itemResponse = await getItemByInventoryNumber(code);
-      addScannedCode(itemResponse.data);
-      setLastScannedItem(itemResponse.data);
-    } catch (error) {
-      let errorMessage = '';     
-      if (error instanceof ApiNotFoundError) {
-        errorMessage = ROOM_NOT_FOUND_MESSAGE;
-      } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
-        errorMessage = error.message;
-      }
-      isManual ? setManualError(errorMessage) : setScanError(errorMessage);
-      throw error;
-    }
+    const itemResponse = await getItemByInventoryNumber(code);
+    addScannedCode(itemResponse.data);
+    setLastScannedItem(itemResponse.data);
   };
   
   const goBack = () => {

@@ -61,27 +61,30 @@ const Scanner: React.FC<ScannerProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: messageColor }]}>{message}</Text>
-      <View>
-        <ScannerCamera
-          isActive = {isActive && !manualInput.show}
-          frameColor = {frameColor}
-          onScan = {onScan}
-          resetTrigger = {resetTrigger}
-        />
-        {enableManualInput && (
-          <TouchableOpacity
-            style = {styles.fab}
-            onPress = {manualInput.open}
-            activeOpacity = {0.7}
-          >
-            <Entypo name="pencil" size={28} color="#fff" />
-          </TouchableOpacity>
+      <View style={styles.scanSection}>
+        <Text style={[styles.title, { color: messageColor }]}>{message}</Text>
+        <View>
+          <ScannerCamera
+            isActive={isActive && !manualInput.show}
+            frameColor={frameColor}
+            onScan={onScan}
+            resetTrigger={resetTrigger}
+          />
+          {enableManualInput && (
+            <TouchableOpacity
+              style={styles.fab}
+              onPress={manualInput.open}
+              activeOpacity={0.7}
+            >
+              <Entypo name="pencil" size={28} color="#fff" />
+            </TouchableOpacity>
+          )}
+        </View>
+        {step === 'object' && typeof scannedCount === 'number' && (
+          <Text style={styles.counter}>Nombre d'objets scannés : {scannedCount}</Text>
         )}
       </View>
-      {step === 'object' && typeof scannedCount === 'number' && (
-        <Text style={styles.counter}>Nombre d'objets scannés : {scannedCount}</Text>
-      )}
+      <View style={{ flex: 1 }} />
       <View style={layout.footer}>
         <ScannerFooter
           scanned={scanned}
@@ -101,15 +104,25 @@ const Scanner: React.FC<ScannerProps> = ({
         error={manualError ?? ''}
         onSubmit={manualInput.submit}
         onClose={manualInput.close}
-        step = {step}
+        step={step}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { alignItems: 'center', marginTop : 10 },
-  title: { fontSize: 27, fontWeight: 'bold', textAlign: 'center', width : 341 },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  scanSection: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 32,
+    marginBottom: 0,
+  },
+  title: { fontSize: 27, fontWeight: 'bold', textAlign: 'center', width: 341, marginBottom: 24 },
   frame: {
     width: 335,
     height: 339,

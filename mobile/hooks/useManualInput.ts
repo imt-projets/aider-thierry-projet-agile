@@ -1,5 +1,7 @@
 import { scannerContext } from '@/context/ScannerContext';
 import { useState, useEffect } from 'react';
+import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from '@/interfaces/Item/ApiErrors';
+import { ROOM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
 
 export interface UseManualInput {
   show: boolean;
@@ -32,22 +34,24 @@ export default function useManualInput(onScan: (code: string, isManual : boolean
     if (!code.trim()) return;
     setLoading(true);
     setManualError(null);
+    
     try {
       await onScan(code.trim(), true);
-      setShow(false)
-    } catch (e) {
-      setManualError('Code non trouvé ou erreur serveur');
+      setShow(false);
+    } catch (error) {
+      let errorMessage = '';     
+      if (error instanceof ApiNotFoundError) {
+        errorMessage = ROOM_NOT_FOUND_MESSAGE;
+      } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
+        errorMessage = error.message;
+      }
+      setManualError(errorMessage);
+      setShow(true);
     } finally {
       setLoading(false);
       setCode('');
     }
   };
-
-  useEffect(() => {
-    if (manualError) {
-      setShow(true)
-    }
-  }, [manualError, setManualError]);
 
   return {
     show,

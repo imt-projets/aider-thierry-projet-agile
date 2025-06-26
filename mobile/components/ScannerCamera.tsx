@@ -3,6 +3,9 @@ import { View, Vibration, StyleSheet } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Haptics from 'expo-haptics';
 import { useAudioPlayer } from 'expo-audio';
+import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from '@/interfaces/Item/ApiErrors';
+import { ROOM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
+import { scannerContext } from '@/context/ScannerContext';
 
 interface ScannerCameraProps {
   isActive: boolean;
@@ -18,6 +21,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
   const scanLock = useRef(false);
   const scannerSound = require('../assets/scanner-sound.mp3');
   const player = useAudioPlayer(scannerSound);
+  const { setError } = scannerContext();
 
   useEffect(() => {
     setScanned(false);
@@ -32,13 +36,25 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
   }, []);
 
   const getBorderColor = () => {
-    if (scannedError) {
-      return '#f44336';
-    }
-    if (scanned) {
-      return '#4caf50';
-    }
+    if (scannedError) return '#f44336';
+    if (scanned) return '#4caf50';
     return frameColor;
+  };
+
+  const handleError = (error: any) => {
+    let errorMessage = '';     
+    if (error instanceof ApiNotFoundError) {
+      errorMessage = ROOM_NOT_FOUND_MESSAGE;
+    } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
+      errorMessage = error.message;
+    }
+    setError(errorMessage);
+    setScanned(false);
+    setScannedError(true);
+    setTimeout(() => {
+      setScannedError(false);
+      scanLock.current = false;
+    }, 1000);
   };
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
@@ -46,6 +62,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
     scanLock.current = true;
     setScanned(true);
     Vibration.vibrate(200);
+    
     try {
       await player.seekTo(0);
       player.play();
@@ -61,12 +78,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
         scanLock.current = false;
       }, 1000);
     } catch (error) {
-      setScanned(false);
-      setScannedError(true);
-      setTimeout(() => {
-        setScannedError(false);
-        scanLock.current = false;
-      }, 1000);
+      handleError(error);
     }
   };
 
