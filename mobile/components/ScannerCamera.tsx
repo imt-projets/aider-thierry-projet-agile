@@ -17,16 +17,16 @@ interface ScannerCameraProps {
 
 const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#222', onScan, resetTrigger, step }) => {
   const [permission, requestPermission] = useCameraPermissions();
-  const [scanned, setScanned] = useState(false);
   const [scannedError, setScannedError] = useState(false);
+  const [scannedSuccess, setScannedSuccess] = useState(false);
   const scanLock = useRef(false);
   const scannerSound = require('../assets/scanner-sound.mp3');
   const player = useAudioPlayer(scannerSound);
   const { setError } = scannerContext();
 
   useEffect(() => {
-    setScanned(false);
     setScannedError(false);
+    setScannedSuccess(false);
     scanLock.current = false;
   }, [resetTrigger]);
 
@@ -38,7 +38,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
 
   const getBorderColor = () => {
     if (scannedError) return '#f44336';
-    if (scanned) return '#4caf50';
+    if (scannedSuccess) return '#4caf50';
     return frameColor;
   };
 
@@ -50,7 +50,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
       errorMessage = error.message;
     }
     setError(errorMessage);
-    setScanned(false);
+    setScannedSuccess(false);
     setScannedError(true);
     setTimeout(() => {
       setScannedError(false);
@@ -61,7 +61,6 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
     if (scanLock.current) return;
     scanLock.current = true;
-    setScanned(true);
     Vibration.vibrate(200);
     
     try {
@@ -74,8 +73,9 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
     
     try {
       await onScan(data, false);
+      setScannedSuccess(true);
       setTimeout(() => {
-        setScanned(false);
+        setScannedSuccess(false);
         scanLock.current = false;
       }, 1000);
     } catch (error) {
@@ -88,7 +88,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
       <CameraView
         style={styles.camera}
         barcodeScannerSettings={{ barcodeTypes: ['qr', 'ean13', 'ean8', 'code128', 'code39'] }}
-        onBarcodeScanned={scanned || scannedError || !isActive ? undefined : handleBarCodeScanned}
+        onBarcodeScanned={scannedError || scannedSuccess || !isActive ? undefined : handleBarCodeScanned}
       />
     </View>
   );
