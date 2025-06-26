@@ -210,6 +210,254 @@ export class HierarchySeeder extends Seeder {
                 state: ItemStateTypeEnum.PENDING_DESTRUCTION
             }),
 
+
+            // TABLE PROF J144
+            itemRepository.create({
+                name: "Table Double",
+                description: "Table avec armature bleu et plateau de travail composite",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: tableType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "25628",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+
+
+            // Chaise Prof J144
+            itemRepository.create({
+                name: "Chaise",
+                description: "Chaise du professeur en J144",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: chairType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "6937",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+
+            // CHAISE
+            // 28309
+
+            itemRepository.create({
+                name: "Chaise",
+                description: "Chaise étudiante",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: chairType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "28309",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+            // 25054
+            itemRepository.create({
+                name: "Chaise",
+                description: "Chaise étudiante",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: chairType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "25054",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+            // 25406
+            itemRepository.create({
+                name: "Chaise",
+                description: "Chaise étudiante",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: chairType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "25406",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+            // 25321
+            itemRepository.create({
+                name: "Chaise",
+                description: "Chaise étudiante",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: chairType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "25321",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+            // 25199
+            itemRepository.create({
+                name: "Chaise",
+                description: "Chaise étudiante",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: chairType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "25199",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+
+            // TABLE
+            // 26311
+            itemRepository.create({
+                name: "Table",
+                description: "Table avec armature bleu et plateau de travail composite",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: tableType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "26311",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+
+            // 26315
+            itemRepository.create({
+                name: "Table",
+                description: "Table avec armature bleu et plateau de travail composite",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: tableType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "26315",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+            // 26243
+            itemRepository.create({
+                name: "Table",
+                description: "Table avec armature bleu et plateau de travail composite",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: tableType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "26243",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+            // 26407
+            itemRepository.create({
+                name: "Table",
+                description: "Table avec armature bleu et plateau de travail composite",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: tableType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "26407",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+            // 26331
+            itemRepository.create({
+                name: "Table",
+                description: "Table avec armature bleu et plateau de travail composite",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: tableType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "26331",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+            // 26285
+            itemRepository.create({
+                name: "Table",
+                description: "Table avec armature bleu et plateau de travail composite",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: tableType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "26285",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+            // 26394
+            itemRepository.create({
+                name: "Table",
+                description: "Table avec armature bleu et plateau de travail composite",
+                price: 150,
+                warrantyEndDate: addYears(3),
+                endOfLifeDate: addYears(7),
+                brand: "Ikea",
+                room: roomJ144,
+                itemType: tableType,
+                suppliers: [],
+                serialNumber: "123349802850",
+                inventoryNumber: "26394",
+                orderNumber: "349822",
+                model: "LACK",
+                state: ItemStateTypeEnum.GOOD
+            }),
+
             // PROJECTEUR J144
             itemRepository.create({
                 name: "Projecteur",

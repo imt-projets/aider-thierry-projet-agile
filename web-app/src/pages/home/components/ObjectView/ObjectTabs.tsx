@@ -29,7 +29,7 @@ export const ObjectTabs = () => {
 					textAlign: 'left',     
 					color: '#000', 
 					'&.Mui-selected': {
-					color: '#0957FF',
+					color: '#14223C',
 					}
 				}}
 				value={idx}
@@ -48,7 +48,7 @@ export const ObjectTabs = () => {
 					className="vertical-tabs"
 					sx={{
 						'& .MuiTabs-indicator': {
-						backgroundColor: '#0957FF',
+						backgroundColor: '#14223C',
 						}
 					}}
 				>
