@@ -24,6 +24,9 @@ export const ObjectForm = ({ reloadHierarchy } : ObjectFormProps) => {
 
     useEffect(() => {
         setForm(selectedItem);
+        setIsEditing(false);
+        setFieldErrors({});
+        setHasErrors(false);
     }, [selectedItem]);
 
     const formatDateForInput = (dateString: string | undefined): string => {
