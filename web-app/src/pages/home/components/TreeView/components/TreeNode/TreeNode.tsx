@@ -24,7 +24,7 @@ const iconMap = new Map<string, React.ReactNode>([
     ["building", <Building style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
     ["room", <Room style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
     ["object", <Item style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
-    ["amphitheater", <Item style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
+    ["amphitheater", <Amphitheater style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
 ]);
 
 interface TreeNodeProps {
