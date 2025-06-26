@@ -89,7 +89,7 @@ export default function ScanObjectsScreen() {
         visible={!!lastScannedItem}
         message={
           lastScannedItem
-            ? `Objet scanné : ${lastScannedItem?.name || ''} (N° ${lastScannedItem?.inventoryNumber || ''})`
+            ? `Objet scanné : ${lastScannedItem?.name || ''} (#${lastScannedItem?.inventoryNumber || ''})`
             : ''
         }
         onClose={() => setLastScannedItem(null)}
