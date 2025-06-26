@@ -8,6 +8,7 @@ export class HierarchySeeder extends Seeder {
         const structureRepository = dataSource.getRepository(entities.Structure);
         const itemTypeRepository = dataSource.getRepository(entities.ItemType);
         const itemRepository = dataSource.getRepository(entities.Item);
+        const commentRepository = dataSource.getRepository(entities.Comment);
 
         // SCHOOL
         const school = structureRepository.create({
@@ -84,6 +85,22 @@ export class HierarchySeeder extends Seeder {
         });
 
         await structureRepository.save(amphitheater);
+        // COMMENTS
+        const comment1 = commentRepository.create({
+            content: "C'est une salle très agréable pour les cours.",
+            date: new Date(),
+            item: null, // No item associated with this comment
+            user: null, // No user associated with this comment
+        });
+
+        const comment2 = commentRepository.create({
+            content: "Le projecteur est un peu vieux mais fonctionne encore.",
+            date: new Date(),
+            item: null, // No item associated with this comment
+            user: null, // No user associated with this comment
+        });
+
+        await commentRepository.save([comment1, comment2]);
 
         // J142
         const items = [
@@ -102,6 +119,7 @@ export class HierarchySeeder extends Seeder {
                 inventoryNumber: "25520",
                 orderNumber: "349843",
                 model: "ADDE",
+                comments: [comment1, comment2],
                 state: ItemStateTypeEnum.NEW
             }),
             // première table J142
