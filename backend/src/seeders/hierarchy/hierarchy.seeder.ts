@@ -89,15 +89,11 @@ export class HierarchySeeder extends Seeder {
         const comment1 = commentRepository.create({
             content: "C'est une salle très agréable pour les cours.",
             date: new Date(),
-            item: null, // No item associated with this comment
-            user: null, // No user associated with this comment
         });
 
         const comment2 = commentRepository.create({
-            content: "Le projecteur est un peu vieux mais fonctionne encore.",
+            content: "C'est un 2ème commentaire dis donc!",
             date: new Date(),
-            item: null, // No item associated with this comment
-            user: null, // No user associated with this comment
         });
 
         await commentRepository.save([comment1, comment2]);
