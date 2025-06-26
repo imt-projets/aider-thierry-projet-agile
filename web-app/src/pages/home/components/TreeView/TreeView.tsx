@@ -1,14 +1,17 @@
-import { TreeViewSchema, type TreeViewBuilding, type TreeViewDTO, type TreeViewRoom, type TreeViewSchool } from "@/dto";
-import { useCallback, useEffect, useState } from "react";
+import { type TreeViewBuilding, type TreeViewDTO, type TreeViewRoom, type TreeViewSchool } from "@/dto";
+import { useEffect, useState } from "react";
 import { SearchBar, TreeList } from "./components";
-import { useFetch } from "@/hooks";
 import { Loader } from "@/components";
 
-export const TreeView = () => {
+interface TreeViewProps {
+    loading: boolean;
+    treeView: TreeViewDTO | undefined;
+    originalTreeView: TreeViewDTO | undefined;
+    setTreeView: React.Dispatch<React.SetStateAction<TreeViewDTO | undefined>>;
+}
+
+export const TreeView = ({ loading, originalTreeView, setTreeView, treeView } : TreeViewProps) => {
     const [openNodes, setOpenNodes] = useState<Record<string, boolean>>({});
-    const [originalTreeView, setOriginalTreeView] = useState<TreeViewDTO>();
-    const response = useFetch('/hierarchy', [])
-    const [treeView, setTreeView] = useState<TreeViewDTO>()
     const [searchTerm, setSearchTerm] = useState("");
 
     const toggleNode = (id: string) => {
@@ -18,7 +21,6 @@ export const TreeView = () => {
     const handleSearch = (value :string) => {
         setSearchTerm(value);
     }
-
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -75,24 +77,10 @@ export const TreeView = () => {
         return foundL1Nodes;
     };
 
-    const fetchHierarchy = useCallback(() => {
-        if (response.data) {
-            const treeViewParsed = TreeViewSchema.parse(response.data);
-            setTreeView(treeViewParsed);
-            setOriginalTreeView(treeViewParsed);
-        }
-    }, [response.data])
-
-    useEffect(() => {
-        fetchHierarchy()
-    }, [fetchHierarchy]);
-
-
-
     return (
         <div id="treeView--container">
             <SearchBar onChanges={handleSearch}/>
-            {response.loading ? (
+            {loading ? (
                 <div className="treeView--loader">
                     <Loader/>
                 </div>
