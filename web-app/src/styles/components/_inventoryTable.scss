@@ -1,18 +1,20 @@
 @use '../theme/fonts' as *;
 @use '../theme/_colors.scss' as *;
 
-.items-table {
+.inventory-table {
     border-radius: 8px;
     overflow: hidden;
     width: inherit;
 
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-    border: 1px solid $card-border;
+    .table-title {
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+    }
 
     .table {
         display: flex;
         flex-direction: column;
-        height: 560px;
+        height: 300px;
 
         .table-header {
             color: #464F60;
@@ -31,13 +33,6 @@
             overflow-y: auto;
             gap: 2px;
 
-            .loader--container {
-                display: flex;
-                height: 450px;
-                align-items: center;
-                justify-content: center;
-            }
-
             .table-row {
                 background-color: $white;
                 
@@ -50,36 +45,6 @@
 
     .actions {
         margin-right: 24px;
-    }
-
-    .footer {
-        .pagination--informations > p {
-            color: $gray-board-content;
-        }
-
-        .icon-button {
-            border: 1px solid #868FA0;
-            border-radius: 8px;
-        }
-
-        .pagination--actions {
-            display: inherit;
-            flex-direction: row;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .pagination--counter {
-            font-weight: 600;
-
-            display: inherit;
-            align-self: center;
-            color: $gray-board-content;
-
-            .left {
-                color: $black
-            }
-        }
     }
 
     p {

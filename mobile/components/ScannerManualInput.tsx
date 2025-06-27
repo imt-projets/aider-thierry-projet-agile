@@ -9,6 +9,7 @@ interface ScannerManualInputProps {
   error: string;
   onSubmit: () => void;
   onClose: () => void;
+  step : 'salle' | 'object'
 }
 
 const ScannerManualInput: React.FC<ScannerManualInputProps> = ({
@@ -18,13 +19,15 @@ const ScannerManualInput: React.FC<ScannerManualInputProps> = ({
   loading,
   error,
   onSubmit,
-  onClose
+  onClose,
+  step
 }) => {
   return (
     <Modal transparent animationType="fade" visible={visible}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Saisir le code</Text>
+          <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10, textAlign : 'center' }}>Veuillez saisir le code barre de {step === 'object' ? 'l\'objet' : 'la salle'}</Text>
+          {error && code === '' ? <Text style={{ color: 'red', marginTop: 8 }}>{error}</Text> : null}
           <TextInput
             value={code}
             onChangeText={setCode}
@@ -33,15 +36,19 @@ const ScannerManualInput: React.FC<ScannerManualInputProps> = ({
             autoFocus
             editable={!loading}
           />
-          {error ? <Text style={{ color: 'red', marginTop: 8 }}>{error}</Text> : null}
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
             <TouchableOpacity onPress={onClose} style={styles.cancelBtn} disabled={loading}>
               <Text style={{ color: '#fff' }}>Annuler</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={onSubmit} style={styles.okBtn} disabled={loading}>
-              {loading ? <ActivityIndicator color="#fff" /> : <Text style={{ color: '#fff' }}>Valider</Text>}
+            <TouchableOpacity onPress={onSubmit} style={code !== '' ? styles.okBtn : styles.okBtnDisabled} disabled={loading}>
+            <Text style={{color : '#fff' }}>Confirmer</Text>
             </TouchableOpacity>
           </View>
+          {loading && (
+            <View style={styles.loaderOverlay}>
+              <ActivityIndicator size="large" color="#000" />
+            </View>
+          )}
         </View>
       </View>
     </Modal>
@@ -81,6 +88,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     padding: 12,
     borderRadius: 8,
+  },
+  okBtnDisabled: {
+    backgroundColor : 'gray',
+    padding: 12,
+    borderRadius: 8,
+  },
+  loaderOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12,
+    zIndex: 10,
   },
 });
 

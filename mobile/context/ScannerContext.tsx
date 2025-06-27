@@ -15,10 +15,17 @@ interface ScannerContextType {
   mode: 'inventoryRoom' | 'addingObject' | null;
   setMode: (mode: 'inventoryRoom' | 'addingObject' | null) => void;
   isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: (val : boolean) => void;
   error: string | null;
-  setError: React.Dispatch<React.SetStateAction<string | null>>;
+  setError: (err : string | null) => void;
   clearError: () => void;
+  setManualError : (err : string | null) => void;
+  manualError : string | null;
+  submissionMessage: string | null;
+  setSubmissionMessage: (msg: string | null) => void;
+  submissionMessageType: 'success' | 'error' | null;
+  setSubmissionMessageType: (type: 'success' | 'error' | null) => void;
+  clearSubmissionMessage: () => void;
 }
 
 export const ScannerContext = createContext<ScannerContextType | undefined>(undefined);
@@ -30,8 +37,19 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState<'inventoryRoom' | 'addingObject' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [manualError, setManualError] = useState<string | null>(null);
+  const [submissionMessage, setSubmissionMessage] = useState<string | null>(null);
+  const [submissionMessageType, setSubmissionMessageType] = useState<'success' | 'error' | null>(null);
 
-  const clearError = () => setError(null);
+  const clearError = () => {
+    setError(null);
+    setManualError(null);
+  }
+
+  const clearSubmissionMessage = () => {
+    setSubmissionMessage(null);
+    setSubmissionMessageType(null);
+  }
 
   const resetScannedCodes = () => setScannedItems([]);
   const setRoomCode = (code: string) => setRoomCodeState(code);
@@ -40,7 +58,6 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
   const restartScan = () => {
     resetRoomCode();
     resetScannedCodes();
-    setMode(null);
     clearError();
   };
 
@@ -63,6 +80,13 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
         error,
         setError,
         clearError,
+        manualError,
+        setManualError,
+        submissionMessage,
+        setSubmissionMessage,
+        submissionMessageType,
+        setSubmissionMessageType,
+        clearSubmissionMessage
       }}
     >
       {children}

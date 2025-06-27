@@ -8,26 +8,24 @@ import { layout } from '@/styles/common';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import Toast from '@/components/Toast';
-import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from "@/interfaces/Item/ApiErrors";
 import { getItemByInventoryNumber } from '@/services/ScannerService';
-
+import ModalConfirmation from '@/components/ModalConfirmation';
+import  {MESSAGE_GO_BACK_TITLE, MESSAGE_GO_BACK_HOME_BODY, MESSAGE_HEADER_GO_HOME_TITLE, MESSAGE_HEADER_GO_HOME_BODY, MESSAGE_GO_BACK_SCAN_ROOM_BODY, MESSAGE_GO_BACK_SCAN_OBJECT_BODY} from '@/constants/Messages/MessagesModales';
+import {scannerContext} from '@/context/ScannerContext';
 
 export default function ScanObjectScreen() {
-  const [lastScanned] = useState<string | null>(null);
-  const [resetTrigger, setResetTrigger] = useState(0);
-  const [scanError, setScanError] = useState('');
   const {
-    scannedItems,
+    removeScannedItem,
     addScannedCode,
-    resetScannedCodes,
-    isLoading,
-    restartScan,
-    removeScannedItem
+    handleSendObject
   } = useScanner();
-  const [isPageFocused, setIsPageFocused] = useState(true);
-  const [showScanToast, setShowScanToast] = useState(false);
-  const [lastScannedItem, setLastScannedItem] = useState<any>(null);
 
+  const [isPageFocused, setIsPageFocused] = useState(true);
+  const [lastScannedItem, setLastScannedItem] = useState<any>(null);
+  const [currentModal, setCurrentModal] = useState("");
+  const { setManualError, error : scanError, setError : setScanError, restartScan, scannedItems, isLoading, resetScannedCodes, setSubmissionMessage, setSubmissionMessageType, mode } = scannerContext();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -36,78 +34,86 @@ export default function ScanObjectScreen() {
     }, [])
   );
 
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    if (showScanToast) {
-      timer = setTimeout(() => setShowScanToast(false), 5000);
-    }
-    return () => clearTimeout(timer);
-  }, [showScanToast]);
-
-  useEffect(() => {
-    if (!isPageFocused) setShowScanToast(false);
-  }, [isPageFocused]);
-
-
-  const handleScan = async (code: string) => {
+  const handleScan = async (code: string, isManual : boolean) => {
+    setLastScannedCode(code);
     setScanError('');
-    try {
-      const itemResponse = await getItemByInventoryNumber(code);
-      addScannedCode(itemResponse.data);
-      setLastScannedItem(itemResponse.data);
-      setShowScanToast(true);
-    } catch (error) {
-      if (error instanceof ApiNotFoundError) {
-        setScanError('Salle inexistante ou code invalide');
-      } else if (error instanceof ApiServerError) {
-        setScanError('Une erreur est survenue');
-      } else if (error instanceof ApiTimeoutError) {
-        setScanError('Le serveur met trop de temps à répondre');
-      }
+    const itemResponse = await getItemByInventoryNumber(code);
+    addScannedCode(itemResponse.data);
+    setLastScannedItem(itemResponse.data);
+  };
+  
+  const goBack = () => {
+    if (lastScannedItem) {
+      resetScannedCodes();
+      setLastScannedItem(null);
+    } else {
+      router.back();
     }
-  };
+  }
 
-  const handleAnnuler = () => {
-    restartScan();
-    router.back();
-  };
-
-  const handleAdd = () => {
-    router.push('/recap-inventory');
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      if (mode === 'addingObject') {
+        await handleSendObject();
+      }
+    } catch (error) {
+      const errorMessage = mode === 'addingObject' 
+        ? "Erreur lors de l'ajout de l'objet"
+        : "Erreur inconnue";
+      setSubmissionMessage(errorMessage);
+      setSubmissionMessageType('error');
+      router.push('/');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isObjectScanned = scannedItems.length > 0;
 
+  const goHome = () => {
+    restartScan();
+    router.push('/');
+  };
+
   return (
     <View style={layout.container}>
-      <Header title="IMT'ventaire" />
-      <Toast visible={!!scanError} message={scanError} onClose={() => setScanError('')} />
-      <Toast
-        visible={showScanToast}
-        message={lastScannedItem ? `Objet scanné : ${lastScannedItem.name || lastScannedItem.inventoryNumber}` : 'Objet scanné'}
-        onClose={() => setShowScanToast(false)}
-        duration={5000}
-        actionLabel="Annuler"
-        onAction={() => {
-          if (lastScannedItem) removeScannedItem(lastScannedItem.inventoryNumber);
-          setShowScanToast(false);
-        }}
-        type="success"
-      />
-      <Scanner
-        message={isObjectScanned ? "Code barre de l'objet récupéré" : "Veuillez scanner le code barre de l'objet à ajouter"}
-        messageColor={isObjectScanned ? '#4caf50' : '#222'}
-        frameColor={lastScanned ? '#4caf50' : '#222'}
-        onScan={handleScan}
-        scanMode="single"
-        resetTrigger={resetTrigger}
-        isActive={isPageFocused}
-        step="object"
-        onCancel={handleAnnuler}
-        onAdd={handleAdd}
-        isLoading={isLoading}
-        scanned={isObjectScanned}
-        enableManualInput={true}
+      <Header title="IMT'ventaire" onHomePress={()=> setCurrentModal('AFTER_HOME_CLICKED')}/>
+      <Toast visible={!!scanError} message={scanError?.replace("{object}"," "+(lastScannedCode??"")) ?? ""} onClose={() => setScanError('')} />
+      {isPageFocused &&
+        (<Scanner
+          message={
+            isObjectScanned
+              ? `Code barre de l'objet récupéré : ${lastScannedItem?.inventoryNumber ?? ''}`
+              : 'Veuillez scanner le code barre de l\'objet à ajouter'
+          }
+          messageColor={isObjectScanned ? '#4caf50' : '#222'}
+          frameColor={lastScannedItem ? '#4caf50' : '#222'}
+          onScan={handleScan}
+          scanMode="single"
+          isActive={isPageFocused}
+          step="object"
+          onGoBack={()=> setCurrentModal('AFTER_GO_BACK_CLICKED')}
+          onAdd={handleSubmit}
+          isLoading={isLoading}
+          scanned={isObjectScanned}
+          enableManualInput={true}
+        />)
+      }
+
+      <ModalConfirmation
+          modalVisible={currentModal != ''}
+          setModalVisible={() => setCurrentModal('')}
+          title= { currentModal == 'AFTER_GO_BACK_CLICKED' ? MESSAGE_GO_BACK_TITLE : MESSAGE_HEADER_GO_HOME_TITLE}
+          message={
+            currentModal === 'AFTER_GO_BACK_CLICKED'
+              ? (lastScannedItem ? MESSAGE_GO_BACK_SCAN_OBJECT_BODY : MESSAGE_GO_BACK_SCAN_ROOM_BODY)
+              : MESSAGE_HEADER_GO_HOME_BODY
+          }          
+          isImportant = {currentModal == 'AFTER_HOME_CLICKED'}
+          confirmText="Confirmer"
+          cancelText="Annuler"
+          onConfirm={currentModal === 'AFTER_GO_BACK_CLICKED' ? goBack : goHome}
       />
     </View>
   );

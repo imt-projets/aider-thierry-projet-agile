@@ -2,13 +2,99 @@
 @use '../theme/fonts' as *;
 
 #historic--container {
-    width: 100%;
     height: 100%;
     padding: 24px; 
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    margin-left: 1.5rem;
     background-color: $white;
-    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 1.5px 4px 0 rgba(0, 0, 0, 0.10);
+    margin-left: 1rem;
+    font-family: $roboto-font;
+    width: 280px;
+}
+
+.historic-header {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid $gray;
+    padding-bottom: 8px;
+
+    .tab-active {
+        font-weight: 600;
+        color: $blue;
+        border-bottom: 3px solid $blue;
+        padding-bottom: 8px;
+        margin-bottom: -10px;
+        cursor: pointer;
+    }
+
+    .tab-inactive {
+        font-weight: 500;
+        color: $gray-board-content;
+        cursor: pointer;
+    }
+}
+
+.timeline-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-left: 24px;
+
+}
+
+.timeline-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+
+    .timeline-marker {
+        width: 12px;
+        height: 12px;
+        background-color: $blue;
+        border-radius: 50%;
+        margin-top: 6px;
+        z-index: 2;
+        position: relative;
+    }
+
+    .timeline-content {
+        flex: 1;
+        padding-bottom: 8px;
+
+        .comment-date {
+            font-size: 14px;
+            font-weight: 600;
+            color: $black;
+            margin-bottom: 4px;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            color: $gray-board-content;
+            line-height: 1.4;
+        }
+    }
+
+    .timeline-line {
+        position: absolute;
+        left: 5px;
+        top: 18px;
+        width: 2px;
+        height: calc(100% + 16px);
+        background-color: $blue;
+        z-index: 1;
+    }
+}
+
+.timeline-item:last-child .timeline-line {
+    display: none;
+}
+
+.no-comments {
+    text-align: center;
+    color: $gray-board-content;
+    font-style: italic;
+    padding: 32px;
 }

@@ -9,18 +9,19 @@ import { Entypo } from '@expo/vector-icons';
 import ScannerCamera from './ScannerCamera';
 import ScannerManualInput from './ScannerManualInput';
 import useManualInput from '@/hooks/useManualInput';
+import { scannerContext } from '@/context/ScannerContext';
 
 interface ScannerProps {
   message: string;
   messageColor?: string;
   frameColor?: string;
-  onScan: (code: string) => void | Promise<void>;
+  onScan: (code: string, isManual : boolean) => void | Promise<void>;
   scanMode?: 'single' | 'multiple';
   scannedCount?: number;
   resetTrigger?: any;
   isActive: boolean;
   step: 'salle' | 'object';
-  onCancel: () => void;
+  onGoBack: () => void;
   onContinue?: () => void;
   onAdd?: () => void;
   onFinish?: () => void;
@@ -39,7 +40,7 @@ const Scanner: React.FC<ScannerProps> = ({
   resetTrigger,
   isActive,
   step,
-  onCancel,
+  onGoBack,
   onContinue,
   onAdd,
   onFinish,
@@ -48,17 +49,9 @@ const Scanner: React.FC<ScannerProps> = ({
   enableManualInput = false
 }) => {
   const [permission, requestPermission] = useCameraPermissions();
-  const [scannedState, setScanned] = useState(false);
-  const scanLock = useRef(false);
-  const scannerSound = require('../assets/scanner-sound.mp3');
-  const player = useAudioPlayer(scannerSound);
 
-  const manualInput = useManualInput(async (code) => { await onScan(code); });
-
-  useEffect(() => {
-    setScanned(false);
-    scanLock.current = false;
-  }, [resetTrigger]);
+  const manualInput = useManualInput(async (code) => { await onScan(code, true); }, step);
+  const { manualError } = scannerContext();
 
   useEffect(() => {
       if(!permission?.granted) {
@@ -66,67 +59,42 @@ const Scanner: React.FC<ScannerProps> = ({
       }
   }, [])
 
- const handleBarCodeScanned = async ({ data }: { data: string }) => {
-    if (scanLock.current) return;
-    scanLock.current = true;
-    setScanned(true);
-    Vibration.vibrate(200);
-
-    try {
-      await player.seekTo(0);
-      player.play();
-    } catch (e) {
-      console.warn("Impossible de (re)jouer le son :", e);
-    }
-
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    await onScan(data);
-
-    if (scanMode === 'multiple') {
-      setTimeout(() => {
-        setScanned(false);
-        scanLock.current = false;
-      }, 2000);
-    }
-  };
-
-  const handleScan = async (code: string) => {
-    await onScan(code);
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: messageColor }]}>{message}</Text>
-      <View>
-        <ScannerCamera
-          isActive={isActive && !manualInput.show}
-          frameColor={frameColor}
-          onScan={onScan}
-          resetTrigger={resetTrigger}
-        />
-        {enableManualInput && (
-          <TouchableOpacity
-            style={styles.fab}
-            onPress={manualInput.open}
-            activeOpacity={0.7}
-          >
-            <Entypo name="pencil" size={28} color="#fff" />
-          </TouchableOpacity>
+      <View style={styles.scanSection}>
+        <Text style={[styles.title, { color: messageColor }]}>{message}</Text>
+        <View>
+          <ScannerCamera
+            isActive={isActive && !manualInput.show}
+            frameColor={frameColor}
+            onScan={onScan}
+            resetTrigger={resetTrigger}
+            step={step}
+          />
+          {enableManualInput && (
+            <TouchableOpacity
+              style={styles.fab}
+              onPress={manualInput.open}
+              activeOpacity={0.7}
+            >
+              <Entypo name="pencil" size={28} color="#000" />
+            </TouchableOpacity>
+          )}
+        </View>
+        {step === 'object' && typeof scannedCount === 'number' && (
+          <Text style={styles.counter}>Nombre d'objets scannés : {scannedCount}</Text>
         )}
       </View>
-      {step === 'object' && typeof scannedCount === 'number' && (
-        <Text style={styles.counter}>Nombre d'objets scannés : {scannedCount}</Text>
-      )}
+      <View style={{ flex: 1 }} />
       <View style={layout.footer}>
         <ScannerFooter
           scanned={scanned}
           scanMode={scanMode}
-          onCancel={onCancel}
+          onGoBack={onGoBack}
           onContinue={onContinue}
           onAdd={onAdd}
           onFinish={onFinish}
           isLoading={isLoading}
-          onManualInput={enableManualInput ? manualInput.open : undefined}
         />
       </View>
       <ScannerManualInput
@@ -134,17 +102,28 @@ const Scanner: React.FC<ScannerProps> = ({
         code={manualInput.code}
         setCode={manualInput.setCode}
         loading={manualInput.loading}
-        error={manualInput.error}
+        error={manualError ?? ''}
         onSubmit={manualInput.submit}
         onClose={manualInput.close}
+        step={step}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { alignItems: 'center', marginTop : 10 },
-  title: { fontSize: 27, fontWeight: 'bold', textAlign: 'center', width : 341 },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  scanSection: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 16,
+    marginBottom: 0,
+  },
+  title: { fontSize: 27, fontWeight: 'bold', textAlign: 'center', width: 341 },
   frame: {
     width: 335,
     height: 339,
@@ -155,7 +134,7 @@ const styles = StyleSheet.create({
     marginTop: 16,  
   },
   camera: { flex: 1 },
-  counter: { fontSize: 16, fontWeight: '500', color: '#222' },
+  counter: { fontSize: 16, fontWeight: '500', color: '#222', paddingTop: 10 },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.4)',
@@ -193,7 +172,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16,
-    backgroundColor: '#1976D2',
+    backgroundColor: '#fff',
     borderRadius: 28,
     width: 56,
     height: 56,

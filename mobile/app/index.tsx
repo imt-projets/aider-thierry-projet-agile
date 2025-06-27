@@ -1,21 +1,35 @@
 // pages/index.tsx
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 
 import Header from '@/components/Header';
 import Button from '@/components/Button';
-import { layout } from '@/styles/common';
-import { scannerContext } from '@/context/ScannerContext';
+import Toast from '@/components/Toast';
+import {layout} from '@/styles/common';
+import {scannerContext} from '@/context/ScannerContext';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { setMode, restartScan, setIsScannerActive } = scannerContext();
+  const {
+    setMode, 
+    restartScan, 
+    setIsScannerActive,
+    submissionMessage,
+    submissionMessageType,
+    clearSubmissionMessage
+  } = scannerContext();
 
   useEffect(() => {
     setIsScannerActive(false);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setMode(null)
+    }, [])
+  );
 
   const navigateTo = (mode: 'inventoryRoom' | 'addingObject') => {
     restartScan();
@@ -26,6 +40,13 @@ export default function HomeScreen() {
   return (
     <View style={[layout.container, styles.container]}>
       <Header homePage />
+      
+      <Toast 
+        visible={!!submissionMessage} 
+        message={submissionMessage ?? ""} 
+        onClose={clearSubmissionMessage}
+        type={submissionMessageType === 'success' ? 'success' : 'error'}
+      />
 
       <View style={styles.hero}>
         <Text style={styles.title}>IMT'ventaire</Text>

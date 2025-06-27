@@ -7,7 +7,6 @@ import {
   sendInventoryToConfirm
 } from '@/services/ScannerService';
 
-
 // Méthode qui va grouper les items par type
 const groupByType = (items: Item[]) =>
   items.reduce((acc: Record<string, Item[]>, item) => {
@@ -39,24 +38,23 @@ export default function useScanner() {
     scannedItems,
     setScannedItems,
     roomCode,
-    setRoomCode,
-    resetRoomCode,
     isLoading,
     setIsLoading,
-    error,
     setError,
-    clearError,
-    resetScannedCodes,
     restartScan,
+    mode,
+    setSubmissionMessage,
+    setSubmissionMessageType,
   } = scannerContext();
 
   const withLoading = async (fn: () => Promise<void>) => {
     setIsLoading(true);
-    setError(null);
+    setError('');
     try {
       await fn();
     } catch (err: any) {
       setError(err.message || 'Erreur inconnue');
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +67,11 @@ export default function useScanner() {
   };
 
   const handleSendInventory = async () => {
-    if (!roomCode) return setError('Code de salle non défini');
+    if (!roomCode) {
+      const error = 'Code de salle non défini';
+      setError(error);
+      throw new Error(error);
+    }
 
     await withLoading(async () => {
       const roomRes = await getRoomByCode(roomCode);
@@ -91,6 +93,14 @@ export default function useScanner() {
 
       const res = await sendInventoryToConfirm(payload);
       if (res.status == 201) {
+        // Message de succès selon le mode
+        const successMessage = mode === 'inventoryRoom' 
+          ? "Inventaire de la salle envoyé avec succès !"
+          : "Objet ajouté avec succès !";
+        
+        setSubmissionMessage(successMessage);
+        setSubmissionMessageType('success');
+        
         restartScan();
         router.push('/');
       } else {
@@ -100,8 +110,16 @@ export default function useScanner() {
   };
 
   const handleSendObject = async () => {
-    if (!roomCode) return setError('Code de salle non défini');
-    if (scannedItems.length === 0) return setError('Aucun objet scanné');
+    if (!roomCode) {
+      const error = 'Code de salle non défini';
+      setError(error);
+      throw new Error(error);
+    }
+    if (scannedItems.length === 0) {
+      const error = 'Aucun objet scanné';
+      setError(error);
+      throw new Error(error);
+    }
 
     await withLoading(async () => {
       const roomRes = await getRoomByCode(roomCode);
@@ -124,6 +142,10 @@ export default function useScanner() {
 
       const res = await sendInventoryToConfirm(payload);
       if (res.ok) {
+        // Message de succès pour l'ajout d'objet
+        setSubmissionMessage("Objet ajouté avec succès !");
+        setSubmissionMessageType('success');
+        
         restartScan();
         router.push('/');
       } else {
@@ -137,21 +159,9 @@ export default function useScanner() {
   };
 
   return {
-    scannedItems,
-    setScannedItems,
-    roomCode,
-    setRoomCode,
-    resetRoomCode,
-    isLoading,
-    setIsLoading,
-    error,
-    setError,
-    clearError,
-    resetScannedCodes,
-    restartScan,
-    addScannedCode,
     handleSendInventory,
     handleSendObject,
     removeScannedItem,
+    addScannedCode
   };
 }

@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { scannerContext } from '@/context/ScannerContext';
+import { useState, useEffect } from 'react';
+import { ApiNotFoundError, ApiServerError, ApiTimeoutError } from '@/interfaces/Item/ApiErrors';
+import { ROOM_NOT_FOUND_MESSAGE, ITEM_NOT_FOUND_MESSAGE } from '@/constants/Messages/Errors/ScanErrors';
 
 export interface UseManualInput {
   show: boolean;
   code: string;
-  error: string;
   loading: boolean;
   open: () => void;
   close: () => void;
@@ -11,34 +13,52 @@ export interface UseManualInput {
   submit: () => Promise<void>;
 }
 
-export default function useManualInput(onScan: (code: string) => Promise<void>): UseManualInput {
+export default function useManualInput(
+  onScan: (code: string, isManual : boolean) => Promise<void>,
+  step: 'object' | 'salle'
+): UseManualInput {
   const [show, setShow] = useState(false);
   const [code, setCode] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const {manualError, setManualError} = scannerContext();
 
-  const open = () => { setShow(true); setError(''); setCode(''); };
-  const close = () => { setShow(false); setError(''); setCode(''); };
+  const open = () => { 
+    setShow(true);
+    setManualError(null);
+    setCode('');
+  };
+  const close = () => { 
+    setShow(false);
+    setManualError(null);
+    setCode('')
+   };
 
   const submit = async () => {
     if (!code.trim()) return;
     setLoading(true);
-    setError('');
+    setManualError(null);
+    
     try {
-      await onScan(code.trim());
+      await onScan(code.trim(), true);
       setShow(false);
-      setCode('');
-    } catch (e) {
-      setError('Code non trouvé ou erreur serveur');
+    } catch (error) {
+      let errorMessage = '';
+      if (error instanceof ApiNotFoundError) {
+        errorMessage = step === 'object' ? ITEM_NOT_FOUND_MESSAGE : ROOM_NOT_FOUND_MESSAGE;
+      } else if (error instanceof ApiServerError || error instanceof ApiTimeoutError) {
+        errorMessage = error.message;
+      }
+      setManualError(errorMessage.replace('{room}','').replace('{object}',''));
+      setShow(true);
     } finally {
       setLoading(false);
+      setCode('');
     }
   };
 
   return {
     show,
     code,
-    error,
     loading,
     open,
     close,
