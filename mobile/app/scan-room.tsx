@@ -58,24 +58,26 @@ export default function ScanRoomScreen() {
     <View style={layout.container}>
       <Header title="IMT'ventaire" onHomePress={()=> setCurrentModal('AFTER_HOME_CLICKED')} />
       <Toast visible={!!scanError} message={scanError?.replace("{room}"," "+(lastScannedCode??"")) ?? ""} onClose={() => setScanError('')} />
-      <Scanner
-        message={
-          scanned
-            ? `Code barre de la salle récupéré : ${roomCode}`
-            : 'Veuillez scanner le code barre de la salle'
-        }
-        messageColor={scanned ? '#4caf50' : '#222'}
-        frameColor={scanned ? '#4caf50' : '#222'}
-        onScan={handleRoomScan}
-        scanMode="single"
-        isActive={!scanned && isPageFocused}
-        step="salle"
-        onGoBack={ ()=> setCurrentModal('AFTER_GO_BACK_CLICKED') }
-        onContinue={handleContinue}
-        isLoading={isLoading}
-        scanned={scanned}
-        enableManualInput={true}
-      />
+      { isPageFocused && 
+        (<Scanner
+          message={
+            scanned
+              ? `Code barre de la salle récupéré : ${roomCode}`
+              : 'Veuillez scanner le code barre de la salle'
+          }
+          messageColor={scanned ? '#4caf50' : '#222'}
+          frameColor={scanned ? '#4caf50' : '#222'}
+          onScan={handleRoomScan}
+          scanMode="single"
+          isActive={!scanned && isPageFocused}
+          step="salle"
+          onGoBack={ ()=> setCurrentModal('AFTER_GO_BACK_CLICKED') }
+          onContinue={handleContinue}
+          isLoading={isLoading}
+          scanned={scanned}
+          enableManualInput={true}
+        />)
+      }
       <ModalConfirmation
         modalVisible={currentModal != ''}
         setModalVisible={() => setCurrentModal('')}

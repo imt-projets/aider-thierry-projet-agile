@@ -80,24 +80,26 @@ export default function ScanObjectScreen() {
     <View style={layout.container}>
       <Header title="IMT'ventaire" onHomePress={()=> setCurrentModal('AFTER_HOME_CLICKED')}/>
       <Toast visible={!!scanError} message={scanError?.replace("{object}"," "+(lastScannedCode??"")) ?? ""} onClose={() => setScanError('')} />
-      <Scanner
-        message={
-          isObjectScanned
-            ? `Code barre de l'objet récupéré : ${lastScannedItem?.inventoryNumber ?? ''}`
-            : 'Veuillez scanner le code barre de l\'objet à ajouter'
-        }
-        messageColor={isObjectScanned ? '#4caf50' : '#222'}
-        frameColor={lastScannedItem ? '#4caf50' : '#222'}
-        onScan={handleScan}
-        scanMode="single"
-        isActive={isPageFocused}
-        step="object"
-        onGoBack={()=> setCurrentModal('AFTER_GO_BACK_CLICKED')}
-        onAdd={handleSubmit}
-        isLoading={isLoading}
-        scanned={isObjectScanned}
-        enableManualInput={true}
-      />
+      {isPageFocused &&
+        (<Scanner
+          message={
+            isObjectScanned
+              ? `Code barre de l'objet récupéré : ${lastScannedItem?.inventoryNumber ?? ''}`
+              : 'Veuillez scanner le code barre de l\'objet à ajouter'
+          }
+          messageColor={isObjectScanned ? '#4caf50' : '#222'}
+          frameColor={lastScannedItem ? '#4caf50' : '#222'}
+          onScan={handleScan}
+          scanMode="single"
+          isActive={isPageFocused}
+          step="object"
+          onGoBack={()=> setCurrentModal('AFTER_GO_BACK_CLICKED')}
+          onAdd={handleSubmit}
+          isLoading={isLoading}
+          scanned={isObjectScanned}
+          enableManualInput={true}
+        />)
+      }
 
       <ModalConfirmation
           modalVisible={currentModal != ''}

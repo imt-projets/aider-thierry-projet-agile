@@ -102,21 +102,23 @@ export default function ScanObjectsScreen() {
         }}
         type="success"
       />
-      <Scanner
-        message="Veuillez scanner les objets de la salle"
-        messageColor="#222"
-        frameColor={lastScannedItem ? '#4caf50' : '#222'}
-        onScan={handleItemScan}
-        scanMode="multiple"
-        scannedCount={scannedItems.length}
-        isActive={isPageFocused}
-        step="object"
-        onGoBack={()=> setCurrentModal('AFTER_GO_BACK_CLICKED')}
-        onFinish={goToRecap}
-        isLoading={isLoading}
-        scanned={scannedItems.length > 0}
-        enableManualInput={true}
-      />
+      {isPageFocused && (
+        <Scanner
+          message="Veuillez scanner les objets de la salle"
+          messageColor="#222"
+          frameColor={lastScannedItem ? '#4caf50' : '#222'}
+          onScan={handleItemScan}
+          scanMode="multiple"
+          scannedCount={scannedItems.length}
+          isActive={isPageFocused}
+          step="object"
+          onGoBack={()=> setCurrentModal('AFTER_GO_BACK_CLICKED')}
+          onFinish={goToRecap}
+          isLoading={isLoading}
+          scanned={scannedItems.length > 0}
+          enableManualInput={true}
+        />)
+      }
       <ModalConfirmation
           modalVisible={currentModal != ''}
           setModalVisible={() => setCurrentModal('')}
