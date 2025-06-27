@@ -96,7 +96,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ isActive, frameColor = '#
       />
       {isProcessing && (
         <View style={styles.spinnerContainer}>
-          <ActivityIndicator size="large" color="#4caf50" />
+          <ActivityIndicator size="large" color="#000" />
         </View>
       )}
     </View>

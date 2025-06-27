@@ -60,7 +60,7 @@ export const Table = ({ columns, data, columnsTemplate, children, loading } : Ta
             return (
                 <div 
                     key={column.field} 
-                    className="column"
+                    className="table-column"
                     style={{ justifyContent: column.align ? column.align : 'flex-start' }}
                 >
                     {
@@ -89,7 +89,7 @@ export const Table = ({ columns, data, columnsTemplate, children, loading } : Ta
 
         return data.map((row,index) => 
             <div 
-                className="row"
+                className="table-row"
                 key={index}
                 style={{ gridTemplateColumns: getTemplateColumns() }}>
                 {displayColumns(row, index)}

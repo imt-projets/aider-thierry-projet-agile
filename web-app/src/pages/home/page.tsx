@@ -1,16 +1,39 @@
 import { TreeView } from "@/pages/home/components/TreeView";
-import {  useContext } from "react";
+import {  useCallback, useContext, useEffect, useState } from "react";
 import { ObjectDetails, ObjectTabs, ObjectForm } from "./components";
 import SelectionContext from "@/context/SelectionContext";
 import PageLayout from "@/layouts/PageLayout";
+import { TreeViewSchema, type TreeViewDTO } from "@/dto";
+import { useFetch } from "@/hooks";
 
 const Home = () => {
+    const response = useFetch('/hierarchy', [])
+    const [originalTreeView, setOriginalTreeView] = useState<TreeViewDTO>();
+    const [treeView, setTreeView] = useState<TreeViewDTO>()
+
+    const fetchHierarchy = useCallback(() => {
+        if (response.data) {
+            const treeViewParsed = TreeViewSchema.parse(response.data);
+            setTreeView(treeViewParsed);
+            setOriginalTreeView(treeViewParsed);
+        }
+    }, [response.data])
+
+    useEffect(() => {
+        fetchHierarchy()
+    }, [fetchHierarchy]);
+
     const { selectedItem } = useContext(SelectionContext);
     
     return (
         <PageLayout id="home">
             <div className="container--inventory-view">
-                <TreeView/>
+                <TreeView
+                    loading={response.loading}
+                    treeView={treeView}
+                    originalTreeView={originalTreeView}
+                    setTreeView={setTreeView}
+                />
             </div>
 
             <div className="container--object-view">
@@ -19,7 +42,7 @@ const Home = () => {
                         <div className="container--form-view">
                             <div className="container--left">
                                 <ObjectTabs />
-                                <ObjectForm />
+                                <ObjectForm reloadHierarchy={response.reload}/>
                             </div>
                             <div className="container--right">
                                 <ObjectDetails />

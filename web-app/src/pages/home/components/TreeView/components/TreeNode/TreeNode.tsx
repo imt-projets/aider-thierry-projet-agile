@@ -1,14 +1,14 @@
 import { TreeList } from "../TreeList/TreeList";
 import { useContext } from "react";
 import SelectionContext from "@/context/SelectionContext";
-import { Building, Room, School, Item } from "@/components";
+import { Building, Room, School, Item, Amphitheater } from "@/components";
 import type { TreeViewDTO } from "@/dto";
 import { motion, AnimatePresence } from "framer-motion";
 
 export type TreeNodeType = {
     id: string;
     name: string;
-    type: "school" | "building" | "room";
+    type: "school" | "building" | "room" | " amphitheater" ;
     children?: TreeNodeType[];
     items?: {
         id: string;
@@ -24,6 +24,7 @@ const iconMap = new Map<string, React.ReactNode>([
     ["building", <Building style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
     ["room", <Room style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
     ["object", <Item style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
+    ["amphitheater", <Amphitheater style={{ width: 18, height: 18, marginRight: 8, verticalAlign: "middle" }} />],
 ]);
 
 interface TreeNodeProps {
