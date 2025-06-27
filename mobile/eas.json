@@ -12,7 +12,7 @@
     },
     "production": {
       "developmentClient": false,
-      "distribution": "store",
+      "distribution": "internal",
       "android": {
         "buildType": "apk"
       }
