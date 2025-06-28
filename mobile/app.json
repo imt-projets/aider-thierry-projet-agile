@@ -17,7 +17,16 @@
     "owner": "thiernogn",
     "plugins": [
       "expo-router",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true,
+            "networkSecurityConfig": "network_security_config.xml"
+          }
+        }
+      ]
     ],
     "ios": {
       "bundleIdentifier": "com.thiernogn.mobile"
