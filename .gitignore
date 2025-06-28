@@ -1,3 +1,6 @@
 dist
 node_modules
 .env
+.expo/
+.vscode/
+package-lock.json

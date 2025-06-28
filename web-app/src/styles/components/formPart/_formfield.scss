@@ -1,0 +1,63 @@
+@use '../../theme/fonts' as *;
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: space-between;
+    position: relative;
+
+    .label {
+        font-family: $inter-font;
+        font-size: $size-16;
+
+        
+        .required-star {
+            color: red;
+            margin-left: 4px;
+            font-size: $size-12;
+        }
+    }
+
+    .input-container {
+        display: inherit;
+        height: 30px;
+        overflow: hidden;
+        position: relative;
+
+        input {
+            width: 100%;
+            border-radius: 8px;
+            padding: 8px;
+            border: 1px solid silver;
+
+            font-family: $inter-font;
+            font-size: $size-14;
+            transition: border 0.2s;
+
+            &.input-error {
+                border-color: red;
+                color: red;
+                &::placeholder {
+                    color: red;
+                    opacity: 0.6;
+                }
+                
+                &:focus{
+                    outline-color: red;
+                }
+            }
+        }
+    }
+
+    .error-text {
+        position: absolute;
+        top: calc(100% + 2px);
+        left: 0;
+        color: red;
+        font-size: 0.75rem;
+        line-height: 1;
+        font-family: $inter-font;
+        pointer-events: none;
+    }
+}

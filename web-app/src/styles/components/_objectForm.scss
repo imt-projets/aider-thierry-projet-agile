@@ -1,0 +1,74 @@
+@use '../theme/colors' as *;
+@use '../theme/fonts' as *;
+
+#form--container {
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: $white;
+}
+
+.object-view-container {
+    padding: 1rem;
+    background: $white;
+    overflow: auto;
+    width: 100%;
+
+    .card {
+        margin-top: 0.5rem;
+
+        .form-field {
+            margin-top: 0.9rem;
+        }
+    }
+
+    .object-view-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+
+        .object-view-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .object-view-header-actions {
+            display: flex;
+            gap: 16px;
+        }
+    }
+
+    .object--row {
+        padding-top: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .title {
+            text-transform: uppercase;
+            font-size: $size-20;
+            font-weight: 600;
+        }
+
+        .content {
+            display: inherit;
+            flex-direction: row;
+            gap: 14px;
+        }
+
+        #object-description {
+            
+            .form-field{
+                flex-direction: column;
+                display: flex;
+                gap: 12px;
+                min-height: 100px;
+                min-width: 500px;
+            }
+        }
+    }
+}

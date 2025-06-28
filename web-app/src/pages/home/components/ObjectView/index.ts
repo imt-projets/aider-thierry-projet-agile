@@ -1,4 +1,3 @@
-export { ObjectView } from "./ObjectView";
-export { PathBarView } from "./pathBarView";
-export { MenuView } from "./MenuView";
-export { HistoricView } from "./HistoricView";
+export { ObjectForm } from "./ObjectForm";
+export { ObjectTabs } from "./ObjectTabs";
+export { ObjectDetails } from "./ObjectDetails";

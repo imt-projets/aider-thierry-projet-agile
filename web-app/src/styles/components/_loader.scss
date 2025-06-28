@@ -1,0 +1,7 @@
+@use '../theme/fonts' as *;
+@use '../theme/colors' as *;
+
+.loader--container {
+    font-family: $inter-font;
+    font-size: $size-14;
+}

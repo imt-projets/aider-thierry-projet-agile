@@ -29,7 +29,9 @@ export const getHierarchy = async (
                     type: true,
                     items: {
                         id: true,
-                        name: true
+                        name: true,
+                        inventoryNumber: true,
+                        serialNumber: true
                     }
                 }
             }

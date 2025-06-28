@@ -1,0 +1,45 @@
+@use '../theme/colors.scss' as *;
+@use '../theme/fonts' as *;
+
+.table{
+    display: flex;
+    flex-direction: column;
+    font-family: $inter-font;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    border: 1px solid $card-border;
+    border-radius: 8px;
+    
+    .table-header {
+        display: grid;
+    }
+
+    .rows {
+        display: grid;
+
+        .table-row {
+            display: grid;
+            background: $white;
+
+            .table-column {
+                display: flex;
+                align-items: center;
+            }        
+        }
+    }
+
+    .no-content {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
+    .footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        background-color: #F4F7FC;
+        padding: 0px 10px 0px 0px;
+        font-size: $size-12;
+    }
+}

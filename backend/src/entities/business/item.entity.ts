@@ -1,9 +1,17 @@
-import { Entity, Column, ManyToOne, OneToMany, ManyToMany} from "typeorm";
+import { Entity, Column, ManyToOne, OneToMany, ManyToMany } from "typeorm";
 import { ItemType } from "./itemType.entity";
 import { Comment } from "./comment.entity";
 import { Supplier } from "./supplier.entity";
 import { EntityBase } from "../core";
 import { Structure } from "../organizational";
+
+export enum ItemStateTypeEnum {
+    NEW = "Neuf",
+    GOOD = "Bon",
+    FAIR = "Moyen",
+    PENDING_DESTRUCTION = "En attente de destruction",
+    DESTROYED = "Détruit"
+}
 
 @Entity()
 export class Item extends EntityBase {
@@ -13,7 +21,7 @@ export class Item extends EntityBase {
     @Column()
     serialNumber!: string;
 
-    @Column()
+    @Column({unique: true})
     inventoryNumber!: string;
 
     @Column()
@@ -36,6 +44,12 @@ export class Item extends EntityBase {
 
     @Column()
     model!: string; 
+
+    @Column({
+        type: "enum",
+        enum: ItemStateTypeEnum
+    })
+    state!: ItemStateTypeEnum
 
     @OneToMany(() => Comment, (comment) => comment.item)
     comments!: Comment[];

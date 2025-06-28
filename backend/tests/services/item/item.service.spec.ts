@@ -17,7 +17,8 @@ jest.mock("../../../src/helpers", () => ({
 describe("items service", () => {
     let mockReply: FastifyReply;
     let mockRequest: FastifyRequest<{ Params: ItemByIdParams }>;
-    let mockRepository: Partial<Repository<entities.Item>>;
+    let mockItemRepo: Partial<Repository<entities.Item>>;
+    let mockStructureRepo: Partial<Repository<entities.Structure>>;
 
     beforeEach(() => {
         mockReply = {} as FastifyReply;
@@ -41,15 +42,15 @@ describe("items service", () => {
             }
         ];
 
-        mockRepository = {
+        mockItemRepo = {
             find: jest.fn().mockResolvedValue(mockData)
         };
 
         await services.Item.getItems(mockRequest, mockReply, {
-            primary: mockRepository as Repository<entities.Item>
+            primary: mockItemRepo as Repository<entities.Item>
         })
     
-        expect(mockRepository.find).toHaveBeenCalledWith({});
+        expect(mockItemRepo.find).toHaveBeenCalledWith({});
 
         expect(ReplyHelper.send).toHaveBeenCalledWith(
             mockReply,
@@ -74,7 +75,7 @@ describe("items service", () => {
             model: "ADDE" 
         }
         
-        mockRepository = {
+        mockItemRepo = {
             findOne: jest.fn().mockResolvedValue(mockItem)
         };
 
@@ -84,7 +85,7 @@ describe("items service", () => {
             }
         } as FastifyRequest<{ Params: ItemByIdParams }>;
         await services.Item.getItemById(mockRequest, mockReply, {
-            primary: mockRepository as Repository<entities.Item>
+            primary: mockItemRepo as Repository<entities.Item>
         })
     })
 
@@ -110,7 +111,7 @@ describe("items service", () => {
 
 
     it("reply error when item is not found", async () => {
-        mockRepository = {
+        mockItemRepo = {
             findOne: jest.fn().mockResolvedValue(null), // simulate item not found
         };
 
@@ -123,15 +124,149 @@ describe("items service", () => {
         await services.Item.getItemById(
             mockRequest,
             mockReply,
-            { primary: mockRepository as Repository<entities.Item>}
+            { primary: mockItemRepo as Repository<entities.Item>}
         );
 
-        expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: "non-existent-id" } });
+        expect(mockItemRepo.findOne).toHaveBeenCalledWith({ where: { id: "non-existent-id" } });
 
         expect(ReplyHelper.error).toHaveBeenCalledWith(
             mockReply,
             enums.StatusCode.NOT_FOUND,
             "Item not found"
+        );
+    });
+
+    it("should update the room of the item", async () => {
+        const mockItem = {
+            inventoryNumber: "INV123",
+            room: null,
+            save: jest.fn()
+        };
+
+        const savedItem = { ...mockItem, room: { id: "room1" } };
+
+        mockItemRepo = {
+            findOne: jest.fn().mockResolvedValue(mockItem),
+            save: jest.fn().mockResolvedValue(savedItem)
+        };
+
+        mockStructureRepo = {
+            findOne: jest.fn().mockResolvedValue({ id: "room1" })
+        };
+
+        mockRequest = {
+            params: { inventoryNumber: "INV123" },
+            body: { id: "room1" }
+        } as unknown as any;
+
+        await services.Item.updateItemRoomFromInventoryId(
+            mockRequest as any,
+            mockReply,
+            {
+                primary: mockItemRepo as Repository<entities.Item>,
+                structure: mockStructureRepo as Repository<entities.Structure>
+            }
+        );
+
+        expect(mockItemRepo.findOne).toHaveBeenCalledWith({ where: { inventoryNumber: "INV123" } });
+        expect(mockStructureRepo.findOne).toHaveBeenCalledWith({ where: { id: "room1" } });
+        expect(mockItemRepo.save).toHaveBeenCalledWith(expect.objectContaining({
+            inventoryNumber: "INV123",
+            room: { id: "room1" }
+        }));
+        expect(ReplyHelper.send).toHaveBeenCalledWith(mockReply, enums.StatusCode.OK, savedItem);
+    });
+
+    it("should return BAD_REQUEST if inventoryNumber missing", async () => {
+        mockRequest = {
+            params: { inventoryNumber: "" },
+            body: { id: "room1" }
+        } as unknown as any;
+
+        await services.Item.updateItemRoomFromInventoryId(
+            mockRequest as any,
+            mockReply,
+            { primary: {} as Repository<entities.Item>, structure: {} as Repository<entities.Structure> }
+        );
+
+        expect(ReplyHelper.error).toHaveBeenCalledWith(
+            mockReply,
+            enums.StatusCode.BAD_REQUEST,
+            "inventoryNumber is required to update room item"
+        );
+    });
+
+    it("should return BAD_REQUEST if room ID missing", async () => {
+        mockRequest = {
+            params: { inventoryNumber: "INV123" },
+            body: { id: "" }
+        } as unknown as any;
+
+        await services.Item.updateItemRoomFromInventoryId(
+            mockRequest as any,
+            mockReply,
+            { primary: {} as Repository<entities.Item>, structure: {} as Repository<entities.Structure> }
+        );
+
+        expect(ReplyHelper.error).toHaveBeenCalledWith(
+            mockReply,
+            enums.StatusCode.BAD_REQUEST,
+            "Room ID is required."
+        );
+    });
+
+    it("should return NOT_FOUND if item not found", async () => {
+        mockItemRepo = {
+            findOne: jest.fn().mockResolvedValue(null)
+        };
+
+        mockRequest = {
+            params: { inventoryNumber: "INV123" },
+            body: { id: "room1" }
+        } as unknown as any;
+
+        await services.Item.updateItemRoomFromInventoryId(
+            mockRequest as any,
+            mockReply,
+            {
+                primary: mockItemRepo as Repository<entities.Item>,
+                structure: {} as Repository<entities.Structure>
+            }
+        );
+
+        expect(ReplyHelper.error).toHaveBeenCalledWith(
+            mockReply,
+            enums.StatusCode.NOT_FOUND,
+            "Item not found"
+        );
+    });
+
+    it("should return NOT_FOUND if room not found", async () => {
+        mockItemRepo = {
+            findOne: jest.fn().mockResolvedValue({ inventoryNumber: "INV123", room: null })
+        };
+        mockStructureRepo = {
+            findOne: jest.fn().mockResolvedValue(null)
+        };
+
+        mockRequest = {
+            params: { inventoryNumber: "INV123" },
+            body: { id: "room1" }
+        } as unknown as any;
+
+        await services.Item.updateItemRoomFromInventoryId(
+            mockRequest as any,
+            mockReply,
+            {
+                primary: mockItemRepo as Repository<entities.Item>,
+                structure: mockStructureRepo as Repository<entities.Structure>
+            }
+        );
+
+        expect(ReplyHelper.error).toHaveBeenCalledWith(
+            mockReply,
+            enums.StatusCode.NOT_FOUND,
+            "Room not found."
         );
     });
 })

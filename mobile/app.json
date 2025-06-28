@@ -1,43 +1,35 @@
 {
   "expo": {
-    "name": "mobile",
+    "name": "IMT'ventaire",
+    "icon": "./assets/logo-barcode.png",
     "slug": "mobile",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "mobile",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
+    "scheme": "thiernogn",
+    "extra": {
+      "eas": {
+        "projectId": "a9e6933d-1659-4618-83ea-432f1fef20cd"
+      },
+      "deepLinking": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true
+      "package": "com.thiernogn.mobile"
     },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
+    "owner": "thiernogn",
     "plugins": [
       "expo-router",
+      "expo-web-browser",
       [
-        "expo-splash-screen",
+        "expo-build-properties",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "android": {
+            "usesCleartextTraffic": true,
+            "networkSecurityConfig": "network_security_config.xml"
+          }
         }
-      ],
-      "expo-barcode-scanner"
+      ]
     ],
-    "experiments": {
-      "typedRoutes": true
+    "ios": {
+      "bundleIdentifier": "com.thiernogn.mobile"
     }
   }
 }

@@ -1,111 +1,91 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { router } from 'expo-router';
-import { RequestHelper } from '../api/requestHelper';
-
-type ScannerMode = 'inventoryRoom' | 'addingObject' | null;
+import Item from "@/interfaces/Item";
 
 interface ScannerContextType {
-  scannedCodes: string[];
+  scannedItems: Item[];
+  setScannedItems: React.Dispatch<React.SetStateAction<Item[]>>;
   roomCode: string | null;
-  addScannedCode: (code: string) => void;
-  resetScannedCodes: () => void;
   setRoomCode: (code: string) => void;
   resetRoomCode: () => void;
   isScannerActive: boolean;
   setIsScannerActive: (active: boolean) => void;
   restartScan: () => void;
-  handleSendInventory: () => Promise<void>;
-  handleSendObject: () => Promise<void>;
-  mode: ScannerMode;
-  setMode: (mode: ScannerMode) => void;
-  scanned : boolean;
-  setScanned : (scanned : boolean) => void;
+  resetScannedCodes: () => void;
+  mode: 'inventoryRoom' | 'addingObject' | null;
+  setMode: (mode: 'inventoryRoom' | 'addingObject' | null) => void;
+  isLoading: boolean;
+  setIsLoading: (val : boolean) => void;
+  error: string | null;
+  setError: (err : string | null) => void;
+  clearError: () => void;
+  setManualError : (err : string | null) => void;
+  manualError : string | null;
+  submissionMessage: string | null;
+  setSubmissionMessage: (msg: string | null) => void;
+  submissionMessageType: 'success' | 'error' | null;
+  setSubmissionMessageType: (type: 'success' | 'error' | null) => void;
+  clearSubmissionMessage: () => void;
 }
 
-const ScannerContext = createContext<ScannerContextType | undefined>(undefined);
+export const ScannerContext = createContext<ScannerContextType | undefined>(undefined);
 
 export const ScannerProvider = ({ children }: { children: ReactNode }) => {
-  const [scanned, setScanned] = useState(false);
-  const [scannedCodes, setScannedCodes] = useState<string[]>([]);
-  const [roomCode, setRoomCodeState] = useState<string | null>(null);
   const [isScannerActive, setIsScannerActive] = useState(true);
-  const [mode, setMode] = useState<ScannerMode>(null);
+  const [scannedItems, setScannedItems] = useState<Item[]>([]);
+  const [roomCode, setRoomCodeState] = useState<string | null>(null);
+  const [mode, setMode] = useState<'inventoryRoom' | 'addingObject' | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [manualError, setManualError] = useState<string | null>(null);
+  const [submissionMessage, setSubmissionMessage] = useState<string | null>(null);
+  const [submissionMessageType, setSubmissionMessageType] = useState<'success' | 'error' | null>(null);
 
-  const addScannedCode = (code: string) => {
-    setScannedCodes(prev => (prev.includes(code) ? prev : [...prev, code]));
-  };
+  const clearError = () => {
+    setError(null);
+    setManualError(null);
+  }
 
-  const resetScannedCodes = () => setScannedCodes([]);
+  const clearSubmissionMessage = () => {
+    setSubmissionMessage(null);
+    setSubmissionMessageType(null);
+  }
+
+  const resetScannedCodes = () => setScannedItems([]);
   const setRoomCode = (code: string) => setRoomCodeState(code);
   const resetRoomCode = () => setRoomCodeState(null);
 
   const restartScan = () => {
     resetRoomCode();
     resetScannedCodes();
-  };
-
-  const getRoomId = async (): Promise<string | null> => {
-    if (!roomCode) {
-      console.error("Code de salle non défini.");
-      return null;
-    }
-    const res = await RequestHelper.get(`/structure/room/${roomCode}`);
-    return res?.data?.id || null;
-  };
-
-  const handleSendInventory = async () => {
-    const roomId = await getRoomId();
-    if (!roomId) return;
-
-    const res = await RequestHelper.put(`/structure/room/${roomId}`, {
-      ids: scannedCodes,
-    });
-
-    if (!res?.ok) {
-      console.error("Erreur lors de l’envoi de l’inventaire.");
-      return;
-    }
-
-    console.log("Inventaire envoyé avec succès !");
-    restartScan();
-  };
-
-  const handleSendObject = async () => {
-    const roomId = await getRoomId();
-    if (!roomId || scannedCodes.length === 0) return;
-
-    const res = await RequestHelper.put(`/item/${scannedCodes[0]}/room`, {
-      id: roomId,
-    });
-
-    if (!res?.ok) {
-      console.error("Erreur lors de l’envoi de l’objet.");
-      return;
-    }
-
-    console.log("Objet ajouté avec succès !");
-    restartScan();
-    router.push('/');
+    clearError();
   };
 
   return (
     <ScannerContext.Provider
       value={{
-        scannedCodes,
+        scannedItems,
+        setScannedItems,
         roomCode,
-        addScannedCode,
-        resetScannedCodes,
         setRoomCode,
         resetRoomCode,
         isScannerActive,
         setIsScannerActive,
         restartScan,
+        resetScannedCodes,
         mode,
         setMode,
-        handleSendInventory,
-        handleSendObject,
-        scanned,
-        setScanned
+        isLoading,
+        setIsLoading,
+        error,
+        setError,
+        clearError,
+        manualError,
+        setManualError,
+        submissionMessage,
+        setSubmissionMessage,
+        submissionMessageType,
+        setSubmissionMessageType,
+        clearSubmissionMessage
       }}
     >
       {children}
@@ -113,7 +93,7 @@ export const ScannerProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useScanner = (): ScannerContextType => {
+export const scannerContext = (): ScannerContextType => {
   const context = useContext(ScannerContext);
   if (!context) throw new Error('useScanner must be used within a ScannerProvider');
   return context;

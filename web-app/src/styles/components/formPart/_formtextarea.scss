@@ -1,0 +1,7 @@
+@use '../../theme/fonts' as *;
+@use '../../theme/colors' as *;
+
+textarea {
+    padding: 1rem;
+    font-family: $inter-font;
+}

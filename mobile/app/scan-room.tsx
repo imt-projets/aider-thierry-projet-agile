@@ -1,64 +1,97 @@
 // pages/scan-room.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Scanner from '@/components/Scanner';
-import { useScanner } from '@/context/ScannerContext';
+import useScanner from '@/hooks/useScanner';
 import Header from '@/components/Header';
-import Button from '@/components/Button';
 import { layout } from '@/styles/common';
-import { Entypo } from '@expo/vector-icons';
+import { scannerContext } from '@/context/ScannerContext';
+import Toast from '@/components/Toast';
+import { useFocusEffect } from '@react-navigation/native';
+import ModalConfirmation from '@/components/ModalConfirmation';
+import  { MESSAGE_GO_BACK_TITLE, MESSAGE_GO_BACK_HOME_BODY, MESSAGE_HEADER_GO_HOME_TITLE, MESSAGE_HEADER_GO_HOME_BODY, MESSAGE_GO_BACK_SCAN_ROOM_BODY } from '@/constants/Messages/MessagesModales'
+import { getRoomByCode } from '@/services/ScannerService';
 
 export default function ScanRoomScreen() {
   const router = useRouter();
-  const [resetTrigger, setResetTrigger] = useState(0);
-  const { roomCode, setRoomCode, resetRoomCode, isScannerActive, setIsScannerActive, mode } = useScanner();
+  const {setManualError, error : scanError, setError : setScanError,roomCode, setRoomCode, isLoading, mode, restartScan} = scannerContext();
+  const [isPageFocused, setIsPageFocused] = useState(true);
+  const [currentModal, setCurrentModal] = useState("");
+  const [lastScannedCode, setLastScannedCode] = useState<string | null>(null);
 
-  useEffect(() => {
-    setIsScannerActive(true);
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      setIsPageFocused(true);
+      return () => setIsPageFocused(false);
+    }, [])
+  );
 
-  const handleRoomScan = (code: string) => {
-    setRoomCode(code);
-  }
-
-  const handleAnnuler = () => {
-    resetRoomCode();
-    setResetTrigger(prev => prev + 1);
+  const handleContinue = () => {
+    const nextRoute = mode === 'addingObject' ? '/add-object' : '/room-inventory';
+    router.push(nextRoute);
   };
 
   const scanned = roomCode !== null;
 
-  const nextRoute = mode === 'addingObject' ? '/scan-object' : '/scan-objects';
+  const handleRoomScan = async (code: string, isManual : boolean) => {
+    setLastScannedCode(code);
+    const roomResponse = await getRoomByCode(code);
+    if (roomResponse.ok && roomResponse.data && roomResponse.data.id) {
+      setRoomCode(code);
+    }
+  };
 
+  const goHome = () => {
+    restartScan();
+    router.push('/')
+  }
+
+  const goBack = () => {
+    if (scanned) {
+      restartScan();
+    } else {
+      goHome();
+    }
+  }
   return (
     <View style={layout.container}>
-      <Header title="IMT'ventaire" />
-
-      <Scanner
-        message={scanned ? 'Code barre de la salle récupéré' : 'Veuillez scanner le code barre de la salle'}
-        messageColor={scanned ? '#4caf50' : '#222'}
-        frameColor={scanned ? '#4caf50' : '#222'}
-        onScan={handleRoomScan}
-        scanMode="single"
-        resetTrigger={resetTrigger}
-        isActive={isScannerActive}
-        step="salle"
+      <Header title="IMT'ventaire" onHomePress={()=> setCurrentModal('AFTER_HOME_CLICKED')} />
+      <Toast visible={!!scanError} message={scanError?.replace("{room}"," "+(lastScannedCode??"")) ?? ""} onClose={() => setScanError('')} />
+      { isPageFocused && 
+        (<Scanner
+          message={
+            scanned
+              ? `Code barre de la salle récupéré : ${roomCode}`
+              : 'Veuillez scanner le code barre de la salle'
+          }
+          messageColor={scanned ? '#4caf50' : '#222'}
+          frameColor={scanned ? '#4caf50' : '#222'}
+          onScan={handleRoomScan}
+          scanMode="single"
+          isActive={!scanned && isPageFocused}
+          step="salle"
+          onGoBack={ ()=> setCurrentModal('AFTER_GO_BACK_CLICKED') }
+          onContinue={handleContinue}
+          isLoading={isLoading}
+          scanned={scanned}
+          enableManualInput={true}
+        />)
+      }
+      <ModalConfirmation
+        modalVisible={currentModal != ''}
+        setModalVisible={() => setCurrentModal('')}
+        title={currentModal == 'AFTER_GO_BACK_CLICKED' ? MESSAGE_GO_BACK_TITLE : MESSAGE_HEADER_GO_HOME_TITLE}
+        message={
+          currentModal === 'AFTER_GO_BACK_CLICKED'
+            ? (scanned ? MESSAGE_GO_BACK_SCAN_ROOM_BODY : MESSAGE_GO_BACK_HOME_BODY)
+            : MESSAGE_HEADER_GO_HOME_BODY
+        }
+        isImportant={currentModal == 'AFTER_HOME_CLICKED'}
+        confirmText="Confirmer"
+        cancelText="Annuler"
+        onConfirm={currentModal === 'AFTER_GO_BACK_CLICKED' ? goBack : goHome}
       />
-
-      <View style={layout.footer}>
-        {!scanned ? (
-          <>
-            <Button title="Saisir le code" onPress={() => {}} type="outline" icon={<Entypo name="pencil" size={24} color="black" />}/>
-            <Button title="Annuler" onPress={() => router.back()} type="danger" icon={<Entypo name="circle-with-cross" size={24} color="white" />}/>
-          </>
-        ) : (
-          <>
-            <Button title="Continuer" onPress={() => router.push(nextRoute)} type="success" icon={<Entypo name="arrow-with-circle-right" size={24} color="white" />} />
-            <Button title="Annuler" onPress={handleAnnuler} type="danger" icon={<Entypo name="circle-with-cross" size={24} color="white" />}/>
-          </>
-        )}
-      </View>
     </View>
   );
 }

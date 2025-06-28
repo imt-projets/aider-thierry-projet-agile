@@ -1,39 +1,49 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Modal } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Modal, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useScanner } from '@/context/ScannerContext';
+import { scannerContext } from '@/context/ScannerContext';
+import useScanner from '@/hooks/useScanner';
 
 interface ModalConfirmationProps {
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
-  setIsScannerActive: (active: boolean) => void;
+  title: string;
+  message: string;
+  isImportant : boolean;
+  confirmText?: string;
+  cancelText?: string;
+  onConfirm: () => void;
 }
 
-const ModalConfirmation: React.FC<ModalConfirmationProps> = ({ modalVisible, setModalVisible, setIsScannerActive }) => {
-  const { scannedCodes, restartScan, handleSendInventory } = useScanner();
-  const router = useRouter();
-
+const ModalConfirmation: React.FC<ModalConfirmationProps> = ({
+  modalVisible,
+  setModalVisible,
+  title,
+  message,
+  isImportant,
+  confirmText = 'Confirmer',
+  cancelText = 'Annuler',
+  onConfirm,
+}) => {
   const handleModalClosed = (confirmed: boolean) => {
     setModalVisible(false);
-    setIsScannerActive(!confirmed);
     if (confirmed) {
-      handleSendInventory();
-      router.push('/');
+      onConfirm();
     }
   };
 
   return (
-    <Modal visible={modalVisible} transparent animationType="fade" onRequestClose={() => setModalVisible(false)}>
+    <Modal visible={modalVisible} transparent  onRequestClose={() => setModalVisible(false)}>
       <View style={styles.overlay}>
         <View style={styles.content}>
-          <Text style={styles.title}>Avez-vous terminé l'inventaire de la salle ?</Text>
-          <Text style={styles.text}>Nombre d'objets scannés : {scannedCodes.length}</Text>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={[styles.subtitle, isImportant && styles.subtitleImportant]}>{message}</Text>
           <View style={styles.buttonRow}>
             <Pressable style={styles.noButton} onPress={() => handleModalClosed(false)}>
-              <Text style={styles.noText}>Non</Text>
+              <Text style={styles.noText}>{cancelText}</Text>
             </Pressable>
             <Pressable style={styles.yesButton} onPress={() => handleModalClosed(true)}>
-              <Text style={styles.yesText}>Oui</Text>
+              <Text style={styles.yesText}>{confirmText}</Text>
             </Pressable>
           </View>
         </View>
@@ -50,22 +60,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    width: 300,
+    width: 350,
+    maxHeight: 500,
     backgroundColor: '#fff',
     padding: 24,
     borderRadius: 16,
     alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
-  text: {
+  subtitle: {
     fontSize: 16,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
+    color: '#666',
+  },
+  subtitleImportant : {
+    color : 'red'
   },
   buttonRow: {
     flexDirection: 'row',
